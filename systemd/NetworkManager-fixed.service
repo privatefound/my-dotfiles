@@ -1,0 +1,19 @@
+[Unit]
+Description=Network Manager Fix for Hyprland
+Documentation=man:NetworkManager(8)
+After=network.target
+Wants=network.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/NetworkManager --no-daemon
+Restart=on-failure
+RestartSec=5
+
+# Disabilita servizi conflittuali
+ExecStartPre=-/usr/bin/systemctl stop systemd-networkd
+ExecStartPre=-/usr/bin/systemctl stop dhcpcd
+ExecStartPre=-/usr/bin/systemctl stop systemd-resolved
+
+[Install]
+WantedBy=multi-user.target

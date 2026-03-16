@@ -1,0 +1,70 @@
+* {
+    font-family: "JetBrainsMono Nerd Font", "JetBrainsMono NF", "Font Awesome 6 Free", "Symbols Nerd Font", "JoyPixels", monospace;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background-color: rgba(10, 10, 10, 0.9);
+    border-bottom: 2px solid #00ff41;
+    color: #00ff41;
+    text-shadow: 0 0 5px #00ff41;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: #00ff41;
+}
+
+#workspaces button:hover {
+    background-color: #00ff41;
+    color: #0a0a0a;
+    box-shadow: 0 0 10px #00ff41;
+}
+
+#workspaces button.active {
+    background-color: #00ff41;
+    color: #0a0a0a;
+}
+
+#cpu, #memory, #network, #custom-weather, #custom-tray-icon {
+    padding: 0 10px;
+    margin: 0 5px;
+    border-left: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+#custom-tray-icon {
+    color: #00ff41;
+}
+
+#tray {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#group-tray-drawer {
+    border-left: 1px solid rgba(0, 255, 65, 0.2);
+    padding: 0 5px;
+}
+
+#clock {
+    padding: 0 15px;
+    border: none;
+    font-weight: bold;
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff41;
+}
+
+#network.disconnected {
+    color: #ff3333;
+    text-shadow: 0 0 5px #ff3333;
+}
+
+#custom-notification {
+    padding: 0 10px;
+    margin: 0 5px;
+    color: #00ff41;
+    border-left: 1px solid rgba(0, 255, 65, 0.2);
+}
