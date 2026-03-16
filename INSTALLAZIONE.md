@@ -72,7 +72,7 @@ cp -r ~/.config/hypr/* ~/.config/hypr/ # (Se già clonato qui)
 vt = 1
 
 [default_session]
-command = "tuigreet --time --greet 'SYSTEM ACCESS REQUIRED' --remember --cmd Hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
+command = "tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd Hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
 user = "greeter"
 ```
 
