@@ -72,9 +72,14 @@ cp -r ~/.config/hypr/* ~/.config/hypr/ # (Se già clonato qui)
 vt = 1
 
 [default_session]
-command = "tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd Hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
+command = "tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
 user = "greeter"
 ```
+
+> **Nota:** Usare `start-hyprland` invece di `Hyprland` direttamente è obbligatorio.
+> Avviare Hyprland senza lo script wrapper genera l'errore:
+> `hyprland has started windows without start-hyprland that is not recommended`
+> Lo script `start-hyprland` imposta correttamente le variabili d'ambiente prima di avviare il compositor.
 
 2. Aggiungi i permessi necessari all'utente greeter:
 ```bash
