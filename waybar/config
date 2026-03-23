@@ -60,7 +60,7 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format": "󰈀 {ifname} via {gwaddr}",
-        "on-click": "nm-connection-editor"
+        "on-click": "~/.config/hypr/scripts/wifi-menu.sh"
     },
 
     "custom/weather": {
