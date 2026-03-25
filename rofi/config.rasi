@@ -1,0 +1,28 @@
+configuration {
+    /* Modalità attive come schede separate */
+    modi: "drun,window,Control:~/.config/hypr/rofi/scripts/rofi-control.sh,Network:~/.config/hypr/rofi/scripts/rofi-wifi.sh";
+    
+    /* Disabilita i prefissi */
+    combi-hide-mode-prefix: true;
+    
+    /* Abilitiamo la trasparenza reale per Wayland */
+    transparency: "real";
+    
+    /* Impostazioni grafiche */
+    show-icons: true;
+    icon-theme: "Papirus";
+    terminal: "kitty";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    sidebar-mode: true;
+    
+    /* Etichette pulsanti - SOLO ICONE */
+    display-drun: "  ";
+    display-window: " 󰕰 ";
+    display-Control: "  ";
+    display-Network: " 󰤨 ";
+}
+
+@theme "~/.config/hypr/rofi/theme.rasi"

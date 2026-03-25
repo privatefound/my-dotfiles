@@ -29,7 +29,12 @@ window#waybar {
     color: #0a0a0a;
 }
 
-#cpu, #memory, #network, #custom-weather, #custom-tray-icon {
+#cpu,
+#memory,
+#network,
+#custom-weather,
+#custom-tray-icon,
+#custom-ollama-ai {
     padding: 0 10px;
     margin: 0 5px;
     border-left: 1px solid rgba(0, 255, 65, 0.2);
@@ -67,4 +72,21 @@ window#waybar {
     margin: 0 5px;
     color: #00ff41;
     border-left: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+#custom-lock {
+    color: #00ff41;
+    padding: 0 10px;
+    text-shadow: 0 0 8px #00ff41;
+}
+
+#custom-power {
+    color: #00ff41;
+    padding: 0 10px;
+    text-shadow: 0 0 8px #00ff41;
+}
+
+#custom-ollama-ai {
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff41;
 }

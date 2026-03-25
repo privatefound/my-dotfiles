@@ -1,0 +1,95 @@
+* {
+    bg-col:  #0a0a0a77; /* Nero trasparente al 40% */
+    bg-col-light: #0a0a0a77;
+    border-col: #00ff41;
+    selected-col: #003300;
+    blue: #00ff41;
+    fg-col: #00ff41;
+    fg-col2: #c0c0c0;
+    grey: #003300;
+
+    width: 450;
+    font: "JetBrainsMono Nerd Font 10";
+}
+
+element-text, element-icon , mode-switcher {
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+window {
+    height: 380px; /* Un po' più alto per far stare i bottoni */
+    border: 1px;
+    border-color: @border-col;
+    background-color: @bg-col;
+    border-radius: 8px;
+}
+
+mainbox {
+    background-color: @bg-col;
+    children: [inputbar, listview, mode-switcher]; /* I bottoni vanno in basso */
+}
+
+inputbar {
+    children: [prompt,entry];
+    background-color: @bg-col;
+    padding: 10px;
+}
+
+prompt {
+    background-color: @bg-col;
+    padding: 5px;
+    text-color: @blue;
+    font: "JetBrainsMono Nerd Font Bold 10";
+}
+
+entry {
+    padding: 5px;
+    text-color: @fg-col;
+    background-color: @bg-col;
+}
+
+listview {
+    border: 0px;
+    padding: 5px;
+    columns: 1;
+    lines: 6;
+    background-color: @bg-col;
+}
+
+element {
+    padding: 4px 8px;
+    background-color: @bg-col;
+    text-color: @fg-col2;
+    border-radius: 4px;
+}
+
+element selected {
+    background-color:  @selected-col;
+    text-color: @blue;
+    border: 1px;
+    border-color: @blue;
+}
+
+/* Stile per i pulsanti di cambio modalità */
+mode-switcher {
+    spacing: 0;
+    margin: 5px 10px 10px 10px;
+}
+
+button {
+    padding: 8px;
+    background-color: @bg-col;
+    text-color: @grey;
+    vertical-align: 0.5; 
+    horizontal-align: 0.5;
+    border: 1px 1px 1px 1px;
+    border-color: @grey;
+    margin: 0px 2px;
+}
+
+button selected {
+  background-color: @selected-col;
+  text-color: @blue;
+  border-color: @blue;
+}

@@ -6,7 +6,7 @@ Questa guida spiega come installare manualmente il tema e tutte le sue dipendenz
 
 ## 📦 1. Lista Dipendenze
 
-`paru -S hyprland hyprlock hyprpaper ttf-jetbrains-mono-nerd ttf-font-awesome otf-font-awesome noto-fonts-emoji hyprpicker xdg-desktop-portal-hyprland waybar wofi dunst libnotify swaybg cliphist kitty fish starship dolphin ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd ttf-font-awesome ttf-joypixels pipewire pipewire-alsa swaybg pipewire-pulse wireplumber pavucontrol pasystray bluez bluez-utils blueman networkmanager iwgtk polkit-kde-agent grim slurp swappy wl-clipboard brightnessctl pamixer greetd greetd-tuigreet xdg-desktop-portal-gtk nm-connection-editor network-manager-applet networkmanager-openvpn`
+`paru -S hyprland hyprlock hyprpaper ttf-jetbrains-mono-nerd ttf-font-awesome otf-font-awesome noto-fonts-emoji hyprpicker xdg-desktop-portal-hyprland waybar wofi dunst libnotify swaybg cliphist kitty fish starship dolphin ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd ttf-font-awesome ttf-joypixels pipewire pipewire-alsa swaybg pipewire-pulse wireplumber pavucontrol pasystray bluez bluez-utils blueman networkmanager iwgtk polkit-kde-agent grim slurp swappy wl-clipboard brightnessctl pamixer greetd greetd-tuigreet xdg-desktop-portal-gtk nm-connection-editor network-manager-applet networkmanager-openvpn rofi`
 
 Installa i seguenti pacchetti usando `pacman` (o il tuo AUR helper preferito come `paru`):
 
@@ -20,6 +20,7 @@ Installa i seguenti pacchetti usando `pacman` (o il tuo AUR helper preferito com
 ### Barra, Notifiche & UI
 - `waybar` - Status bar
 - `wofi` - Application launcher
+- `rofi` - Application launcher 
 - `dunst` - Notification daemon
 - `libnotify` - Libreria notifiche
 - `swaybg` - Wallpaper fallback
