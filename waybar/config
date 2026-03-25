@@ -4,13 +4,14 @@
     "height": 30,
     "spacing": 4,
     "modules-left": [
+        "custom/arch-status",
         "hyprland/workspaces",
         "cpu",
-        "memory",
-        "clock"
+        "memory"
     ],
     "modules-center": [
-        "custom/ollama-ai"
+        "clock",
+        "custom/media"
     ],
     "modules-right": [
         "pulseaudio",
@@ -22,6 +23,27 @@
         "custom/lock",
         "custom/power"
     ],
+    "custom/arch-status": {
+        "format": "{}",
+        "return-type": "json",
+        "interval": 120,
+        "exec": "bash /home/sec/.config/hypr/waybar/scripts/waybar-helper.sh connection",
+        "on-click": "rofi -show drun -config /home/sec/.config/hypr/rofi/config.rasi",
+        "tooltip": true
+    },
+    "custom/media": {
+        "format": "󰝚 {}",
+        "interval": 2,
+        "exec": "playerctl metadata --format '{{title}} - {{artist}}' 2>/dev/null || echo 'Nessuna riproduzione'",
+        "max-length": 40,
+        "on-click": "playerctl play-pause",
+        "tooltip": false
+    },
+    "custom/weather": {
+        "format": "{}",
+        "interval": 3600,
+        "exec": "bash /home/sec/.config/hypr/waybar/scripts/waybar-helper.sh weather"
+    },
     "hyprland/workspaces": {
         "format": "{name}",
         "on-click": "activate",
@@ -73,12 +95,7 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format": "󰈀 {ifname} via {gwaddr}",
-        "on-click": "rofi -show Network -config ~/.config/hypr/rofi/config.rasi"
-    },
-    "custom/weather": {
-        "format": "{}",
-        "interval": 3600,
-        "exec": "$HOME/.config/hypr/waybar/scripts/weather.sh"
+        "on-click": "rofi -show Network -config /home/sec/.config/hypr/rofi/config.rasi"
     },
     "group/tray-drawer": {
         "orientation": "inherit",
@@ -127,13 +144,5 @@
         "format": "",
         "tooltip": false,
         "on-click": "systemctl poweroff"
-    },
-    "custom/ollama-ai": {
-        "format": "{}",
-        "interval": 5,
-        "exec": "bash $HOME/.config/hypr/waybar/scripts/ollama-status.sh",
-        "max-length": 90,
-        "on-click": "rm /tmp/waybar_news_last && bash $HOME/.config/hypr/waybar/scripts/ollama-status.sh",
-        "tooltip": false
     }
 }

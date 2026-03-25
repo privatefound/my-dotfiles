@@ -29,15 +29,36 @@ window#waybar {
     color: #0a0a0a;
 }
 
+#custom-arch-status {
+    padding-left: 15px;
+    padding-right: 10px;
+    font-size: 18px;
+    color: #00ff41;
+}
+
+#custom-arch-status.online {
+    text-shadow: 0 0 8px #00ff41;
+}
+
+#custom-arch-status.offline {
+    text-shadow: 0 0 8px #ff3333;
+}
+
 #cpu,
 #memory,
 #network,
 #custom-weather,
 #custom-tray-icon,
-#custom-ollama-ai {
+#custom-media {
     padding: 0 10px;
     margin: 0 5px;
     border-left: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+#custom-media {
+    font-weight: bold;
+    color: #00ff41;
+    padding-right: 15px;
 }
 
 #custom-tray-icon {
@@ -83,10 +104,5 @@ window#waybar {
 #custom-power {
     color: #00ff41;
     padding: 0 10px;
-    text-shadow: 0 0 8px #00ff41;
-}
-
-#custom-ollama-ai {
-    color: #00ff41;
     text-shadow: 0 0 8px #00ff41;
 }
