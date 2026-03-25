@@ -45,7 +45,7 @@ La configurazione di sistema si trova in `/etc/greetd/config.toml`.
 Il comando usato per lanciare il login screen è:
 
 ```bash
-tuigreet --time --greet 'SYSTEM ACCESS REQUIRED' --remember --cmd Hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'
+tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'
 ```
 
 #### Ripristino o Modifiche
@@ -65,4 +65,4 @@ sudo systemctl enable gdm
   sudo gpasswd -a greeter video
   sudo gpasswd -a greeter render
   ```
-- **Hyprland non si avvia**: Verifica che il comando `--cmd Hyprland` sia corretto in `/etc/greetd/config.toml`.
+- **Hyprland non si avvia**: Verifica che il comando `--cmd start-hyprland` sia corretto in `/etc/greetd/config.toml`.

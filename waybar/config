@@ -5,6 +5,7 @@
     "spacing": 4,
     "modules-left": [
         "custom/arch-status",
+        "custom/book",
         "hyprland/workspaces",
         "cpu",
         "memory"
@@ -27,9 +28,15 @@
         "format": "{}",
         "return-type": "json",
         "interval": 120,
-        "exec": "bash /home/sec/.config/hypr/waybar/scripts/waybar-helper.sh connection",
-        "on-click": "rofi -show drun -config /home/sec/.config/hypr/rofi/config.rasi",
+        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh connection",
+        "on-click": "rofi -show drun -config $HOME/.config/hypr/rofi/config.rasi",
         "tooltip": true
+    },
+    "custom/book": {
+        "format": "🕮",
+        "tooltip": "Left: AI CMD | Right: Subnet Calc",
+        "on-click": "bash $HOME/.config/hypr/rofi/scripts/rofi-ai-cmd.sh",
+        "on-click-right": "bash $HOME/.config/hypr/rofi/scripts/rofi-subnet.sh"
     },
     "custom/media": {
         "format": "󰝚 {}",
@@ -42,7 +49,7 @@
     "custom/weather": {
         "format": "{}",
         "interval": 3600,
-        "exec": "bash /home/sec/.config/hypr/waybar/scripts/waybar-helper.sh weather"
+        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh weather"
     },
     "hyprland/workspaces": {
         "format": "{name}",
@@ -95,7 +102,7 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format": "󰈀 {ifname} via {gwaddr}",
-        "on-click": "rofi -show Network -config /home/sec/.config/hypr/rofi/config.rasi"
+        "on-click": "rofi -show Network -config $HOME/.config/hypr/rofi/config.rasi"
     },
     "group/tray-drawer": {
         "orientation": "inherit",
