@@ -18,7 +18,7 @@
         "pulseaudio",
         "bluetooth",
         "battery",
-        "network",
+        "custom/network-ip",
         "custom/weather",
         "group/tray-drawer",
         "custom/lock",
@@ -96,13 +96,15 @@
         "format-connected": " {device_alias}",
         "on-click": "blueman-manager"
     },
-    "network": {
-        "format": "{icon}",
-        "format-wifi": "󰤨",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤮",
-        "tooltip-format": "󰈀 {ifname} via {gwaddr}",
-        "on-click": "rofi -show Network -config $HOME/.config/hypr/rofi/config.rasi"
+    "custom/network-ip": {
+        "format": "{}",
+        "return-type": "json",
+        "interval": 30,
+        "exec": "$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh",
+        "on-click": "$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh next && pkill -RTMIN+8 waybar",
+        "on-click-right": "rofi -show Network -config $HOME/.config/hypr/rofi/config.rasi",
+        "signal": 8,
+        "tooltip": true
     },
     "group/tray-drawer": {
         "orientation": "inherit",
