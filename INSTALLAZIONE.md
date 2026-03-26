@@ -30,7 +30,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
         gsimplecal \
         greetd greetd-tuigreet \
         nwg-look qt5ct qt6ct \
-        conky yay
+        conky yay mission-center
 ```
 
 ---

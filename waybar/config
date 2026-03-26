@@ -74,12 +74,14 @@
     "cpu": {
         "format": " {usage}%",
         "interval": 10,
-        "tooltip": false
+        "tooltip": false,
+        "on-click": "missioncenter"
     },
     "memory": {
         "format": " {}%",
         "interval": 30,
-        "tooltip": false
+        "tooltip": false,
+        "on-click": "missioncenter"
     },
     "pulseaudio": {
         "format": "{icon} {volume}%",
