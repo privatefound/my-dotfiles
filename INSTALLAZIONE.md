@@ -124,7 +124,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 
 ### Clona il repository
 ```bash
-git clone <repo-url> ~/.config/hypr
+git clone https://github.com/privatefound/terminal-hacker-hyprland-theme.git ~/.config/hypr
 ```
 
 > Tutti i percorsi nei file di configurazione usano `$HOME` o `~`, quindi funzionano con qualsiasi utente senza modifiche.
