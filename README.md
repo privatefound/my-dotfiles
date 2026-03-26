@@ -2,7 +2,7 @@
 
 Un tema **Dark Minimal** per Hyprland, ispirato ai terminali retro e alla cultura hacker. Nero profondo, verde neon e un'estetica essenziale per la massima produttività.
 
-![Preview](wallpaper/wallpaper.jpg)
+![Preview](preview.png)
 
 ## ✨ Caratteristiche
 
@@ -59,8 +59,9 @@ Questa guida contiene l'elenco completo dei pacchetti necessari e i passaggi man
 │       ├── rofi-control.sh     #    Volume, luminosità, power menu, install app
 │       ├── rofi-ai-cmd.sh      #    Genera comandi Linux via Ollama AI
 │       └── rofi-subnet.sh      #    Calcolatore subnet IPv4 (ipcalc / Ollama)
-├── dunst/                      # 🔔 Notifiche
-│   └── dunstrc
+├── swaync/                     # 🔔 Notifiche
+│   ├── config.json             #    Configurazione pannello
+│   └── style.css               #    Stile CSS
 ├── conky/                      # 📟 System monitor overlay (opzionale)
 │   ├── cyberconky.conf         #    Config tema cyber
 │   └── fonts/                  #    Font dedicati (Roboto Mono Nerd Font)

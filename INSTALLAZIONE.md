@@ -9,7 +9,7 @@ Questa guida spiega come installare manualmente il tema e tutte le sue dipendenz
 ```bash
 paru -S hyprland hyprlock hypridle hyprpicker \
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
-        waybar dunst libnotify \
+        waybar swaync libnotify \
         rofi rofi-calc \
         kitty nemo fish starship \
         brave-bin sublime-text-4 \
@@ -30,7 +30,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
         gsimplecal \
         greetd greetd-tuigreet \
         nwg-look qt5ct qt6ct \
-        conky yay mission-center
+        conky mission-center
 ```
 
 ---
@@ -48,7 +48,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 ### Barra di Stato & Launcher
 - `waybar` - Status bar configurabile (top bar con workspace, clock, rete, ecc.)
 - `rofi` - Application launcher, wifi menu, menu di controllo, AI cmd, subnet calc
-- `dunst` - Notification daemon con tema custom
+- `swaync` - Notification daemon con pannello laterale e tema custom
 - `libnotify` - Libreria per `notify-send`
 - `gsimplecal` - Calendario popup (clic sull'orologio in waybar)
 
@@ -101,7 +101,6 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 - `jq` - Parsing JSON (usato negli script waybar e rofi)
 - `curl` - Richieste HTTP (meteo da wttr.in, API Ollama)
 - `ipcalc` - Calcolatore subnet IPv4 (usato in rofi-subnet.sh)
-- `yay` - AUR helper (usato nel menu install app di rofi-control)
 
 ### AI Locale
 - `ollama` - Runtime per modelli LLM locali
@@ -135,6 +134,12 @@ Rendi eseguibili tutti gli script:
 ```bash
 chmod +x ~/.config/hypr/waybar/scripts/*.sh
 chmod +x ~/.config/hypr/rofi/scripts/*.sh
+```
+
+### Swaync - Disabilita il servizio systemd
+Swaync viene avviato tramite `autostart.conf` con la config custom. Il servizio systemd va disabilitato per evitare che parta senza i parametri corretti:
+```bash
+systemctl --user disable swaync.service
 ```
 
 ### Ollama - Scarica il modello AI

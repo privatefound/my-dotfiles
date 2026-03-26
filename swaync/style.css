@@ -1,0 +1,86 @@
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    color: #00ff41;
+    /* Testo verde di default */
+}
+
+/* Rimuoviamo stili inutili che creano l'effetto "doppio bordo" */
+.notification {
+    background: rgba(10, 10, 10, 0.7);
+    border: 1px solid #00ff41;
+    border-radius: 12px;
+    margin: 6px 12px;
+    padding: 0;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.2);
+}
+
+.notification-content {
+    background: transparent;
+    padding: 8px;
+}
+
+.image {
+    margin-right: 15px;
+    border-radius: 10px;
+}
+
+.summary {
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+}
+
+.body {
+    font-size: 11px;
+    color: #00ff41;
+    /* Testo corpo verde */
+}
+
+/* Azioni/Bottoni più discreti */
+.notification-default-action,
+.notification-action {
+    padding: 3px;
+    margin: 2px;
+    background: transparent;
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+/* Hover discreto: solo bordo più luminoso, no sfondo pieno */
+.notification-default-action:hover,
+.notification-action:hover {
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid #00ff41;
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+}
+
+/* Control Center */
+.control-center {
+    background: rgba(10, 10, 10, 0.85);
+    border-left: 2px solid #00ff41;
+    border-radius: 0;
+    margin: 0;
+}
+
+.widget-title {
+    padding: 15px;
+    font-size: 16px;
+    text-shadow: 0 0 6px #00ff41;
+}
+
+.widget-title>button {
+    background: transparent;
+    border: 1px solid #00ff41;
+    border-radius: 6px;
+    color: #00ff41;
+    padding: 4px 8px;
+}
+
+.widget-title>button:hover {
+    background: rgba(0, 255, 65, 0.2);
+}
+
+.widget-notifications {
+    background: transparent;
+}

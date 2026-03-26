@@ -18,25 +18,15 @@ Il tema Terminal Hacker include una configurazione coordinata per l'accesso al s
 
 ## 🚀 Installazione
 
-Puoi installare e configurare entrambi i componenti usando lo script dedicato:
-
-```bash
-./install-theme.sh
-```
-
-Questo script si occuperà di:
-1. Installare `greetd`, `greetd-tuigreet` e `hyprlock` se mancanti.
-2. Configurare `tuigreet` con i parametri del tema hacker.
-3. Configurare `hyprlock.conf` nella tua cartella home.
-4. Impostare `greetd` come Display Manager predefinito (disabilitando GDM/SDDM).
+Segui la guida completa: **[INSTALLAZIONE.md](./INSTALLAZIONE.md)**
 
 ---
 
 ### 1. Lock Screen (Hyprlock)
 
-La configurazione si trova in `~/.config/hyprlock/hyprlock.conf`.
+La configurazione si trova in `~/.config/hypr/hyprlock.conf`.
 Per attivarlo manualmente:
-- Scorciatoia: `Super + L` (se configurata in `keybindings.conf`)
+- Scorciatoia: `Super + Ctrl + L`
 - Comando: `hyprlock`
 
 ### 2. Login Screen (Greetd / Tuigreet)

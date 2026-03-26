@@ -1,55 +1,80 @@
 #!/bin/bash
 
-# Lunghezza visibile del ticker
 WIDTH=25
-# Velocità di scorrimento (secondi)
 DELAY=0.2
+NOTIF_FILE="/tmp/waybar_swaync_notif"
 
-LAST_ID=""
-TEXT=""
+trap "rm -f '$NOTIF_FILE'; kill 0" EXIT INT TERM
+
+# Intercetta notifiche D-Bus e salva testo + app nei file
+(
+    str_count=0
+    in_notify=false
+    summary=""
+    body=""
+
+    dbus-monitor --session "interface='org.freedesktop.Notifications',member='Notify'" 2>/dev/null | \
+    while IFS= read -r line; do
+        if [[ "$line" == *"member=Notify"* ]]; then
+            in_notify=true
+            str_count=0
+            summary=""
+            body=""
+        elif $in_notify; then
+            if [[ "$line" =~ ^[[:space:]]*string\ \"(.*)\"$ ]]; then
+                val="${BASH_REMATCH[1]}"
+                str_count=$((str_count + 1))
+                case $str_count in
+                    1) ;; # app_name - skip
+                    2) ;; # app_icon - skip
+                    3) summary="$val" ;;
+                    4)
+                        body=$(echo "$val" | sed 's/<[^>]*>//g')
+                        if [ -n "$summary" ] && [ -n "$body" ]; then
+                            echo "${summary}: ${body}" > "$NOTIF_FILE"
+                        elif [ -n "$summary" ]; then
+                            echo "${summary}" > "$NOTIF_FILE"
+                        fi
+                        in_notify=false
+                        ;;
+                esac
+            fi
+        fi
+    done
+) &
+
 OFFSET=0
+TEXT=""
+LAST_NOTIF=""
 
 while true; do
-    # Recupera l'ultima notifica dalla cronologia di Dunst
-    HISTORY=$(dunstctl history)
-    COUNT=$(echo "$HISTORY" | jq '.data[0] | length')
+    CURRENT_NOTIF=$(cat "$NOTIF_FILE" 2>/dev/null)
 
-    if [ "$COUNT" -gt 0 ]; then
-        NOTIF=$(echo "$HISTORY" | jq '.data[0][0]')
-        ID=$(echo "$NOTIF" | jq -r '.id.data')
-        SUMMARY=$(echo "$NOTIF" | jq -r '.summary.data')
-        BODY=$(echo "$NOTIF" | jq -r '.body.data' | tr -d '\n' | sed 's/<[^>]*>//g') # Rimuove tag HTML (tipo <b>)
-        
-        FULL_TEXT="$SUMMARY: $BODY"
-        
-        # Se la notifica è cambiata, resetta lo stato
-        if [ "$ID" != "$LAST_ID" ]; then
-            LAST_ID="$ID"
+    if [ -n "$CURRENT_NOTIF" ]; then
+        if [ "$CURRENT_NOTIF" != "$LAST_NOTIF" ]; then
+            LAST_NOTIF="$CURRENT_NOTIF"
             OFFSET=0
-            # Aggiungiamo spazi alla fine per distanziare il loop
-            TEXT="$FULL_TEXT   ---   "
+            TEXT="${CURRENT_NOTIF}   ---   "
         fi
 
-        # Se il testo è troppo lungo, scorre
-        if [ ${#FULL_TEXT} -gt $WIDTH ]; then
+        if [ ${#LAST_NOTIF} -gt $WIDTH ]; then
             LEN=${#TEXT}
-            # Estrae la sottostringa per l'effetto marquee
             DISPLAY_TEXT=""
-            for (( i=0; i<$WIDTH; i++ )); do
+            for (( i=0; i<WIDTH; i++ )); do
                 IDX=$(( (OFFSET + i) % LEN ))
-                DISPLAY_TEXT="$DISPLAY_TEXT${TEXT:$IDX:1}"
+                DISPLAY_TEXT="${DISPLAY_TEXT}${TEXT:$IDX:1}"
             done
             OFFSET=$(( (OFFSET + 1) % LEN ))
         else
-            DISPLAY_TEXT="$FULL_TEXT"
+            DISPLAY_TEXT="$LAST_NOTIF"
         fi
 
-        # Formattazione JSON per Waybar
-        printf '{"text": "󰂚 %s", "tooltip": "%s", "class": "new"}\n' "$DISPLAY_TEXT" "$FULL_TEXT"
+        SAFE_DISPLAY=$(printf '%s' "$DISPLAY_TEXT" | sed 's/"/\\"/g')
+        SAFE_TOOLTIP=$(printf '%s' "$CURRENT_NOTIF" | sed 's/"/\\"/g')
+        printf '{"text": "󰂚 %s", "tooltip": "%s", "class": "new"}\n' "$SAFE_DISPLAY" "$SAFE_TOOLTIP"
     else
-        # Se non ci sono notifiche, mostra nulla (o un'icona vuota se preferisci)
         printf '{"text": "", "tooltip": "Nessuna notifica", "class": "empty"}\n'
-        LAST_ID=""
+        LAST_NOTIF=""
     fi
 
     sleep "$DELAY"

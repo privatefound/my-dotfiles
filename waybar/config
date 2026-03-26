@@ -29,7 +29,7 @@
         "format": "{}",
         "return-type": "json",
         "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-notifications.sh",
-        "on-click": "dunstctl history-clear",
+        "on-click": "bash -c 'swaync-client -dn; rm -f /tmp/waybar_swaync_notif /tmp/waybar_swaync_app'",
         "tooltip": true,
         "escape": true
     },

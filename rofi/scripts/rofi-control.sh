@@ -8,12 +8,6 @@ if [ "$@" ]; then
         "󰝟 Mute Audio") pamixer -t ;;
         "󰃠 Brightness Up") brightnessctl set 10%+ ;;
         "󰃟 Brightness Down") brightnessctl set 10%- ;;
-        "󰂄 Install App")
-            pkg_name=$(echo "" | rofi -dmenu -config ~/.config/hypr/rofi/config.rasi -p "Install Package:" -i)
-            if [ ! -z "$pkg_name" ]; then
-                kitty -e bash -c "yay -S $pkg_name || pacman -S $pkg_name; echo 'Premere invio per chiudere...'; read"
-            fi
-            ;;
         "󰐥 Power Menu")
             power_options="Shutdown\nReboot\nLogout\nLock"
             p_choice=$(echo -e "$power_options" | rofi -dmenu -config ~/.config/hypr/rofi/config.rasi -p "Power" -i)
@@ -34,5 +28,4 @@ echo -e " Volume Down"
 echo -e "󰝟 Mute Audio"
 echo -e "󰃠 Brightness Up"
 echo -e "󰃟 Brightness Down"
-echo -e "󰂄 Install App"
 echo -e "󰐥 Power Menu"
