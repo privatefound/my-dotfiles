@@ -10,7 +10,7 @@ Questa guida spiega come installare manualmente il tema e tutte le sue dipendenz
 paru -S hyprland hyprlock hypridle hyprpicker \
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
         waybar swaync libnotify \
-        rofi rofi-calc \
+        rofi rofi-calc gnome-keyring \
         kitty nemo fish starship \
         brave-bin sublime-text-4 \
         ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd \
