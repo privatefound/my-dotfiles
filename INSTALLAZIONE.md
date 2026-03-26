@@ -155,7 +155,7 @@ ollama pull gemma3:1b
 vt = 1
 
 [default_session]
-command = "tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
+command = "tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
 user = "greeter"
 ```
 
