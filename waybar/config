@@ -7,6 +7,7 @@
         "custom/arch-status",
         "custom/book",
         "hyprland/workspaces",
+        "custom/notifications",
         "cpu",
         "memory"
     ],
@@ -24,6 +25,14 @@
         "custom/lock",
         "custom/power"
     ],
+    "custom/notifications": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-notifications.sh",
+        "on-click": "dunstctl history-clear",
+        "tooltip": true,
+        "escape": true
+    },
     "custom/arch-status": {
         "format": "{}",
         "return-type": "json",
