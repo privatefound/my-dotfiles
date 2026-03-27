@@ -124,6 +124,39 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 
 ---
 
+## 🖥️ Conky — Network Interface Configuration
+
+The conky overlay (`conky/cyberconky.conf`) monitors three network interfaces hardcoded to the original machine. **You must update them to match your system** or the network section will show no data.
+
+The three interfaces currently configured are:
+
+| Section | Interface | Description |
+| :--- | :--- | :--- |
+| DOCKING | `enp0s20f0u1u1` | USB/dock ethernet adapter |
+| ETHERNET | `enp0s31f6` | Built-in ethernet |
+| WIRELESS | `wlan0` | WiFi |
+
+To find your interface names:
+```bash
+ip link show
+```
+
+Then replace them in `conky/cyberconky.conf`:
+```bash
+# Example: replace enp0s31f6 with your ethernet interface
+sed -i 's/enp0s31f6/your_interface/g' ~/.config/hypr/conky/cyberconky.conf
+
+# Example: replace wlan0 with your wifi interface
+sed -i 's/wlan0/your_wifi_interface/g' ~/.config/hypr/conky/cyberconky.conf
+
+# Example: replace the dock interface
+sed -i 's/enp0s20f0u1u1/your_dock_interface/g' ~/.config/hypr/conky/cyberconky.conf
+```
+
+> If you don't use a docking station, you can leave `enp0s20f0u1u1` as-is — conky will simply show no data for that section.
+
+---
+
 ## 🚀 3. Manual Configuration
 
 ### Clone the repository
