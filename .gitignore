@@ -1,3 +1,4 @@
 .claude/
 .git/
 *.log
+monitors.conf
