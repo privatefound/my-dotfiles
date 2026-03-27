@@ -43,6 +43,56 @@ echo -e "  ${BOLD}green-hyprtheme${NC} — Hyprland Installer"
 echo -e "  Mode: $([ "$USE_COPY" = true ] && echo 'copy' || echo 'symlink')"
 echo ""
 
+# ── Step 0: Install dependencies ─────────────────────────────────────────────
+PACKAGES=(
+    hyprland hyprlock hypridle hyprpicker
+    xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
+    waybar swaync libnotify
+    rofi rofi-calc gnome-keyring
+    kitty nemo fish starship
+    brave-bin sublime-text-4
+    ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd
+    ttf-font-awesome otf-font-awesome noto-fonts-emoji
+    pipewire pipewire-alsa pipewire-pulse wireplumber
+    pavucontrol pasystray pamixer playerctl
+    bluez bluez-utils blueman
+    networkmanager network-manager-applet nm-connection-editor
+    networkmanager-openvpn iwgtk
+    polkit-kde-agent
+    grim slurp swappy
+    wl-clipboard cliphist
+    brightnessctl swaybg
+    jq curl ipcalc
+    ollama gsimplecal
+    greetd greetd-tuigreet
+    nwg-look qt5ct qt6ct
+    conky mission-center
+)
+
+echo -e "${CYAN}${BOLD}── Dependencies ─────────────────────────────────────────────────────${NC}"
+if command -v paru &>/dev/null; then
+    read -rp "$(echo -e "${YELLOW}Install all dependencies with paru? [Y/n] ${NC}")" INSTALL_DEPS
+    if [[ "${INSTALL_DEPS,,}" != "n" ]]; then
+        info "Installing packages ..."
+        paru -S --needed --noconfirm "${PACKAGES[@]}"
+        ok "Packages installed."
+    else
+        info "Skipping package installation."
+    fi
+elif command -v yay &>/dev/null; then
+    read -rp "$(echo -e "${YELLOW}paru not found, install dependencies with yay instead? [Y/n] ${NC}")" INSTALL_DEPS
+    if [[ "${INSTALL_DEPS,,}" != "n" ]]; then
+        info "Installing packages with yay ..."
+        yay -S --needed --noconfirm "${PACKAGES[@]}"
+        ok "Packages installed."
+    else
+        info "Skipping package installation."
+    fi
+else
+    warn "Neither paru nor yay found. Install dependencies manually (see INSTALLATION.md)."
+fi
+echo ""
+
 # ── Sanity check ──────────────────────────────────────────────────────────────
 if [[ "$REPO_DIR" == "$HYPR_DIR" ]]; then
     warn "Repo is already at $HYPR_DIR — skipping backup and link steps."
@@ -96,8 +146,8 @@ fi
 echo ""
 echo -e "${CYAN}${BOLD}── Optional: Local AI (Ollama) ──────────────────────────────────────${NC}"
 if command -v ollama &>/dev/null; then
-    read -rp "$(echo -e "${YELLOW}Enable Ollama service and pull gemma3:1b model? [y/N] ${NC}")" PULL_OLLAMA
-    if [[ "${PULL_OLLAMA,,}" == "y" ]]; then
+    read -rp "$(echo -e "${YELLOW}Enable Ollama service and pull gemma3:1b model? [Y/n] ${NC}")" PULL_OLLAMA
+    if [[ "${PULL_OLLAMA,,}" != "n" ]]; then
         info "Enabling ollama service ..."
         systemctl enable --now ollama
         info "Pulling gemma3:1b model (this may take a while) ..."
@@ -160,7 +210,7 @@ EOF
             ok "Greetd enabled."
         fi
     else
-        info "Skipping greetd setup. See INSTALLAZIONE.md for manual steps."
+        info "Skipping greetd setup. See INSTALLATION.md for manual steps."
     fi
 else
     warn "greetd/tuigreet not installed. Install with: paru -S greetd greetd-tuigreet"
