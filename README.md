@@ -1,15 +1,15 @@
-# 💻 Terminal Hacker Theme - Hyprland Config
+# 💻 green-hyprtheme - Hyprland Config
 
-A **Dark Minimal** theme for Hyprland, inspired by retro terminals and hacker culture. Deep black, neon green, and an essential aesthetic for maximum productivity.
+A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential aesthetic for maximum productivity.
 
 ![Preview](preview.png)
 
 ## ✨ Features
 
-- 🎨 **Hacker Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
+- 🎨 **Minimal Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
 - ⚡ **Lightweight and minimal**: Only the essentials, perfect for performance
 - 🔒 **Integrated lock screen**: Hyprlock with coordinated style
-- 📱 **Login screen**: Greetd with Tuigreet (Hacker Style)
+- 📱 **Login screen**: Greetd with Tuigreet (green/black style)
 - 🎯 **Configured Waybar**: Status bar with weather, media player, AI, and widgets
 - 🚀 **Rofi**: Application launcher + WiFi menu, controls, subnet calculator, AI commands
 - 🤖 **Local AI**: Ollama integrated for command generation and network calculations
@@ -26,8 +26,8 @@ A **Dark Minimal** theme for Hyprland, inspired by retro terminals and hacker cu
 Clone the repo and run the installer:
 
 ```bash
-git clone https://github.com/privatefound/my-dotfiles.git ~/terminal-hacker-theme
-cd ~/terminal-hacker-theme
+git clone https://github.com/privatefound/my-dotfiles.git ~/green-hyprtheme
+cd ~/green-hyprtheme
 ./install.sh
 ```
 

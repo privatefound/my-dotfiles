@@ -1,4 +1,4 @@
-# 🛠️ Manual Installation Guide - Terminal Hacker Theme
+# 🛠️ Manual Installation Guide - green-hyprtheme
 
 > **Prefer automation?** Run `./install.sh` from the repo root — it handles backup, symlink, permissions, and optional services interactively.
 > This guide is for those who want full manual control over each step.
@@ -113,7 +113,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 
 ### Login Manager
 - `greetd` - Minimalist display manager
-- `greetd-tuigreet` - TUI frontend for greetd (green/black hacker style)
+- `greetd-tuigreet` - TUI frontend for greetd (green/black minimal style)
 
 ### GTK/Qt Theme
 - `nwg-look` - GTK theme configuration in Wayland
@@ -135,8 +135,8 @@ git clone https://github.com/privatefound/my-dotfiles.git ~/.config/hypr
 
 **Option B — clone anywhere, then run the installer** (creates a symlink automatically):
 ```bash
-git clone https://github.com/privatefound/my-dotfiles.git ~/terminal-hacker-theme
-cd ~/terminal-hacker-theme
+git clone https://github.com/privatefound/my-dotfiles.git ~/green-hyprtheme
+cd ~/green-hyprtheme
 ./install.sh
 ```
 

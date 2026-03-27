@@ -1,6 +1,6 @@
-# Terminal Hacker Theme - Login & Lock Screen
+# green-hyprtheme - Login & Lock Screen
 
-The Terminal Hacker theme includes a coordinated configuration for system login and screen lock, maintaining the minimalist black and terminal green style.
+green-hyprtheme includes a coordinated configuration for system login and screen lock, maintaining the minimalist black and terminal green style.
 
 ## 📦 Components
 
