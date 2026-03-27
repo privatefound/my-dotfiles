@@ -188,9 +188,6 @@ EOF
         sudo gpasswd -a greeter video
         sudo gpasswd -a greeter render
 
-        info "Enabling greetd service ..."
-        sudo systemctl enable greetd
-
         CURRENT_DM=""
         for dm in sddm gdm lightdm lxdm; do
             if systemctl is-enabled "$dm" &>/dev/null; then
@@ -204,10 +201,18 @@ EOF
             read -rp "$(echo -e "${YELLOW}Disable $CURRENT_DM and switch to greetd? [y/N] ${NC}")" DISABLE_DM
             if [[ "${DISABLE_DM,,}" == "y" ]]; then
                 sudo systemctl disable "$CURRENT_DM"
-                ok "$CURRENT_DM disabled. Greetd will be used on next boot."
+                ok "$CURRENT_DM disabled."
+            else
+                warn "Skipping greetd enable — $CURRENT_DM is still active."
+                info "To switch manually: sudo systemctl disable $CURRENT_DM && sudo systemctl enable greetd"
+                SKIP_GREETD_ENABLE=true
             fi
-        else
-            ok "Greetd enabled."
+        fi
+
+        if [[ "${SKIP_GREETD_ENABLE:-false}" != "true" ]]; then
+            info "Enabling greetd service ..."
+            sudo systemctl enable greetd
+            ok "Greetd enabled. Will be used on next boot."
         fi
     else
         info "Skipping greetd setup. See INSTALLATION.md for manual steps."
