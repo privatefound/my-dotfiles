@@ -4,6 +4,8 @@ A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential 
 
 ![Preview](preview.png)
 
+![Preview2](preview_lock.png)
+
 ## ✨ Features
 
 - 🎨 **Minimal Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
