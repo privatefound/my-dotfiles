@@ -5,6 +5,9 @@
 
 This guide explains how to manually install the theme and all its dependencies on **Arch Linux**. Following these steps gives you full control over your system.
 
+> [!CAUTION]
+> I use [monique](https://github.com/ToRvaLDz/monique) for managing my monitors.
+
 ---
 
 ## 📦 1. Dependencies List
