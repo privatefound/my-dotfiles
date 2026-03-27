@@ -1,116 +1,135 @@
 # 💻 Terminal Hacker Theme - Hyprland Config
 
-Un tema **Dark Minimal** per Hyprland, ispirato ai terminali retro e alla cultura hacker. Nero profondo, verde neon e un'estetica essenziale per la massima produttività.
+A **Dark Minimal** theme for Hyprland, inspired by retro terminals and hacker culture. Deep black, neon green, and an essential aesthetic for maximum productivity.
 
 ![Preview](preview.png)
 
-## ✨ Caratteristiche
+## ✨ Features
 
-- 🎨 **Tema Hacker**: Nero (#0a0a0a) + Verde terminale (#00ff41)
-- ⚡ **Leggero e minimale**: Solo l'essenziale, perfetto per performance
-- 🔒 **Lock screen integrato**: Hyprlock con stile coordinato
-- 📱 **Login screen**: Greetd con Tuigreet (Hacker Style)
-- 🎯 **Waybar configurata**: Status bar con meteo, media player, AI e widget
-- 🚀 **Rofi**: Application launcher + menu WiFi, controlli, subnet calc, AI comandi
-- 🤖 **AI locale**: Ollama integrato per generazione comandi e calcoli di rete
-- ⌨️ **Keybindings**: Scorciatoie intuitive, stile Vim e tasti multimediali
-- 🔊 **Audio completo**: PipeWire + Pavucontrol + controlli hardware
-- 📶 **Rete configurata**: NetworkManager con WiFi menu via Rofi
-
----
-
-## 🚀 Installazione Manuale
-
-Per installare il tema e le sue dipendenze, segui la guida dettagliata:
-👉 **[INSTALLAZIONE.md](./INSTALLAZIONE.md)**
-
-Questa guida contiene l'elenco completo dei pacchetti necessari e i passaggi manuali per configurare correttamente Hyprland e il login screen.
+- 🎨 **Hacker Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
+- ⚡ **Lightweight and minimal**: Only the essentials, perfect for performance
+- 🔒 **Integrated lock screen**: Hyprlock with coordinated style
+- 📱 **Login screen**: Greetd with Tuigreet (Hacker Style)
+- 🎯 **Configured Waybar**: Status bar with weather, media player, AI, and widgets
+- 🚀 **Rofi**: Application launcher + WiFi menu, controls, subnet calculator, AI commands
+- 🤖 **Local AI**: Ollama integrated for command generation and network calculations
+- ⌨️ **Keybindings**: Intuitive shortcuts, Vim-style and multimedia keys
+- 🔊 **Full audio**: PipeWire + Pavucontrol + hardware controls
+- 📶 **Network configured**: NetworkManager with WiFi menu via Rofi
 
 ---
 
-## 📂 Struttura Cartelle
+## 🚀 Installation
+
+### Automatic (recommended)
+
+Clone the repo and run the installer:
+
+```bash
+git clone https://github.com/privatefound/my-dotfiles.git ~/terminal-hacker-theme
+cd ~/terminal-hacker-theme
+./install.sh
+```
+
+The script will:
+- Back up any existing `~/.config/hypr/` config
+- Create a symlink `~/.config/hypr → <repo>` (or copy with `--copy`)
+- Set executable permissions on all scripts
+- Interactively configure Ollama, greetd, NetworkManager, and Bluetooth
+
+### Manual
+
+For full control over each step, follow the detailed guide:
+👉 **[INSTALLATION.md](./INSTALLATION.md)**
+
+---
+
+## 📂 Folder Structure
 
 ```text
 ~/.config/hypr/
-├── INSTALLAZIONE.md            # 🛠️ Guida installazione manuale
-├── README.md                   # 📖 Questa documentazione
-├── README-THEME.md             # 🎨 Dettagli su Login/Lock screen
-├── hyprland.conf               # ⚙️ Configurazione core
-├── variables.conf              # 📋 Variabili e app (terminale, browser, editor...)
-├── look.conf                   # 💅 Estetica e animazioni
-├── keybindings.conf            # ⌨️ Scorciatoie tastiera
-├── monitors.conf               # 🖥️ Monitor e risoluzioni
-├── autostart.conf              # ⏯️ Programmi all'avvio
-├── windows.conf                # 🪟 Regole finestre
-├── workspaces.conf             # 🗂️ Configurazione workspace
-├── permissions.conf            # 🔐 Permessi Hyprland
-├── hypridle.conf               # 💤 Gestione energia (dim/lock/suspend)
+├── install.sh                  # 🚀 Automatic installer
+├── INSTALLATION.md             # 🛠️ Manual installation guide
+├── README.md                   # 📖 This documentation
+├── README-THEME.md             # 🎨 Login/Lock screen details
+├── hyprland.conf               # ⚙️ Core configuration
+├── variables.conf              # 📋 Variables and apps (terminal, browser, editor...)
+├── look.conf                   # 💅 Aesthetics and animations
+├── keybindings.conf            # ⌨️ Keyboard shortcuts
+├── monitors.conf               # 🖥️ Monitors and resolutions
+├── autostart.conf              # ⏯️ Programs at startup
+├── windows.conf                # 🪟 Window rules
+├── workspaces.conf             # 🗂️ Workspace configuration
+├── permissions.conf            # 🔐 Hyprland permissions
+├── hypridle.conf               # 💤 Power management (dim/lock/suspend)
 ├── hyprlock.conf               # 🔒 Lock screen
-├── waybar/                     # 📊 Barra di stato
-│   ├── config                  #    Moduli e layout
-│   ├── style.css               #    Stile CSS
+├── waybar/                     # 📊 Status bar
+│   ├── config                  #    Modules and layout
+│   ├── style.css               #    CSS style
 │   └── scripts/
-│       ├── waybar-helper.sh    #    Meteo (wttr.in) e stato connessione
-├── rofi/                       # 🚀 Launcher e menu
-│   ├── config.rasi             #    Config principale
-│   ├── theme.rasi              #    Tema grafico
+│       ├── waybar-helper.sh    #    Weather (wttr.in) and connection status
+│       ├── waybar-network-ip.sh #   Network IP display
+│       └── waybar-notifications.sh # Notification count for swaync
+├── rofi/                       # 🚀 Launcher and menus
+│   ├── config.rasi             #    Main config
+│   ├── theme.rasi              #    Graphical theme
 │   └── scripts/
-│       ├── rofi-wifi.sh        #    Menu WiFi con nmcli
-│       ├── rofi-control.sh     #    Volume, luminosità, power menu, install app
-│       ├── rofi-ai-cmd.sh      #    Genera comandi Linux via Ollama AI
-│       └── rofi-subnet.sh      #    Calcolatore subnet IPv4 (ipcalc / Ollama)
-├── swaync/                     # 🔔 Notifiche
-│   ├── config.json             #    Configurazione pannello
-│   └── style.css               #    Stile CSS
-├── conky/                      # 📟 System monitor overlay (opzionale)
-│   ├── cyberconky.conf         #    Config tema cyber
-│   └── fonts/                  #    Font dedicati (Roboto Mono Nerd Font)
-├── wallpaper/                  # 🎨 Sfondi tema
-└── systemd/                    # 🛠️ Servizi systemd custom
+│       ├── rofi-wifi.sh        #    WiFi menu with nmcli
+│       ├── rofi-control.sh     #    Volume, brightness, power menu, app install
+│       ├── rofi-ai-cmd.sh      #    Generate Linux commands via Ollama AI
+│       └── rofi-subnet.sh      #    IPv4 subnet calculator (ipcalc / Ollama)
+├── swaync/                     # 🔔 Notifications
+│   ├── config.json             #    Panel configuration
+│   └── style.css               #    CSS style
+├── conky/                      # 📟 System monitor overlay
+│   ├── cyberconky.conf         #    Cyber theme config
+│   └── fonts/                  #    Dedicated fonts (Roboto Mono Nerd Font)
+├── wallpaper/                  # 🎨 Theme wallpapers
+└── systemd/                    # 🛠️ Custom systemd services
 ```
 
 ---
 
-## ⌨️ Scorciatoie Principali
+## ⌨️ Main Keybindings
 
-| Tasto | Azione |
+| Key | Action |
 | :--- | :--- |
-| `` ` `` (Backtick) | Apri App Launcher (Rofi) |
-| `Super + T` | Apri Terminale (Kitty) |
-| `Super + E` | Apri File Manager (Nemo) |
-| `Super + Shift + B` | Apri Browser (Brave) |
-| `Super + Shift + C` | Apri Editor (Sublime Text) |
-| `Super + K` | Chiudi Finestra |
-| `Super + X` | Menu spegnimento / Esci da Hyprland |
+| `` ` `` (Backtick) | Open App Launcher (Rofi) |
+| `Super + T` | Open Terminal (Kitty) |
+| `Super + E` | Open File Manager (Nemo) |
+| `Super + Shift + B` | Open Browser (Brave) |
+| `Super + Shift + C` | Open Editor (Sublime Text) |
+| `Super + K` | Close Window |
+| `Super + X` | Shutdown menu / Exit Hyprland |
 | `Super + V` | Floating Mode |
 | `Super + F` | Fullscreen |
-| `Super + Ctrl + L` | Blocca Schermo (Hyprlock) |
-| `Super + S` | Scratchpad (workspace nascosto) |
-| `F1` | Screenshot area (grim + slurp + swappy) |
-| `XF86AudioRaiseVolume` | Volume Su |
-| `XF86AudioLowerVolume` | Volume Giù |
-| `XF86AudioMute` | Muta Audio |
-| `XF86MonBrightnessUp/Down` | Luminosità Su/Giù |
-| `XF86AudioNext/Prev/Play` | Controlli media (playerctl) |
-| `Alt + Tab` | Finestra successiva |
+| `Super + Ctrl + L` | Lock Screen (Hyprlock) |
+| `Super + S` | Scratchpad (hidden workspace) |
+| `F1` | Area screenshot (grim + slurp + swappy) |
+| `XF86AudioRaiseVolume` | Volume Up |
+| `XF86AudioLowerVolume` | Volume Down |
+| `XF86AudioMute` | Mute Audio |
+| `XF86MonBrightnessUp/Down` | Brightness Up/Down |
+| `XF86AudioNext/Prev/Play` | Media controls (playerctl) |
+| `Alt + Tab` | Next window |
 
-*Consulta `keybindings.conf` per la lista completa.*
-
----
-
-## 🤖 AI Locale (Ollama)
-
-Due script rofi sfruttano **Ollama** con il modello `gemma3:1b`:
-
-- **`rofi-ai-cmd.sh`**: Descrivi un task in italiano/inglese e ottieni il comando Linux corrispondente, con opzione di copiarlo o eseguirlo in terminale.
-- **`rofi-subnet.sh`**: Calcola info subnet IPv4. Usa `ipcalc` se installato, altrimenti interroga Ollama come fallback.
-
-Per abilitare l'AI: `systemctl enable --now ollama && ollama pull gemma3:1b`
+*See `keybindings.conf` for the full list.*
 
 ---
 
-## 🛠️ Manutenzione
+## 🤖 Local AI (Ollama)
 
-Se riscontri problemi con la rete, il sistema include un servizio pre-configurato in `systemd/NetworkManager-fixed.service` per gestire i timeout all'avvio su alcune configurazioni Arch.
+Two Rofi scripts use **Ollama** with the `gemma3:1b` model:
 
-> Tutti i percorsi nei file di configurazione usano `$HOME` o `~` e sono portabili su qualsiasi utente senza modifiche.
+- **`rofi-ai-cmd.sh`**: Describe a task in Italian/English and get the corresponding Linux command, with the option to copy it or run it in the terminal.
+- **`rofi-subnet.sh`**: Calculate IPv4 subnet info. Uses `ipcalc` if installed, otherwise queries Ollama as a fallback.
+
+To enable AI: `systemctl enable --now ollama && ollama pull gemma3:1b`
+
+---
+
+## 🛠️ Maintenance
+
+If you encounter network issues, the system includes a pre-configured service at `systemd/NetworkManager-fixed.service` to handle startup timeouts on some Arch configurations.
+
+> All paths in the configuration files use `$HOME` or `~` and are portable across any user without modifications.

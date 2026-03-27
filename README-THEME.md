@@ -1,45 +1,45 @@
 # Terminal Hacker Theme - Login & Lock Screen
 
-Il tema Terminal Hacker include una configurazione coordinata per l'accesso al sistema e il blocco dello schermo, mantenendo lo stile minimalista nero e verde terminale.
+The Terminal Hacker theme includes a coordinated configuration for system login and screen lock, maintaining the minimalist black and terminal green style.
 
-## 📦 Componenti
+## 📦 Components
 
-- ✅ **Greetd** + **Tuigreet** (login screen CLI-style)
-- ✅ **Hyprlock** (lock screen grafico per Hyprland)
+- ✅ **Greetd** + **Tuigreet** (CLI-style login screen)
+- ✅ **Hyprlock** (graphical lock screen for Hyprland)
 
-## 🎨 Caratteristiche Visive
+## 🎨 Visual Features
 
-| Componente | Stile | Colore Primario |
+| Component | Style | Primary Color |
 | :--- | :--- | :--- |
-| **Login (Tuigreet)** | Console UI | Verde Terminale (#00ff41) |
-| **Lock (Hyprlock)** | Minimal Modern | Verde Neon / Nero |
+| **Login (Tuigreet)** | Console UI | Terminal Green (#00ff41) |
+| **Lock (Hyprlock)** | Minimal Modern | Neon Green / Black |
 
 ---
 
-## 🚀 Installazione
+## 🚀 Installation
 
-Segui la guida completa: **[INSTALLAZIONE.md](./INSTALLAZIONE.md)**
+Follow the full guide: **[INSTALLATION.md](./INSTALLATION.md)**
 
 ---
 
 ### 1. Lock Screen (Hyprlock)
 
-La configurazione si trova in `~/.config/hypr/hyprlock.conf`.
-Per attivarlo manualmente:
-- Scorciatoia: `Super + Ctrl + L`
-- Comando: `hyprlock`
+The configuration is located at `~/.config/hypr/hyprlock.conf`.
+To activate it manually:
+- Shortcut: `Super + Ctrl + L`
+- Command: `hyprlock`
 
 ### 2. Login Screen (Greetd / Tuigreet)
 
-La configurazione di sistema si trova in `/etc/greetd/config.toml`.
-Il comando usato per lanciare il login screen è:
+The system configuration is located at `/etc/greetd/config.toml`.
+The command used to launch the login screen is:
 
 ```bash
-tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'
+tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'
 ```
 
-#### Ripristino o Modifiche
-Se desideri tornare al tuo precedente Display Manager (es. GDM):
+#### Restore or Modify
+If you want to go back to your previous Display Manager (e.g. GDM):
 
 ```bash
 sudo systemctl disable greetd
@@ -48,11 +48,11 @@ sudo systemctl enable gdm
 
 ---
 
-## 🛠️ Risoluzione Problemi
+## 🛠️ Troubleshooting
 
-- **Schermo Nero al Login**: Assicurati che l'utente `greeter` faccia parte dei gruppi `video` e `render`:
+- **Black Screen at Login**: Make sure the `greeter` user is in the `video` and `render` groups:
   ```bash
   sudo gpasswd -a greeter video
   sudo gpasswd -a greeter render
   ```
-- **Hyprland non si avvia**: Verifica che il comando `--cmd start-hyprland` sia corretto in `/etc/greetd/config.toml`.
+- **Hyprland does not start**: Verify that the `--cmd start-hyprland` command is correct in `/etc/greetd/config.toml`.
