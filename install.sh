@@ -180,7 +180,7 @@ if command -v greetd &>/dev/null || command -v tuigreet &>/dev/null; then
 vt = 1
 
 [default_session]
-command = "tuigreet --time --greeting 'SYSTEM ACCESS REQUIRED' --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
+command = "tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"
 user = "greeter"
 EOF
 
