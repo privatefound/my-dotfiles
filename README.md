@@ -23,6 +23,10 @@ A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential 
 
 ## 🚀 Installation
 
+> [!CAUTION]
+> I use [monique](https://github.com/ToRvaLDz/monique) for managing my monitors.
+
+
 ### Automatic (recommended)
 
 Clone the repo and run the installer:
