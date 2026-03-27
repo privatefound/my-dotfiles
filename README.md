@@ -1,6 +1,6 @@
 # 💻 green-hyprtheme - Hyprland Config
 
-A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential aesthetic for maximum productivity.
+A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential aesthetic.
 
 ![Preview](preview.png)
 

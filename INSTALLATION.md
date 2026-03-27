@@ -132,8 +132,8 @@ The three interfaces currently configured are:
 
 | Section | Interface | Description |
 | :--- | :--- | :--- |
-| DOCKING | `enp0s20f0u1u1` | USB/dock ethernet adapter |
-| ETHERNET | `enp0s31f6` | Built-in ethernet |
+| DOCKING | `eno1` | USB/dock ethernet adapter |
+| ETHERNET | `eth0` | Built-in ethernet |
 | WIRELESS | `wlan0` | WiFi |
 
 To find your interface names:
@@ -143,17 +143,17 @@ ip link show
 
 Then replace them in `conky/cyberconky.conf`:
 ```bash
-# Example: replace enp0s31f6 with your ethernet interface
-sed -i 's/enp0s31f6/your_interface/g' ~/.config/hypr/conky/cyberconky.conf
+# Example: replace eth0 with your ethernet interface
+sed -i 's/eth0/your_interface/g' ~/.config/hypr/conky/cyberconky.conf
 
 # Example: replace wlan0 with your wifi interface
 sed -i 's/wlan0/your_wifi_interface/g' ~/.config/hypr/conky/cyberconky.conf
 
 # Example: replace the dock interface
-sed -i 's/enp0s20f0u1u1/your_dock_interface/g' ~/.config/hypr/conky/cyberconky.conf
+sed -i 's/eno1/your_dock_interface/g' ~/.config/hypr/conky/cyberconky.conf
 ```
 
-> If you don't use a docking station, you can leave `enp0s20f0u1u1` as-is — conky will simply show no data for that section.
+> If you don't use a docking station, you can leave `eno1` as-is — conky will simply show no data for that section.
 
 ---
 
