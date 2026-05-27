@@ -11,7 +11,7 @@ if [ "$@" ]; then
         notify-send "WiFi" "Connesso con successo a $ssid"
     else
         # Se serve la password, chiedila con un prompt di rofi
-        pass=$(rofi -dmenu -password -p "Password for $ssid:" -config ~/.config/hypr/rofi/config.rasi)
+        pass=$(rofi -dmenu -password -p "Password for $ssid:" -config "$HOME/.config/hypr/rofi/config.rasi" -theme "$HOME/.config/hypr/rofi/theme.rasi")
         if [ ! -z "$pass" ]; then
             nmcli dev wifi connect "$ssid" password "$pass"
         fi

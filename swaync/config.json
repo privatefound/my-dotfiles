@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "play-sound": {
-      "exec": "bash -c 'paplay ~/.config/hypr/swaync/sound.ogg'",
+      "exec": "bash -c 'paplay $HOME/.config/hypr/swaync/sound.ogg'",
       "run-script-on": "receive"
     }
   },

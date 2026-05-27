@@ -7,7 +7,7 @@ ROFI_THEME=(-theme-str 'window { width: 800px; }')
 MODEL="gemma3:1b"
 
 # Prompt dell'utente
-PROMPT=$(echo "" | rofi -dmenu -p "󰂶 Describe task:" -config "$ROFI_CONF" "${ROFI_THEME[@]}" -i)
+PROMPT=$(echo "" | rofi -dmenu -p "󰂶 Describe task:" -config "$ROFI_CONF" -theme "$HOME/.config/hypr/rofi/theme.rasi" "${ROFI_THEME[@]}" -i)
 
 if [ -z "$PROMPT" ]; then
     exit 0
@@ -21,7 +21,7 @@ COMMAND=$(curl -s -X POST http://localhost:11434/api/generate -d "{
 }" | jq -r '.response // empty' | xargs)
 
 # Menu Azioni
-ACTION=$(echo -e "󰅍 Copy: $COMMAND\n󰆍 Run in Terminal\n󰈆 Exit" | rofi -dmenu -p "AI CMD Output" -config "$ROFI_CONF" "${ROFI_THEME[@]}" -i)
+ACTION=$(echo -e "󰅍 Copy: $COMMAND\n󰆍 Run in Terminal\n󰈆 Exit" | rofi -dmenu -p "AI CMD Output" -config "$ROFI_CONF" -theme "$HOME/.config/hypr/rofi/theme.rasi" "${ROFI_THEME[@]}" -i)
 
 case "$ACTION" in
     "󰅍 Copy"*)

@@ -10,7 +10,7 @@ if [ "$@" ]; then
         "󰃟 Brightness Down") brightnessctl set 10%- ;;
         "󰐥 Power Menu")
             power_options="Shutdown\nReboot\nLogout\nLock"
-            p_choice=$(echo -e "$power_options" | rofi -dmenu -config ~/.config/hypr/rofi/config.rasi -p "Power" -i)
+            p_choice=$(echo -e "$power_options" | rofi -dmenu -config "$HOME/.config/hypr/rofi/config.rasi" -theme "$HOME/.config/hypr/rofi/theme.rasi" -p "Power" -i)
             case "$p_choice" in
                 "Shutdown") shutdown now ;;
                 "Reboot") reboot ;;

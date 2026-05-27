@@ -2,6 +2,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
+import Quickshell.Widgets
+import Quickshell.Services.SystemTray
 import QtQuick
 import QtQuick.Layouts
 
@@ -364,18 +366,43 @@ Scope {
                         Rectangle {
                             width: 1; height: 14
                             color: root.colFgDim; opacity: 0.15
+                            visible: trayRow.children.length > 0
                         }
 
-                        Text {
-                            text: ""
-                            color: root.colFgDim
-                            font { family: root.fontFamily; pixelSize: root.fontSize }
-                            opacity: 0.6
+                        Row {
+                            id: trayRow
+                            spacing: 8
+                            Repeater {
+                                model: SystemTray.items
+                                delegate: Item {
+                                    id: trayItem
+                                    required property var modelData
+                                    width: 20; height: 20
 
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.togglePopup(powerMenuInstance)
+                                    IconImage {
+                                        anchors.fill: parent
+                                        source: trayItem.modelData.icon
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                                        onClicked: (mouse) => {
+                                            if (mouse.button === Qt.LeftButton) {
+                                                if (trayItem.modelData.hasMenu)
+                                                    trayItem.modelData.display(barWindow, trayItem.mapToItem(null, 0, 0).x, barWindow.height)
+                                                else
+                                                    trayItem.modelData.activate()
+                                            } else {
+                                                if (trayItem.modelData.hasMenu)
+                                                    trayItem.modelData.display(barWindow, trayItem.mapToItem(null, 0, 0).x, barWindow.height)
+                                                else
+                                                    trayItem.modelData.secondaryActivate()
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

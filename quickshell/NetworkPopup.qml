@@ -63,7 +63,7 @@ PanelWindow {
 
     Process {
         id: ethProc
-        command: ["nmcli", "-t", "-f", "NAME,TYPE,DEVICE,ACTIVE,IP4.ADDRESS", "connection", "show"]
+        command: ["nmcli", "-t", "-f", "NAME,TYPE,DEVICE,ACTIVE", "connection", "show"]
         stdout: SplitParser {
             onRead: data => {
                 if (!data) return

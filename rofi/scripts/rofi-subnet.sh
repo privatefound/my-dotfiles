@@ -6,7 +6,7 @@ ROFI_THEME=(-theme-str 'window { width: 650px; } listview { lines: 12; }')
 MODEL="gemma3:1b"
 
 # Prompt per l'input
-INPUT=$(echo "" | rofi -dmenu -p "󰈀 IPv4 Subnet (e.g. 10.0.0.0/24):" -config "$ROFI_CONF" "${ROFI_THEME[@]}" -i)
+INPUT=$(echo "" | rofi -dmenu -p "󰈀 IPv4 Subnet (e.g. 10.0.0.0/24):" -config "$ROFI_CONF" -theme "$HOME/.config/hypr/rofi/theme.rasi" "${ROFI_THEME[@]}" -i)
 
 if [ -z "$INPUT" ]; then exit 0; fi
 
@@ -26,4 +26,4 @@ else
 fi
 
 # Visualizzazione
-echo -e "$RESULT" | rofi -dmenu -p "Subnet Analysis" -config "$ROFI_CONF" "${ROFI_THEME[@]}" -i
+echo -e "$RESULT" | rofi -dmenu -p "Subnet Analysis" -config "$ROFI_CONF" -theme "$HOME/.config/hypr/rofi/theme.rasi" "${ROFI_THEME[@]}" -i

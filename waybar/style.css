@@ -13,20 +13,22 @@ window#waybar {
 }
 
 #workspaces button {
-    padding: 0 5px;
-    background-color: transparent;
-    color: #00ff41;
-}
-
-#workspaces button:hover {
-    background-color: #00ff41;
-    color: #0a0a0a;
-    box-shadow: 0 0 10px #00ff41;
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free";
+    /* Assicurati di avere uno di questi */
+    font-size: 16px;
+    color: #ffffff;
+    /* Colore bianco per testare la visibilità */
+    background: transparent;
 }
 
 #workspaces button.active {
-    background-color: #00ff41;
-    color: #0a0a0a;
+    color: #00ff41;
+    /* Colore workspace attivo */
+}
+
+#workspaces button.urgent {
+    color: #eb4d4b;
+    /* Colore urgenza */
 }
 
 #custom-arch-status {

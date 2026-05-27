@@ -28,7 +28,7 @@
     "custom/notifications": {
         "format": "{}",
         "return-type": "json",
-        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-notifications.sh",
+        "exec": "bash -c \"bash $HOME/.config/hypr/waybar/scripts/waybar-notifications.sh\"",
         "on-click": "bash -c 'swaync-client -dn; rm -f /tmp/waybar_swaync_notif /tmp/waybar_swaync_app'",
         "tooltip": true,
         "escape": true
@@ -37,15 +37,15 @@
         "format": "{}",
         "return-type": "json",
         "interval": 120,
-        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh connection",
-        "on-click": "rofi -show drun -config $HOME/.config/hypr/rofi/config.rasi",
+        "exec": "bash -c \"bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh connection\"",
+        "on-click": "rofi -show drun -config $HOME/.config/hypr/rofi/config.rasi -theme $HOME/.config/hypr/rofi/theme.rasi",
         "tooltip": true
     },
     "custom/book": {
         "format": "🕮",
         "tooltip": "Left: AI CMD | Right: Subnet Calc",
-        "on-click": "bash $HOME/.config/hypr/rofi/scripts/rofi-ai-cmd.sh",
-        "on-click-right": "bash $HOME/.config/hypr/rofi/scripts/rofi-subnet.sh"
+        "on-click": "bash -c \"bash $HOME/.config/hypr/rofi/scripts/rofi-ai-cmd.sh\"",
+        "on-click-right": "bash -c \"bash $HOME/.config/hypr/rofi/scripts/rofi-subnet.sh\""
     },
     "custom/media": {
         "format": "󰝚 {}",
@@ -58,12 +58,17 @@
     "custom/weather": {
         "format": "{}",
         "interval": 3600,
-        "exec": "bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh weather"
+        "exec": "bash -c \"bash $HOME/.config/hypr/waybar/scripts/waybar-helper.sh weather\""
     },
     "hyprland/workspaces": {
-        "format": "{name}",
+        "format": "{icon}",
         "on-click": "activate",
-        "all-outputs": true
+        "all-outputs": true,
+        "format-icons": {
+            "active": "●",
+            "default": "○",
+            "urgent": "!"
+        }
     },
     "clock": {
         "format": "󱑊 {:%H:%M  %d/%m/%Y}",
@@ -111,9 +116,9 @@
         "format": "{}",
         "return-type": "json",
         "interval": 30,
-        "exec": "$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh",
-        "on-click": "$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh next && pkill -RTMIN+8 waybar",
-        "on-click-right": "rofi -show Network -config $HOME/.config/hypr/rofi/config.rasi",
+        "exec": "bash -c \"$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh\"",
+        "on-click": "bash -c \"$HOME/.config/hypr/waybar/scripts/waybar-network-ip.sh next && pkill -RTMIN+8 waybar\"",
+        "on-click-right": "rofi -show Network -config $HOME/.config/hypr/rofi/config.rasi -theme $HOME/.config/hypr/rofi/theme.rasi",
         "signal": 8,
         "tooltip": true
     },

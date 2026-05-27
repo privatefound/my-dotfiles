@@ -1,6 +1,6 @@
 configuration {
     /* Modalità attive come schede separate */
-    modi: "drun,window,Control:~/.config/hypr/rofi/scripts/rofi-control.sh,Network:~/.config/hypr/rofi/scripts/rofi-wifi.sh";
+    modi: "drun,window,Control:rofi-control.sh,Network:rofi-wifi.sh";
     
     /* Disabilita i prefissi */
     combi-hide-mode-prefix: true;
@@ -24,5 +24,3 @@ configuration {
     display-Control: "  ";
     display-Network: " 󰤨 ";
 }
-
-@theme "~/.config/hypr/rofi/theme.rasi"
