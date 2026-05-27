@@ -137,7 +137,15 @@ else
     ok "monitors.conf already exists, skipping."
 fi
 
-# ── Step 3: Script permissions ───────────────────────────────────────────────
+# ── Step 3: Symlink rofi scripts to ~/.local/bin (rofi needs them in PATH) ────
+info "Symlinking rofi scripts to ~/.local/bin ..."
+mkdir -p "$HOME/.local/bin"
+for script in "$HYPR_DIR"/rofi/scripts/*.sh; do
+    ln -sf "$script" "$HOME/.local/bin/$(basename "$script")"
+done
+ok "Rofi scripts linked to ~/.local/bin"
+
+# ── Step 4: Script permissions ───────────────────────────────────────────────
 info "Setting executable permissions on scripts ..."
 chmod +x "$HYPR_DIR"/waybar/scripts/*.sh
 chmod +x "$HYPR_DIR"/rofi/scripts/*.sh
