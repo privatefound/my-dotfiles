@@ -7,6 +7,7 @@ import QtQuick.Layouts
 PanelWindow {
     id: popup
     visible: false
+    focusable: true
 
     anchors { top: true; left: true }
     margins { top: 38; left: 50 }
@@ -21,10 +22,9 @@ PanelWindow {
 
     Process {
         id: ipcalcProc
-        command: ["ipcalc", "192.168.1.0/24"]
+        command: ["sh", "-c", "echo init"]
         stdout: SplitParser {
             onRead: data => {
-                if (!data) return
                 popup.outputText += data + "\n"
             }
         }
@@ -244,11 +244,11 @@ PanelWindow {
     }
 
     function calculate() {
-        if (!inputField.text.trim()) return
+        var input = inputField.text.trim()
+        if (!input) return
         popup.outputText = ""
         popup.calculating = true
-        var parts = inputField.text.trim().split(/\s+/)
-        ipcalcProc.command = ["ipcalc"].concat(parts)
+        ipcalcProc.command = ["sh", "-c", "ipcalc " + input]
         ipcalcProc.running = true
     }
 
