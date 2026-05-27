@@ -12,7 +12,7 @@ A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential 
 - ⚡ **Lightweight and minimal**: Only the essentials, perfect for performance
 - 🔒 **Integrated lock screen**: Hyprlock with coordinated style
 - 📱 **Login screen**: Greetd with Tuigreet (green/black style)
-- 🎯 **Configured Waybar**: Status bar with weather, media player, AI, and widgets
+- 🎯 **QuickShell Bar**: Custom QML status bar (Waybar config included as alternative)
 - 🚀 **Rofi**: Application launcher + WiFi menu, controls, subnet calculator, AI commands
 - 🤖 **Local AI**: Ollama integrated for command generation and network calculations
 - ⌨️ **Keybindings**: Intuitive shortcuts, Vim-style and multimedia keys
@@ -40,8 +40,12 @@ cd ~/green-hyprtheme
 The script will:
 - Back up any existing `~/.config/hypr/` config
 - Create a symlink `~/.config/hypr → <repo>` (or copy with `--copy`)
+- Generate a default `monitors.conf` if missing (edit it for your setup)
 - Set executable permissions on all scripts
 - Interactively configure Ollama, greetd, NetworkManager, and Bluetooth
+
+> [!NOTE]
+> `monitors.conf` is machine-specific and not tracked by git. After install, edit it to match your monitor setup. See `monitors.conf.example` for reference.
 
 ### Manual
 
@@ -62,14 +66,26 @@ For full control over each step, follow the detailed guide:
 ├── variables.conf              # 📋 Variables and apps (terminal, browser, editor...)
 ├── look.conf                   # 💅 Aesthetics and animations
 ├── keybindings.conf            # ⌨️ Keyboard shortcuts
-├── monitors.conf               # 🖥️ Monitors and resolutions
+├── monitors.conf               # 🖥️ Monitors and resolutions (not tracked, see .example)
+├── monitors.conf.example       # 🖥️ Example monitor config
 ├── autostart.conf              # ⏯️ Programs at startup
 ├── windows.conf                # 🪟 Window rules
 ├── workspaces.conf             # 🗂️ Workspace configuration
 ├── permissions.conf            # 🔐 Hyprland permissions
 ├── hypridle.conf               # 💤 Power management (dim/lock/suspend)
 ├── hyprlock.conf               # 🔒 Lock screen
-├── waybar/                     # 📊 Status bar
+├── quickshell/                 # 📊 QuickShell status bar (QML)
+│   ├── shell.qml               #    Main entry point
+│   ├── Bar.qml                 #    Bar layout
+│   ├── Clock.qml               #    Clock widget
+│   ├── Workspaces.qml          #    Workspace indicators
+│   ├── Network.qml             #    Network status
+│   ├── Volume.qml              #    Volume control
+│   ├── Battery.qml             #    Battery indicator
+│   ├── CpuRam.qml              #    CPU/RAM monitor
+│   ├── Notifications.qml       #    Notification widget
+│   └── PowerMenu.qml           #    Power menu
+├── waybar/                     # 📊 Waybar (alternative status bar)
 │   ├── config                  #    Modules and layout
 │   ├── style.css               #    CSS style
 │   └── scripts/

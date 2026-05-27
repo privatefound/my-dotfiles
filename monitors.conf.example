@@ -1,0 +1,34 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONITORS.CONF - Configurazione Monitor
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Questo file è specifico per ogni macchina e NON è incluso nel repository.
+# Copia questo file come monitors.conf e adattalo al tuo setup:
+#
+#   cp monitors.conf.example monitors.conf
+#
+# Per rilevare i tuoi monitor:
+#   hyprctl monitors all
+#
+# Oppure usa monique per generarlo automaticamente:
+#   https://github.com/ToRvaLDz/monique
+#
+# Sintassi:
+#   monitor = <name>, <resolution>@<hz>, <position>, <scale>
+#
+# Documentazione: https://wiki.hypr.land/Configuring/Monitors/
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Configurazione automatica (usa tutti i monitor rilevati) ──────────────────
+monitor = , preferred, auto, 1
+
+# ── Esempi ────────────────────────────────────────────────────────────────────
+# Monitor singolo:
+# monitor = eDP-1, 1920x1080@60, 0x0, 1
+
+# Dual monitor (laptop + esterno):
+# monitor = eDP-1, 1920x1080@60, 0x0, 1
+# monitor = HDMI-A-1, 2560x1440@60, 1920x0, 1
+
+# Con scaling (HiDPI):
+# monitor = eDP-1, 2560x1440@60, 0x0, 1.5

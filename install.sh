@@ -127,6 +127,16 @@ if [[ "$SKIP_LINK" == false ]]; then
     fi
 fi
 
+# ── Step 2.5: Generate monitors.conf if missing ─────────────────────────────
+if [[ ! -f "$HYPR_DIR/monitors.conf" ]]; then
+    info "Creating default monitors.conf (auto-detect all monitors) ..."
+    cp "$HYPR_DIR/monitors.conf.example" "$HYPR_DIR/monitors.conf"
+    ok "monitors.conf created. Edit it to match your setup."
+    warn "Tip: use 'hyprctl monitors all' or monique to configure your monitors."
+else
+    ok "monitors.conf already exists, skipping."
+fi
+
 # ── Step 3: Script permissions ───────────────────────────────────────────────
 info "Setting executable permissions on scripts ..."
 chmod +x "$HYPR_DIR"/waybar/scripts/*.sh
