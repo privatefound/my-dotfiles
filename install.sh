@@ -67,6 +67,8 @@ PACKAGES=(
     greetd greetd-tuigreet
     nwg-look qt5ct qt6ct
     conky mission-center
+    quickshell
+    qt6-base qt6-declarative qt6-svg qt6-wayland
 )
 
 echo -e "${CYAN}${BOLD}── Dependencies ─────────────────────────────────────────────────────${NC}"
