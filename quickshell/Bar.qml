@@ -34,7 +34,7 @@ Scope {
     Process { id: rebootProc; command: ["systemctl", "reboot"] }
     Process { id: shutdownProc; command: ["systemctl", "poweroff"] }
     Process { id: swayncToggle; command: ["swaync-client", "-t"] }
-
+    Process { id: pavucontrolProc; command: ["pavucontrol"] }
     Process { id: volUpProc; command: ["pamixer", "--allow-boost", "-i", "5"] }
     Process { id: volDownProc; command: ["pamixer", "--allow-boost", "-d", "5"] }
 
@@ -327,13 +327,22 @@ Scope {
                             MouseArea {
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: root.togglePopup(volumePopupInstance, function() { volumePopupInstance.updateVolume() })
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                                onClicked: (mouse) => {
+                                    if (mouse.button === Qt.RightButton) {
+                                        pavucontrolProc.running = true;
+                                    } else {
+                                        root.togglePopup(volumePopupInstance, function() { volumePopupInstance.updateVolume(); });
+                                    }
+                                }
+
                                 onWheel: (wheel) => {
                                     if (wheel.angleDelta.y > 0)
-                                        volUpProc.running = true
+                                        volUpProc.running = true;
                                     else
-                                        volDownProc.running = true
-                                    volWheelRefresh.restart()
+                                        volDownProc.running = true;
+                                    volWheelRefresh.restart();
                                 }
                             }
                         }
@@ -350,7 +359,7 @@ Scope {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     root.closeAllPopups()
-                                    swayncToggle.running = true
+                                    root.togglePopup(swayncInstance)
                                     notifWidget.refresh()
                                 }
                             }
