@@ -14,11 +14,22 @@ PanelWindow {
     margins { top: 38; right: 100 }
 
     implicitWidth: 300
-    implicitHeight: 140
+    property int btMaxDevicesVisible: 3
+    property int btDeviceHeight: 30
+    property int btDeviceSpacing: 4
+    property int btListHeight: popup.btPowered && popup.btDevices.length > 0
+        ? Math.min(popup.btDevices.length, btMaxDevicesVisible) * (btDeviceHeight + btDeviceSpacing) - btDeviceSpacing
+        : 20
+    implicitHeight: 140 + 1 + 20 + 10 + btListHeight + 36 + 14
     color: "transparent"
 
     property int currentVolume: 50
     property bool isMuted: false
+
+    // ── Bluetooth state ──
+    property bool btPowered: false
+    property var btDevices: []
+    property var btConnected: []
 
     Process {
         id: getVolProc
@@ -42,6 +53,79 @@ PanelWindow {
     Process {
         id: muteProc
         command: ["pamixer", "-t"]
+    }
+
+    // ── Bluetooth processes ──
+    Process {
+        id: btPowerProc
+        command: ["bluetoothctl", "show"]
+        stdout: SplitParser {
+            onRead: data => {
+                if (data.indexOf("Powered:") !== -1)
+                    popup.btPowered = data.indexOf("yes") !== -1
+            }
+        }
+    }
+
+    Process {
+        id: btPairedProc
+        property var _buf: []
+        command: ["bluetoothctl", "devices", "Paired"]
+        stdout: SplitParser {
+            onRead: data => {
+                var m = data.trim().match(/^Device\s+(\S+)\s+(.+)$/)
+                if (m) btPairedProc._buf.push({ mac: m[1], name: m[2] })
+            }
+        }
+        onRunningChanged: {
+            if (!running) {
+                popup.btDevices = btPairedProc._buf
+                btPairedProc._buf = []
+                btConnectedProc.running = true
+            }
+        }
+    }
+
+    Process {
+        id: btConnectedProc
+        property var _buf: []
+        command: ["bluetoothctl", "devices", "Connected"]
+        stdout: SplitParser {
+            onRead: data => {
+                var m = data.trim().match(/^Device\s+(\S+)/)
+                if (m) btConnectedProc._buf.push(m[1])
+            }
+        }
+        onRunningChanged: {
+            if (!running) {
+                popup.btConnected = btConnectedProc._buf
+                btConnectedProc._buf = []
+            }
+        }
+    }
+
+    Process {
+        id: btTogglePowerProc
+        command: ["bluetoothctl", "power", "on"]
+        onRunningChanged: if (!running) btRefreshTimer.running = true
+    }
+
+    Process {
+        id: btConnectProc
+        command: ["bluetoothctl", "connect", ""]
+        onRunningChanged: if (!running) btRefreshTimer.running = true
+    }
+
+    Process {
+        id: btDisconnectProc
+        command: ["bluetoothctl", "disconnect", ""]
+        onRunningChanged: if (!running) btRefreshTimer.running = true
+    }
+
+    Timer {
+        id: btRefreshTimer
+        interval: 800
+        onTriggered: popup.refreshBluetooth()
     }
 
     Timer {
@@ -237,6 +321,180 @@ PanelWindow {
                     }
                 }
             }
+
+            // ── Bluetooth Section ──
+            Rectangle {
+                Layout.fillWidth: true
+                height: 1
+                color: Qt.rgba(0, 1, 0.255, 0.12)
+            }
+
+            ColumnLayout {
+                id: btSection
+                Layout.fillWidth: true
+                spacing: 10
+
+                // BT Header
+                RowLayout {
+                    spacing: 10
+
+                    Text {
+                        text: "󰂯"
+                        color: popup.btPowered ? "#00ff41" : "#555555"
+                        font { family: "JetBrainsMono Nerd Font"; pixelSize: 16 }
+                    }
+
+                    Text {
+                        text: "Bluetooth"
+                        color: popup.btPowered ? "#00ff41" : "#555555"
+                        font { family: "JetBrainsMono Nerd Font"; pixelSize: 13; bold: true }
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    // Power toggle
+                    Rectangle {
+                        width: 38
+                        height: 20
+                        radius: 10
+                        color: popup.btPowered ? Qt.rgba(0, 1, 0.255, 0.15) : "#1a1a1a"
+                        border.color: popup.btPowered ? Qt.rgba(0, 1, 0.255, 0.3) : Qt.rgba(1, 1, 1, 0.1)
+                        border.width: 1
+
+                        Rectangle {
+                            x: popup.btPowered ? parent.width - width - 3 : 3
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 14
+                            height: 14
+                            radius: 7
+                            color: popup.btPowered ? "#00ff41" : "#555555"
+
+                            Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                btTogglePowerProc.command = ["bluetoothctl", "power", popup.btPowered ? "off" : "on"]
+                                btTogglePowerProc.running = true
+                            }
+                        }
+                    }
+                }
+
+                // Device list (scrollable)
+                Item {
+                    Layout.fillWidth: true
+                    implicitHeight: popup.btListHeight
+                    visible: popup.btPowered && popup.btDevices.length > 0
+                    clip: true
+
+                    Flickable {
+                        id: btFlick
+                        anchors.fill: parent
+                        contentHeight: btDeviceCol.implicitHeight
+                        boundsBehavior: Flickable.StopAtBounds
+
+                        Column {
+                            id: btDeviceCol
+                            width: parent.width
+                            spacing: popup.btDeviceSpacing
+
+                            Repeater {
+                                model: popup.btDevices.length
+                                delegate: Rectangle {
+                                    required property int index
+                                    property var dev: popup.btDevices[index] || { mac: "", name: "" }
+                                    property bool isConn: popup.btConnected.indexOf(dev.mac) !== -1
+
+                                    width: btDeviceCol.width
+                                    height: popup.btDeviceHeight
+                                    radius: 6
+                                    color: devMA.containsMouse ? (isConn ? "#0a2a0a" : "#151515") : "#111111"
+                                    border.color: isConn ? Qt.rgba(0, 1, 0.255, 0.3) : Qt.rgba(1, 1, 1, 0.05)
+                                    border.width: 1
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 10
+                                        anchors.rightMargin: 10
+                                        spacing: 8
+
+                                        Text {
+                                            text: isConn ? "󰂱" : "󰂳"
+                                            color: isConn ? "#00ff41" : "#555555"
+                                            font { family: "JetBrainsMono Nerd Font"; pixelSize: 12 }
+                                        }
+
+                                        Text {
+                                            text: dev.name
+                                            color: isConn ? "#00ff41" : "#888888"
+                                            font { family: "JetBrainsMono Nerd Font"; pixelSize: 11 }
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+
+                                        Text {
+                                            text: isConn ? "connected" : "paired"
+                                            color: isConn ? Qt.rgba(0, 1, 0.255, 0.5) : "#444444"
+                                            font { family: "JetBrainsMono Nerd Font"; pixelSize: 9 }
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: devMA
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            if (isConn) {
+                                                btDisconnectProc.command = ["bluetoothctl", "disconnect", dev.mac]
+                                                btDisconnectProc.running = true
+                                            } else {
+                                                btConnectProc.command = ["bluetoothctl", "connect", dev.mac]
+                                                btConnectProc.running = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Scroll indicator
+                    Rectangle {
+                        visible: btFlick.contentHeight > btFlick.height
+                        anchors.right: parent.right
+                        anchors.rightMargin: 1
+                        y: btFlick.height * (btFlick.contentY / btFlick.contentHeight)
+                        width: 2
+                        height: Math.max(10, btFlick.height * (btFlick.height / btFlick.contentHeight))
+                        radius: 1
+                        color: "#00ff41"
+                        opacity: btFlick.moving ? 0.6 : 0.2
+
+                        Behavior on opacity { NumberAnimation { duration: 200 } }
+                    }
+                }
+
+                // Empty state
+                Text {
+                    visible: popup.btPowered && popup.btDevices.length === 0
+                    text: "No paired devices"
+                    color: "#444444"
+                    font { family: "JetBrainsMono Nerd Font"; pixelSize: 10 }
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                Text {
+                    visible: !popup.btPowered
+                    text: "Bluetooth off"
+                    color: "#444444"
+                    font { family: "JetBrainsMono Nerd Font"; pixelSize: 10 }
+                    Layout.alignment: Qt.AlignHCenter
+                }
+            }
         }
     }
 
@@ -244,5 +502,18 @@ PanelWindow {
         getVolProc.running = true
     }
 
-    Component.onCompleted: updateVolume()
+    function refreshBluetooth() {
+        btPowerProc.running = true
+        btPairedProc._buf = []
+        btPairedProc.running = true
+    }
+
+    Component.onCompleted: {
+        updateVolume()
+        refreshBluetooth()
+    }
+
+    onVisibleChanged: {
+        if (visible) refreshBluetooth()
+    }
 }

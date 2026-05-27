@@ -27,8 +27,7 @@ Scope {
 
     // ── Power processes at Scope level ──
     Process { id: sysMonProc; command: ["missioncenter"] }
-    Process { id: lockProc; command: ["hyprlock"] }
-    Process { id: logoutProc; command: ["hyprctl", "dispatch", "exit"] }
+    Process { id: lockProc; command: ["sh", "-c", "hyprlock &"] }
     Process { id: rebootProc; command: ["systemctl", "reboot"] }
     Process { id: shutdownProc; command: ["systemctl", "poweroff"] }
     Process { id: swayncToggle; command: ["swaync-client", "-t"] }
@@ -37,14 +36,13 @@ Scope {
     Process { id: volDownProc; command: ["pamixer", "--allow-boost", "-d", "5"] }
 
     function executePowerAction(action) {
-        closeAllPopups()
         switch (action) {
             case "sysmon": sysMonProc.running = true; break
             case "lock": lockProc.running = true; break
-            case "logout": logoutProc.running = true; break
             case "reboot": rebootProc.running = true; break
             case "shutdown": shutdownProc.running = true; break
         }
+        closeAllPopups()
     }
 
     function closeAllPopups() {
@@ -117,13 +115,17 @@ Scope {
     }
 
     Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: root.volTick++
+    }
+
+    Timer {
         interval: 3000
         running: true
         repeat: true
-        onTriggered: {
-            root.volTick++
-            root.netTick++
-        }
+        onTriggered: root.netTick++
     }
 
     // ── Bar panels ──
