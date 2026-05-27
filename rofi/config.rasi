@@ -1,3 +1,5 @@
+@theme "~/.config/hypr/rofi/theme.rasi"
+
 configuration {
     /* Modalità attive come schede separate */
     modi: "drun,window,Control:rofi-control.sh,Network:rofi-wifi.sh";

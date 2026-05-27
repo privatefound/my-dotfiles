@@ -8,7 +8,7 @@
     fg-col2: #c0c0c0;
     grey: #003300;
 
-    width: 450;
+    width: 450px;
     font: "JetBrainsMono Nerd Font 10";
 }
 
