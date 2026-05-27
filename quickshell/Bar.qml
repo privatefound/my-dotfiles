@@ -24,6 +24,7 @@ Scope {
     property int volTick: 0
     property int netTick: 0
     property bool showDismiss: false
+    property bool trayVisible: false
 
     SystemData { id: sysData }
 
@@ -366,12 +367,29 @@ Scope {
                         Rectangle {
                             width: 1; height: 14
                             color: root.colFgDim; opacity: 0.15
-                            visible: trayRow.children.length > 0
+                            visible: trayToggleBtn.visible
+                        }
+
+                        Text {
+                            id: trayToggleBtn
+                            text: root.trayVisible ? "󱊖" : "󱊖"
+                            font.family: root.fontFamily
+                            font.pixelSize: root.fontSize
+                            color: root.trayVisible ? root.colAccent : root.colFgDim
+                            visible: SystemTray.items.values.length > 0
+                            verticalAlignment: Text.AlignVCenter
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.trayVisible = !root.trayVisible
+                            }
                         }
 
                         Row {
                             id: trayRow
                             spacing: 8
+                            visible: root.trayVisible
                             Repeater {
                                 model: SystemTray.items
                                 delegate: Item {
