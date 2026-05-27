@@ -226,6 +226,21 @@ PanelWindow {
                         }
                         Item { Layout.fillWidth: true }
                         Rectangle {
+                            visible: popup.connectedSsid !== ""
+                            width: 72; height: 22; radius: 5
+                            color: wDiscMA.containsMouse ? "#2a0a0a" : "#111111"
+                            border.color: Qt.rgba(1, 0.3, 0.3, 0.2); border.width: 1
+                            Text { anchors.centerIn: parent; text: "\u{db80}\u{dd56} Disconnect"; color: "#ff4444"; font { family: popup.ff; pixelSize: 9 } }
+                            MouseArea {
+                                id: wDiscMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    connDownProc.command = ["nmcli", "connection", "down", popup.connectedSsid]
+                                    connDownProc.running = true
+                                    wifiRefreshTimer.running = true
+                                }
+                            }
+                        }
+                        Rectangle {
                             width: 52; height: 22; radius: 5
                             color: wScanMA.containsMouse ? "#0a2a0a" : "#111111"
                             border.color: Qt.rgba(0, 1, 0.255, 0.15); border.width: 1
@@ -275,15 +290,32 @@ PanelWindow {
                             }
 
                             Rectangle {
-                                visible: modelData.active; width: 56; height: 18; radius: 3
-                                color: Qt.rgba(0, 1, 0.255, 0.08); border.color: Qt.rgba(0, 1, 0.255, 0.2); border.width: 1
-                                Text { anchors.centerIn: parent; text: "󰄬 Active"; color: "#00ff41"; font { family: popup.ff; pixelSize: 8 } }
+                                width: 70; height: 22; radius: 5
+                                color: wfBtnMA.containsMouse ? (modelData.active ? "#2a0a0a" : "#0a2a0a") : "#111111"
+                                border.color: modelData.active ? Qt.rgba(1, 0.3, 0.3, 0.2) : Qt.rgba(0, 1, 0.255, 0.2); border.width: 1
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.active ? "󰅖 Disconnect" : "󰄬 Connect"
+                                    color: modelData.active ? "#ff4444" : "#00ff41"
+                                    font { family: popup.ff; pixelSize: 9 }
+                                }
+                                MouseArea {
+                                    id: wfBtnMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (modelData.active) {
+                                            connDownProc.command = ["nmcli", "connection", "down", modelData.ssid]
+                                            connDownProc.running = true
+                                        } else {
+                                            connUpProc.command = ["nmcli", "device", "wifi", "connect", modelData.ssid]
+                                            connUpProc.running = true
+                                        }
+                                        wifiRefreshTimer.running = true
+                                    }
+                                }
                             }
-                            Text { visible: !modelData.active; text: "›"; color: "#333333"; font { family: popup.ff; pixelSize: 14 } }
                         }
                         MouseArea {
-                            id: wfMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                            onClicked: { if (!modelData.active) nmEditorProc.running = true }
+                            id: wfMA; anchors.fill: parent; hoverEnabled: true; z: -1
                         }
                     }
                 }
@@ -521,6 +553,12 @@ PanelWindow {
             }
             Item { Layout.fillWidth: true }
         }
+    }
+
+    Timer {
+        id: wifiRefreshTimer
+        interval: 1500
+        onTriggered: scanNetworks()
     }
 
     Timer {
