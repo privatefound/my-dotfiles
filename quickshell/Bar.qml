@@ -359,7 +359,7 @@ Scope {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     root.closeAllPopups()
-                                    root.togglePopup(swayncInstance)
+                                    swayncToggle.running = true
                                     notifWidget.refresh()
                                 }
                             }
