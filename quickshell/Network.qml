@@ -9,7 +9,8 @@ Text {
     property color inactiveColor: "#008f11"
 
     id: netText
-    color: activeColor
+    text: "󰤭 Offline"
+    color: inactiveColor
     font {
         family: fontFamily
         pixelSize: fontSize
@@ -20,8 +21,7 @@ Text {
         command: ["sh", "-c", "nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi | grep '^yes' | cut -d: -f2,3 || echo 'DISCONNECTED'"]
         stdout: SplitParser {
             onRead: data => {
-                if (!data) return
-                var info = data.trim()
+                var info = data ? data.trim() : ""
                 if (info === "DISCONNECTED" || info === "") {
                     netText.text = "󰤭 Offline"
                     netText.color = inactiveColor
