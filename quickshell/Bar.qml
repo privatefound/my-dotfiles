@@ -365,6 +365,20 @@ Scope {
                             }
                         }
 
+                        OpacityToggle {
+                            id: opacityWidget
+                            fontFamily: root.fontFamily
+                            fontSize: root.fontSize
+                            activeColor: root.colAccent
+                            dimColor: root.colFgDim
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: opacityWidget.toggle()
+                            }
+                        }
+
                         Battery {
                             fontFamily: root.fontFamily
                             fontSize: root.fontSize
