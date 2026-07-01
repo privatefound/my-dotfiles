@@ -139,6 +139,45 @@ For full control over each step, follow the detailed guide:
 
 ---
 
+## 🌐 Browser Hardware Acceleration & WebGL (Nvidia + Wayland)
+
+If you are using an Nvidia GPU under Wayland/Hyprland, Chromium-based browsers (Brave, Google Chrome, VS Code/Electron) may disable WebGL and hardware acceleration by default.
+
+To fix this, configure the browser flags files:
+
+### Chromium / Google Chrome
+Add the following flags to `~/.config/chrome-flags.conf`:
+```text
+--ozone-platform-hint=auto
+--enable-gpu-rasterization
+--enable-zero-copy
+--ignore-gpu-blocklist
+--use-gl=angle
+--use-angle=gl
+--disable-gpu-sandbox
+```
+
+### Brave Browser
+Add the same flags to `~/.config/brave-flags.conf`:
+```text
+--ozone-platform-hint=auto
+--enable-gpu-rasterization
+--enable-zero-copy
+--ignore-gpu-blocklist
+--use-gl=angle
+--use-angle=gl
+--disable-gpu-sandbox
+--disable-frame-rate-limit
+--enable-features=AcceleratedVideoDecodeLinuxGL
+```
+
+### Firefox
+For Firefox, ensure the environment variable `MOZ_ENABLE_WAYLAND=1` is set, then open `about:config` and set:
+* `gfx.webrender.all` -> `true`
+* `webgl.disabled` -> `false`
+
+---
+
 ## 🤖 Local AI (Ollama)
 
 Two Rofi scripts use **Ollama** with the `gemma3:1b` model:
