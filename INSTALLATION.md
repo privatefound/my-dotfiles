@@ -111,8 +111,8 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 
 ### Local AI
 - `ollama` - Runtime for local LLM models
-  - Model used: `gemma3:1b` (download with `ollama pull gemma3:1b`)
-  - Used by `rofi-ai-cmd.sh` (command generation) and `rofi-subnet.sh` (subnet fallback)
+  - Recommended model: `gemma4:e4b` (download with `ollama pull gemma4:e4b`)
+  - Used by QuickShell AI Chat (✦) and `rofi-subnet.sh` (subnet fallback)
 
 ### Login Manager
 - `greetd` - Minimalist display manager

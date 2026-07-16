@@ -43,9 +43,8 @@
     },
     "custom/book": {
         "format": "🕮",
-        "tooltip": "Left: AI CMD | Right: Subnet Calc",
-        "on-click": "bash -c \"bash $HOME/.config/hypr/rofi/scripts/rofi-ai-cmd.sh\"",
-        "on-click-right": "bash -c \"bash $HOME/.config/hypr/rofi/scripts/rofi-subnet.sh\""
+        "tooltip": "Subnet Calculator",
+        "on-click": "bash -c \"bash $HOME/.config/hypr/rofi/scripts/rofi-subnet.sh\""
     },
     "custom/media": {
         "format": "󰝚 {}",

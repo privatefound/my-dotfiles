@@ -53,6 +53,7 @@ Scope {
         networkPopupInstance.visible = false
         powerMenuInstance.visible = false
         subnetCalcInstance.visible = false
+        gemmaChatInstance.visible = false
         root.showDismiss = false
     }
 
@@ -107,6 +108,7 @@ Scope {
     }
 
     SubnetCalc { id: subnetCalcInstance }
+    GemmaChat { id: gemmaChatInstance }
 
     Timer {
         id: volWheelRefresh
@@ -227,7 +229,7 @@ Scope {
                             text: "󰂺"
                             color: root.colFgDim
                             font { family: root.fontFamily; pixelSize: 15 }
-                            opacity: subnetMA.containsMouse ? 1.0 : 0.5
+                            opacity: subnetMA.containsMouse ? 1.0 : 0.9
 
                             Behavior on opacity { NumberAnimation { duration: 120 } }
 
@@ -238,6 +240,33 @@ Scope {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.togglePopup(subnetCalcInstance)
+                            }
+                        }
+
+                        Text {
+                            text: "✦"
+                            color: root.colFgDim
+                            font { family: root.fontFamily; pixelSize: 25 }
+                            Layout.alignment: Qt.AlignVCenter
+                            Layout.topMargin: -5
+                            opacity: gemmaMA.containsMouse ? 1.0 : 0.9
+
+                            Behavior on opacity { NumberAnimation { duration: 120 } }
+
+                            MouseArea {
+                                id: gemmaMA
+                                anchors.fill: parent
+                                anchors.margins: -4
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onClicked: (mouse) => {
+                                    if (mouse.button === Qt.LeftButton) {
+                                        root.togglePopup(gemmaChatInstance)
+                                    } else if (mouse.button === Qt.RightButton) {
+                                        gemmaChatInstance.clearChat()
+                                    }
+                                }
                             }
                         }
 

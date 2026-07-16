@@ -78,6 +78,7 @@ For full control over each step, follow the detailed guide:
 │   ├── shell.qml               #    Main entry point
 │   ├── Bar.qml                 #    Bar layout
 │   ├── Clock.qml               #    Clock widget
+│   ├── GemmaChat.qml           #    Gemma AI chat
 │   ├── Workspaces.qml          #    Workspace indicators
 │   ├── Network.qml             #    Network status
 │   ├── Volume.qml              #    Volume control
@@ -98,7 +99,6 @@ For full control over each step, follow the detailed guide:
 │   └── scripts/
 │       ├── rofi-wifi.sh        #    WiFi menu with nmcli
 │       ├── rofi-control.sh     #    Volume, brightness, power menu, app install
-│       ├── rofi-ai-cmd.sh      #    Generate Linux commands via Ollama AI
 │       └── rofi-subnet.sh      #    IPv4 subnet calculator (ipcalc / Ollama)
 ├── swaync/                     # 🔔 Notifications
 │   ├── config.json             #    Panel configuration
@@ -180,12 +180,39 @@ For Firefox, ensure the environment variable `MOZ_ENABLE_WAYLAND=1` is set, then
 
 ## 🤖 Local AI (Ollama)
 
-Two Rofi scripts use **Ollama** with the `gemma3:1b` model:
+This config integrates **Ollama** for local AI capabilities in multiple places:
 
-- **`rofi-ai-cmd.sh`**: Describe a task in Italian/English and get the corresponding Linux command, with the option to copy it or run it in the terminal.
+### Rofi Scripts
 - **`rofi-subnet.sh`**: Calculate IPv4 subnet info. Uses `ipcalc` if installed, otherwise queries Ollama as a fallback.
 
-To enable AI: `systemctl enable --now ollama && ollama pull gemma3:1b`
+### QuickShell AI Chat (✦)
+The status bar includes an integrated **AI Chat** accessible by clicking the ✦ icon (next to the subnet calculator book icon).
+
+| Action | Function |
+| :--- | :--- |
+| **Left click** on ✦ | Open chat popup |
+| **Right click** on ✦ | Clear chat history |
+
+Features:
+- 💬 **Interactive chat** with streaming responses
+- 📋 **Selectable/copyable** text for easy command copying
+- 🔄 **Model selector** dropdown (top-right) - automatically lists all installed Ollama models
+- 📝 **Markdown rendering** - code blocks, headers, lists, bold/italic are formatted
+- ⌨️ **Enter to send**, Escape to close
+
+### Recommended Model
+
+> [!TIP]
+> The recommended model for the AI chat is [gemma4:e2b](https://ollama.com/library/gemma4:e2b-it-q4_K_M) (Q4_K_M quantization).
+> It offers the best balance between speed, quality, and VRAM usage for local inference.
+
+```bash
+# Install Ollama and pull the recommended model
+systemctl enable --now ollama
+ollama pull gemma4:e2b-it-q4_K_M
+```
+
+You can also use other models like `gemma3:12b`, `llama3.2`, `qwen3`, or `deepseek-r1` - all installed models will appear in the dropdown selector.
 
 ---
 
