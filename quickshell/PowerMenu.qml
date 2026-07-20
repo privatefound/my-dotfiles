@@ -14,7 +14,7 @@ PanelWindow {
     margins { top: 38; left: 12 }
 
     implicitWidth: 200
-    implicitHeight: 225
+    implicitHeight: 260
     color: "transparent"
 
     Rectangle {
@@ -61,6 +61,7 @@ PanelWindow {
             model: [
                 { icon: "󰍛", label: "System Monitor", action: "sysmon", danger: false },
                 { icon: "󰌾", label: "Lock Screen", action: "lock", danger: false },
+                { icon: "󰤄", label: "Suspend", action: "suspend", danger: false },
                 { icon: "󰜉", label: "Reboot", action: "reboot", danger: false },
                 { icon: "󰐥", label: "Shut Down", action: "shutdown", danger: true }
             ]

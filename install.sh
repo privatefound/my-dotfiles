@@ -49,7 +49,7 @@ PACKAGES=(
     xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
     waybar swaync libnotify
     rofi rofi-calc gnome-keyring
-    kitty nemo fish starship
+    kitty terminology nemo fish starship
     brave-bin sublime-text-4
     ttf-jetbrains-mono-nerd ttf-hack-nerd
     ttf-font-awesome otf-font-awesome noto-fonts-emoji
@@ -60,7 +60,7 @@ PACKAGES=(
     networkmanager-openvpn iwgtk
     polkit-kde-agent
     grim slurp swappy
-    wl-clipboard cliphist
+    wl-clipboard cliphist copyq
     brightnessctl swaybg
     jq curl ipcalc
     ollama gsimplecal
@@ -69,6 +69,7 @@ PACKAGES=(
     conky mission-center
     quickshell
     qt6-base qt6-declarative qt6-svg qt6-wayland
+    papirus-icon-theme breeze-gtk xcursor-breeze
 )
 
 echo -e "${CYAN}${BOLD}── Dependencies ─────────────────────────────────────────────────────${NC}"

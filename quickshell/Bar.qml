@@ -33,6 +33,7 @@ Scope {
     Process { id: lockProc; command: ["sh", "-c", "hyprlock &"] }
     Process { id: rebootProc; command: ["systemctl", "reboot"] }
     Process { id: shutdownProc; command: ["systemctl", "poweroff"] }
+    Process { id: suspendProc; command: ["systemctl", "suspend"] }
     Process { id: swayncToggle; command: ["swaync-client", "-t"] }
     Process { id: pavucontrolProc; command: ["pavucontrol"] }
     Process { id: volUpProc; command: ["pamixer", "--allow-boost", "-i", "5"] }
@@ -42,6 +43,7 @@ Scope {
         switch (action) {
             case "sysmon": sysMonProc.running = true; break
             case "lock": lockProc.running = true; break
+            case "suspend": suspendProc.running = true; break
             case "reboot": rebootProc.running = true; break
             case "shutdown": shutdownProc.running = true; break
         }
