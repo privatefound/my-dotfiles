@@ -51,7 +51,7 @@ PACKAGES=(
     rofi rofi-calc gnome-keyring
     kitty terminology nemo fish starship
     brave-bin sublime-text-4
-    ttf-jetbrains-mono-nerd ttf-hack-nerd
+    ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd
     ttf-font-awesome otf-font-awesome noto-fonts-emoji
     pipewire pipewire-alsa pipewire-pulse wireplumber
     pavucontrol pasystray pamixer playerctl
@@ -128,16 +128,6 @@ if [[ "$SKIP_LINK" == false ]]; then
         ln -sf "$REPO_DIR" "$HYPR_DIR"
         ok "Symlink created."
     fi
-fi
-
-# ── Step 2.5: Generate monitors.conf if missing ─────────────────────────────
-if [[ ! -f "$HYPR_DIR/monitors.conf" ]]; then
-    info "Creating default monitors.conf (auto-detect all monitors) ..."
-    cp "$HYPR_DIR/monitors.conf.example" "$HYPR_DIR/monitors.conf"
-    ok "monitors.conf created. Edit it to match your setup."
-    warn "Tip: use 'hyprctl monitors all' or monique to configure your monitors."
-else
-    ok "monitors.conf already exists, skipping."
 fi
 
 # ── Step 3: Symlink rofi scripts to ~/.local/bin (rofi needs them in PATH) ────

@@ -15,9 +15,11 @@ This guide explains how to manually install the theme and all its dependencies o
 ```bash
 paru -S hyprland hyprlock hypridle hyprpicker \
         xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
-        waybar swaync libnotify \
+        quickshell \
+        qt6-base qt6-declarative qt6-svg qt6-wayland \
+        swaync libnotify \
         rofi rofi-calc gnome-keyring \
-        kitty nemo fish starship \
+        kitty terminology nemo fish starship \
         brave-bin sublime-text-4 \
         ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd \
         ttf-font-awesome otf-font-awesome noto-fonts-emoji \
@@ -28,7 +30,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
         networkmanager-openvpn iwgtk \
         polkit-kde-agent \
         grim slurp swappy \
-        wl-clipboard cliphist \
+        wl-clipboard cliphist copyq \
         brightnessctl \
         swaybg \
         jq curl ipcalc \
@@ -36,6 +38,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
         gsimplecal \
         greetd greetd-tuigreet \
         nwg-look qt5ct qt6ct \
+        papirus-icon-theme breeze-gtk xcursor-breeze \
         conky mission-center
 ```
 
@@ -52,14 +55,16 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 - `xdg-desktop-portal-gtk` - GTK portal as fallback
 
 ### Status Bar & Launcher
-- `waybar` - Configurable status bar (top bar with workspaces, clock, network, etc.)
+- `quickshell` - QML-based status bar (workspaces, clock, network, AI chat, etc.)
+- `qt6-base`, `qt6-declarative`, `qt6-svg`, `qt6-wayland` - Qt6 dependencies for quickshell
 - `rofi` - Application launcher, WiFi menu, control menu, AI cmd, subnet calculator
 - `swaync` - Notification daemon with side panel and custom theme
 - `libnotify` - Library for `notify-send`
-- `gsimplecal` - Popup calendar (click on the clock in Waybar)
+- `gsimplecal` - Popup calendar (click on the clock)
 
 ### Terminal & Shell
-- `kitty` - Main terminal emulator (GPU-accelerated)
+- `terminology` - Main terminal emulator (default)
+- `kitty` - Alternative terminal emulator (GPU-accelerated)
 - `fish` - Friendly interactive shell
 - `starship` - Customizable cross-shell prompt
 
@@ -102,10 +107,11 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 ### System Utilities
 - `wl-clipboard` (`wl-copy`, `wl-paste`) - Wayland clipboard
 - `cliphist` - Clipboard history
+- `copyq` - Advanced clipboard manager with GUI
 - `brightnessctl` - Screen brightness control
 - `swaybg` - Wallpaper manager (used in autostart)
 - `polkit-kde-agent` - Graphical authentication agent (sudo GUI)
-- `jq` - JSON parsing (used in waybar and rofi scripts)
+- `jq` - JSON parsing (used in rofi scripts)
 - `curl` - HTTP requests (weather from wttr.in, Ollama API)
 - `ipcalc` - IPv4 subnet calculator (used in rofi-subnet.sh)
 
@@ -118,12 +124,16 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 - `greetd` - Minimalist display manager
 - `greetd-tuigreet` - TUI frontend for greetd (green/black minimal style)
 
-### GTK/Qt Theme
+### GTK/Qt Theme & Cursors
 - `nwg-look` - GTK theme configuration in Wayland
 - `qt5ct`, `qt6ct` - Qt5/Qt6 theme configuration
+- `papirus-icon-theme` - Icon theme
+- `breeze-gtk` - Breeze GTK theme
+- `xcursor-breeze` - Breeze cursor theme (Breeze_Dark_Lime variant)
 
 ### Extra (Optional)
 - `conky` - System monitor overlay (enabled in autostart, can be disabled for battery saving)
+- `waybar` - Alternative status bar (if you prefer waybar over quickshell)
 
 ---
 
@@ -178,15 +188,17 @@ cd ~/green-hyprtheme
 
 > All paths in the configuration files use `$HOME` or `~`, so they work with any user without modifications.
 
+> **Note:** This theme uses **Hyprland's Lua configuration** (`hyprland.lua`) instead of the legacy hyprlang format.
+> All settings, keybindings, window rules, and autostart are defined in a single `hyprland.lua` file.
+
 ### Scripts and Permissions
 Make all scripts executable:
 ```bash
-chmod +x ~/.config/hypr/waybar/scripts/*.sh
 chmod +x ~/.config/hypr/rofi/scripts/*.sh
 ```
 
 ### Swaync - Disable the systemd service
-Swaync is launched via `autostart.conf` with the custom config. The systemd service must be disabled to prevent it from starting without the correct parameters:
+Swaync is launched via `hyprland.lua` autostart. The systemd service must be disabled to prevent it from starting without the correct parameters:
 ```bash
 systemctl --user disable swaync.service
 ```
@@ -204,7 +216,7 @@ ollama pull gemma3:1b
 vt = 1
 
 [default_session]
-command = "tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'"ok 
+command = "tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'" 
 user = "greeter"
 ```
 

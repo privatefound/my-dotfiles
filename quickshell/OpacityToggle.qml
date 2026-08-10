@@ -16,12 +16,12 @@ Text {
 
     Process {
         id: setOpaqueProc
-        command: ["sh", "-c", "hyprctl keyword decoration:active_opacity 1.0 && hyprctl keyword decoration:inactive_opacity 1.0"]
+        command: ["sh", "-c", "hyprctl eval 'hl.config({ decoration = { active_opacity = 1.0, inactive_opacity = 1.0 } })'"]
     }
 
     Process {
         id: setTransparentProc
-        command: ["sh", "-c", "hyprctl keyword decoration:active_opacity 0.95 && hyprctl keyword decoration:inactive_opacity 0.80"]
+        command: ["sh", "-c", "hyprctl eval 'hl.config({ decoration = { active_opacity = 0.95, inactive_opacity = 0.80 } })'"]
     }
 
     function toggle() {
