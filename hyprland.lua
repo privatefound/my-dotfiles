@@ -17,26 +17,8 @@ local editor      = "subl"
 ---- MONITORS ----
 ------------------
 
-hl.monitor({
-    output   = "desc:BOE 0x0BFB",
-    mode     = "1920x1200@60.003",
-    position = "2560x240",
-    scale    = 1,
-})
-
-hl.monitor({
-    output   = "desc:HP Inc. HP E27u G5 CN44412FNF",
-    mode     = "2560x1440@59.95",
-    position = "-2560x0",
-    scale    = 1,
-})
-
-hl.monitor({
-    output   = "desc:HP Inc. HP E27u G5 CN44412FN5",
-    mode     = "2560x1440@59.95",
-    position = "0x0",
-    scale    = 1,
-})
+-- Importa configurazione da Monique
+dofile(os.getenv("HOME") .. "/.config/hypr/monitors.lua")
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
