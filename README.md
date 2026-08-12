@@ -139,42 +139,59 @@ For full control over each step, follow the detailed guide:
 
 ---
 
-## 🌐 Browser Hardware Acceleration & WebGL (Nvidia + Wayland)
+## 🌐 Browser Hardware Acceleration & Video Playback (Wayland)
 
-If you are using an Nvidia GPU under Wayland/Hyprland, Chromium-based browsers (Brave, Google Chrome, VS Code/Electron) may disable WebGL and hardware acceleration by default.
+Chromium-based browsers (Brave, Chrome, VS Code/Electron) may have issues with WebGL, hardware acceleration, and video playback under Wayland.
 
-To fix this, configure the browser flags files:
+### VA-API Drivers (Required for Hardware Video Decode)
+
+Install the appropriate VA-API driver for your GPU:
+
+| GPU | Package | Notes |
+| :--- | :--- | :--- |
+| **Intel** (gen 8+) | `intel-media-driver libva-utils` | Broadwell and newer |
+| **Intel** (gen 7 and older) | `libva-intel-driver libva-utils` | Ivy Bridge, Haswell |
+| **AMD** | `libva-mesa-driver libva-utils` | All AMD GPUs |
+| **NVIDIA** (proprietary) | `libva-nvidia-driver libva-utils` | Requires nvidia 525+ |
+
+```bash
+# Verify VA-API is working
+vainfo
+```
 
 ### Chromium / Google Chrome
 Add the following flags to `~/.config/chrome-flags.conf`:
 ```text
 --ozone-platform-hint=auto
+--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,Vulkan,AcceleratedVideoDecodeLinuxGL
 --enable-gpu-rasterization
 --enable-zero-copy
 --ignore-gpu-blocklist
---use-gl=angle
---use-angle=gl
---disable-gpu-sandbox
+--use-gl=egl
+--enable-accelerated-video-decode
 ```
 
 ### Brave Browser
-Add the same flags to `~/.config/brave-flags.conf`:
+Add the following flags to `~/.config/brave-flags.conf`:
 ```text
 --ozone-platform-hint=auto
+--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,AcceleratedVideoDecodeLinuxGL
 --enable-gpu-rasterization
 --enable-zero-copy
 --ignore-gpu-blocklist
---use-gl=angle
---use-angle=gl
---disable-gpu-sandbox
---disable-frame-rate-limit
---enable-features=AcceleratedVideoDecodeLinuxGL
+--use-gl=egl
+--enable-accelerated-video-decode
+--disable-gpu-driver-bug-workarounds
 ```
+
+> [!TIP]
+> After configuring, verify at `brave://gpu` — look for "Video Decode: Hardware accelerated"
 
 ### Firefox
 For Firefox, ensure the environment variable `MOZ_ENABLE_WAYLAND=1` is set, then open `about:config` and set:
 * `gfx.webrender.all` -> `true`
 * `webgl.disabled` -> `false`
+* `media.ffmpeg.vaapi.enabled` -> `true`
 
 ---
 

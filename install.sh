@@ -238,6 +238,61 @@ else
     ok "Bluetooth already enabled."
 fi
 
+# ── Step 9: VA-API Video Drivers ──────────────────────────────────────────────
+echo ""
+echo -e "${CYAN}${BOLD}── Optional: VA-API Video Drivers (Hardware Video Decode) ──────────${NC}"
+echo -e "  VA-API enables hardware video decoding in browsers (Brave, Chrome, etc.)"
+echo ""
+echo -e "  ${BOLD}Select your GPU:${NC}"
+echo -e "    1) Intel (gen 8+: Broadwell and newer)"
+echo -e "    2) Intel (gen 7 and older: Ivy Bridge, Haswell)"
+echo -e "    3) AMD"
+echo -e "    4) NVIDIA (proprietary driver 525+)"
+echo -e "    5) Skip"
+echo ""
+read -rp "$(echo -e "${YELLOW}Choice [1-5]: ${NC}")" GPU_CHOICE
+
+VAAPI_PKGS=()
+case "$GPU_CHOICE" in
+    1) VAAPI_PKGS=(intel-media-driver libva-utils) ;;
+    2) VAAPI_PKGS=(libva-intel-driver libva-utils) ;;
+    3) VAAPI_PKGS=(libva-mesa-driver libva-utils) ;;
+    4) VAAPI_PKGS=(libva-nvidia-driver libva-utils) ;;
+    *) info "Skipping VA-API driver installation." ;;
+esac
+
+if [[ ${#VAAPI_PKGS[@]} -gt 0 ]]; then
+    info "Installing VA-API packages: ${VAAPI_PKGS[*]} ..."
+    if command -v paru &>/dev/null; then
+        paru -S --needed --noconfirm "${VAAPI_PKGS[@]}"
+    elif command -v yay &>/dev/null; then
+        yay -S --needed --noconfirm "${VAAPI_PKGS[@]}"
+    else
+        sudo pacman -S --needed --noconfirm "${VAAPI_PKGS[@]}"
+    fi
+    ok "VA-API drivers installed."
+    info "Verify with: vainfo"
+    
+    # Create brave-flags.conf if it doesn't exist
+    BRAVE_FLAGS="$HOME/.config/brave-flags.conf"
+    if [[ ! -f "$BRAVE_FLAGS" ]]; then
+        info "Creating $BRAVE_FLAGS for hardware video decode ..."
+        cat > "$BRAVE_FLAGS" <<'EOF'
+--ozone-platform-hint=auto
+--enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,AcceleratedVideoDecodeLinuxGL
+--enable-gpu-rasterization
+--enable-zero-copy
+--ignore-gpu-blocklist
+--use-gl=egl
+--enable-accelerated-video-decode
+--disable-gpu-driver-bug-workarounds
+EOF
+        ok "Brave flags configured."
+    else
+        warn "$BRAVE_FLAGS already exists. Check README.md for recommended flags."
+    fi
+fi
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}${BOLD}════════════════════════════════════════════════════════════════════${NC}"
