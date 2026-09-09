@@ -61,7 +61,7 @@ PACKAGES=(
     polkit-kde-agent
     grim slurp swappy
     wl-clipboard cliphist copyq
-    brightnessctl swaybg
+    brightnessctl awww
     jq curl ipcalc
     ollama gsimplecal
     greetd greetd-tuigreet

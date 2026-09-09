@@ -31,8 +31,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
         polkit-kde-agent \
         grim slurp swappy \
         wl-clipboard cliphist copyq \
-        brightnessctl \
-        swaybg \
+        brightnessctl awww \
         jq curl ipcalc \
         ollama \
         gsimplecal \
@@ -109,7 +108,7 @@ paru -S hyprland hyprlock hypridle hyprpicker \
 - `cliphist` - Clipboard history
 - `copyq` - Advanced clipboard manager with GUI
 - `brightnessctl` - Screen brightness control
-- `swaybg` - Wallpaper manager (used in autostart)
+- `awww` - Animated wallpaper daemon for Wayland (used by wallpaper-selector.sh)
 - `polkit-kde-agent` - Graphical authentication agent (sudo GUI)
 - `jq` - JSON parsing (used in rofi scripts)
 - `curl` - HTTP requests (weather from wttr.in, Ollama API)

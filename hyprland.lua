@@ -67,8 +67,9 @@ hl.on("hyprland.start", function()
     -- Polkit Agent
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     
-    -- Wallpaper
-    hl.exec_cmd("swaybg -i ~/.config/hypr/wallpaper/walp3.jpg -m fill")
+    -- Wallpaper (awww daemon + set)
+    hl.exec_cmd("awww-daemon &")
+    hl.exec_cmd("sleep 0.5 && awww img ~/.config/hypr/wallpaper/walp3.jpg --transition-type fade --transition-duration 1")
     
     -- Barra di stato (Quickshell)
     hl.exec_cmd("env QT_ICON_THEME=Papirus-Dark quickshell --path $HOME/.config/hypr/quickshell/shell.qml")
@@ -246,6 +247,7 @@ hl.bind("grave",                 hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd(editor))
 hl.bind(mainMod .. " + Z",       hl.dsp.exec_cmd("copyq show"))
+hl.bind(mainMod .. " + W",       hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/wallpaper-selector.sh"))
 
 -- Gestione finestre
 hl.bind(mainMod .. " + K", hl.dsp.window.close())

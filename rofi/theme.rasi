@@ -1,12 +1,12 @@
 * {
-    bg-col:  #0a0a0a77; /* Nero trasparente al 40% */
+    bg-col:  #0a0a0a77;
     bg-col-light: #0a0a0a77;
     border-col: #00ff41;
-    selected-col: #003300;
+    selected-col: #1a1a1a;
     blue: #00ff41;
     fg-col: #00ff41;
     fg-col2: #c0c0c0;
-    grey: #003300;
+    grey: #606060;
 
     width: 450px;
     font: "JetBrainsMono Nerd Font 10";
@@ -18,7 +18,7 @@ element-text, element-icon , mode-switcher {
 }
 
 window {
-    height: 380px; /* Un po' più alto per far stare i bottoni */
+    height: 380px;
     border: 1px;
     border-color: @border-col;
     background-color: @bg-col;
@@ -27,7 +27,7 @@ window {
 
 mainbox {
     background-color: @bg-col;
-    children: [inputbar, listview, mode-switcher]; /* I bottoni vanno in basso */
+    children: [inputbar, listview, mode-switcher];
 }
 
 inputbar {
@@ -71,7 +71,6 @@ element selected {
     border-color: @blue;
 }
 
-/* Stile per i pulsanti di cambio modalità */
 mode-switcher {
     spacing: 0;
     margin: 5px 10px 10px 10px;

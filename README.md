@@ -9,6 +9,7 @@ A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential 
 ## ✨ Features
 
 - 🎨 **Minimal Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
+- 🖼️ **Wallpaper Selector**: Quick wallpaper switching via Rofi + awww (animated transitions)
 - ⚡ **Lightweight and minimal**: Only the essentials, perfect for performance
 - 🔒 **Integrated lock screen**: Hyprlock with coordinated style
 - 📱 **Login screen**: Greetd with Tuigreet (green/black style)
@@ -106,7 +107,9 @@ For full control over each step, follow the detailed guide:
 ├── conky/                      # 📟 System monitor overlay
 │   ├── cyberconky.conf         #    Cyber theme config
 │   └── fonts/                  #    Dedicated fonts (Roboto Mono Nerd Font)
-├── wallpaper/                  # 🎨 Theme wallpapers
+├── scripts/                    # 🛠️ Utility scripts
+│   └── wallpaper-selector.sh   #    Wallpaper picker (Rofi + awww)
+├── wallpaper/                  # 🎨 Wallpapers
 └── systemd/                    # 🛠️ Custom systemd services
 ```
 
@@ -127,6 +130,7 @@ For full control over each step, follow the detailed guide:
 | `Super + F` | Fullscreen |
 | `Super + Ctrl + L` | Lock Screen (Hyprlock) |
 | `Super + S` | Scratchpad (hidden workspace) |
+| `Super + W` | Wallpaper Selector (Rofi + awww) |
 | `F1` | Area screenshot (grim + slurp + swappy) |
 | `XF86AudioRaiseVolume` | Volume Up |
 | `XF86AudioLowerVolume` | Volume Down |

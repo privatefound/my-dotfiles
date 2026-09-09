@@ -1,17 +1,16 @@
 * {
     font-family: "JetBrainsMono Nerd Font";
     color: #00ff41;
-    /* Testo verde di default */
 }
 
-/* Rimuoviamo stili inutili che creano l'effetto "doppio bordo" */
 .notification {
-    background: rgba(10, 10, 10, 0.7);
+    background: rgba(0a0a0a | sed 's/../0x& /g' | awk '{printf "%d, %d, %d", /home/sec/.config/hypr/themes/terminal-hacker/colors.sh, , }'), 0.7);
+    background: #0a0a0ab3;
     border: 1px solid #00ff41;
     border-radius: 12px;
     margin: 6px 12px;
     padding: 0;
-    box-shadow: 0 0 8px rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 8px #00ff4133;
 }
 
 .notification-content {
@@ -27,37 +26,33 @@
 .summary {
     font-size: 13px;
     font-weight: bold;
-    text-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+    text-shadow: 0 0 4px #00ff4166;
 }
 
 .body {
     font-size: 11px;
-    color: #00ff41;
-    /* Testo corpo verde */
+    color: #c0c0c0;
 }
 
-/* Azioni/Bottoni più discreti */
 .notification-default-action,
 .notification-action {
     padding: 3px;
     margin: 2px;
     background: transparent;
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    border: 1px solid #00ff414d;
     border-radius: 8px;
     transition: all 0.2s;
 }
 
-/* Hover discreto: solo bordo più luminoso, no sfondo pieno */
 .notification-default-action:hover,
 .notification-action:hover {
-    background: rgba(0, 255, 65, 0.1);
+    background: #00ff411a;
     border: 1px solid #00ff41;
-    box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+    box-shadow: 0 0 5px #00ff414d;
 }
 
-/* Control Center */
 .control-center {
-    background: rgba(10, 10, 10, 0.85);
+    background: #0a0a0ad9;
     border-left: 2px solid #00ff41;
     border-radius: 0;
     margin: 0;
@@ -78,7 +73,7 @@
 }
 
 .widget-title>button:hover {
-    background: rgba(0, 255, 65, 0.2);
+    background: #00ff4133;
 }
 
 .widget-notifications {
