@@ -2,7 +2,7 @@
 
 configuration {
     /* Modalità attive come schede separate */
-    modi: "drun,window,Control:rofi-control.sh,Network:rofi-wifi.sh";
+    modes: "drun,window,Control:rofi-control.sh,Network:rofi-wifi.sh";
     
     /* Disabilita i prefissi */
     combi-hide-mode-prefix: true;

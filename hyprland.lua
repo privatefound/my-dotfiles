@@ -24,6 +24,9 @@ dofile(os.getenv("HOME") .. "/.config/hypr/monitors.lua")
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
+-- PATH (serve a rofi per trovare gli script in ~/.local/bin, vedi install.sh)
+hl.env("PATH", os.getenv("HOME") .. "/.local/bin:" .. (os.getenv("PATH") or "/usr/local/sbin:/usr/local/bin:/usr/bin"))
+
 -- Cursore
 hl.env("XCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "Breeze_Dark_Lime")

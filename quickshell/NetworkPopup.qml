@@ -7,6 +7,7 @@ import QtQuick.Layouts
 PanelWindow {
     id: popup
     visible: false
+    focusable: true
 
     anchors { top: true; right: true }
     margins { top: 38; right: 180 }
@@ -21,6 +22,11 @@ PanelWindow {
     property var vpnList: []
     property bool scanning: false
     property string connectedSsid: ""
+
+    // ── WiFi connect tracking (avoids re-scanning on a failed/secured attempt) ──
+    property string pendingSsid: ""
+    property bool pendingSecure: false
+    property string pwPromptSsid: ""
 
     readonly property string ff: "JetBrainsMono Nerd Font"
 
@@ -112,6 +118,21 @@ PanelWindow {
     Process {
         id: connUpProc
         command: ["nmcli", "connection", "up", "placeholder"]
+        onExited: (exitCode, exitStatus) => {
+            if (popup.pendingSsid === "") return  // not a wifi-connect attempt (ethernet/vpn use this too)
+            var ssid = popup.pendingSsid
+            var secure = popup.pendingSecure
+            popup.pendingSsid = ""
+            if (exitCode === 0) {
+                popup.pwPromptSsid = ""
+                wifiRefreshTimer.running = true
+            } else if (secure) {
+                // Likely missing/invalid secrets — ask for the password instead of just rescanning
+                popup.pwPromptSsid = ssid
+            } else {
+                wifiRefreshTimer.running = true
+            }
+        }
     }
 
     Process {
@@ -250,6 +271,67 @@ PanelWindow {
                     }
                 }
 
+                // Password prompt (shown after a failed connect attempt on a secured network)
+                Rectangle {
+                    visible: popup.pwPromptSsid !== ""
+                    width: parent.width; height: 66; radius: 6
+                    color: "#0d130d"
+                    border.color: Qt.rgba(0, 1, 0.255, 0.2); border.width: 1
+
+                    ColumnLayout {
+                        anchors.fill: parent; anchors.margins: 8; spacing: 6
+
+                        Text {
+                            text: "󰌾 Password for " + popup.pwPromptSsid
+                            color: "#00ff41"; font { family: popup.ff; pixelSize: 10 }
+                            elide: Text.ElideRight; Layout.fillWidth: true
+                        }
+
+                        RowLayout {
+                            spacing: 6
+                            Layout.fillWidth: true
+
+                            Rectangle {
+                                Layout.fillWidth: true; height: 26; radius: 5
+                                color: "#111111"
+                                border.color: pwField.activeFocus ? Qt.rgba(0, 1, 0.255, 0.5) : Qt.rgba(0, 1, 0.255, 0.15)
+                                border.width: 1
+
+                                TextInput {
+                                    id: pwField
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8; anchors.rightMargin: 8
+                                    verticalAlignment: TextInput.AlignVCenter
+                                    color: "#00ff41"
+                                    echoMode: TextInput.Password
+                                    font { family: popup.ff; pixelSize: 11 }
+                                    selectByMouse: true
+                                    onAccepted: submitWifiPassword()
+                                }
+                            }
+
+                            Rectangle {
+                                width: 50; height: 26; radius: 5
+                                color: pwOkMA.containsMouse ? "#0a2a0a" : "#111111"
+                                border.color: Qt.rgba(0, 1, 0.255, 0.2); border.width: 1
+                                Text { anchors.centerIn: parent; text: "OK"; color: "#00ff41"; font { family: popup.ff; pixelSize: 9 } }
+                                MouseArea { id: pwOkMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: submitWifiPassword() }
+                            }
+
+                            Rectangle {
+                                width: 26; height: 26; radius: 5
+                                color: pwCancelMA.containsMouse ? "#2a0a0a" : "#111111"
+                                border.color: Qt.rgba(1, 0.3, 0.3, 0.2); border.width: 1
+                                Text { anchors.centerIn: parent; text: "✕"; color: "#ff4444"; font { family: popup.ff; pixelSize: 9 } }
+                                MouseArea {
+                                    id: pwCancelMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                    onClicked: { popup.pwPromptSsid = ""; pwField.text = "" }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Repeater {
                     model: popup.wifiList
                     delegate: Rectangle {
@@ -305,11 +387,13 @@ PanelWindow {
                                         if (modelData.active) {
                                             connDownProc.command = ["nmcli", "connection", "down", modelData.ssid]
                                             connDownProc.running = true
+                                            wifiRefreshTimer.running = true
                                         } else {
+                                            popup.pendingSsid = modelData.ssid
+                                            popup.pendingSecure = modelData.secure
                                             connUpProc.command = ["nmcli", "device", "wifi", "connect", modelData.ssid]
                                             connUpProc.running = true
                                         }
-                                        wifiRefreshTimer.running = true
                                     }
                                 }
                             }
@@ -579,6 +663,18 @@ PanelWindow {
         popup.connectedSsid = ""
         wifiScanProc.running = true
     }
+
+    function submitWifiPassword() {
+        if (!pwField.text) return
+        popup.pendingSsid = popup.pwPromptSsid
+        popup.pendingSecure = false  // avoid re-opening the prompt in a loop on a second failure
+        connUpProc.command = ["nmcli", "device", "wifi", "connect", popup.pwPromptSsid, "password", pwField.text]
+        connUpProc.running = true
+        popup.pwPromptSsid = ""
+        pwField.text = ""
+    }
+
+    onPwPromptSsidChanged: if (pwPromptSsid !== "") pwField.forceActiveFocus()
 
     function refreshEthernet() {
         popup.ethList = []
