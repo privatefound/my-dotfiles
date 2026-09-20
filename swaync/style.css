@@ -4,7 +4,6 @@
 }
 
 .notification {
-    background: rgba(0a0a0a | sed 's/../0x& /g' | awk '{printf "%d, %d, %d", /home/sec/.config/hypr/themes/terminal-hacker/colors.sh, , }'), 0.7);
     background: #0a0a0ab3;
     border: 1px solid #00ff41;
     border-radius: 12px;
