@@ -410,6 +410,20 @@ Scope {
                             }
                         }
 
+                        Caffeine {
+                            id: caffeineWidget
+                            fontFamily: root.fontFamily
+                            fontSize: root.fontSize
+                            activeColor: root.colAccent
+                            dimColor: root.colFgDim
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: caffeineWidget.toggle()
+                            }
+                        }
+
                         Battery {
                             fontFamily: root.fontFamily
                             fontSize: root.fontSize

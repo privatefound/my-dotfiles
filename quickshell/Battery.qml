@@ -18,7 +18,7 @@ Text {
 
     Process {
         id: batProc
-        command: ["sh", "-c", "cat /sys/class/power_supply/BAT0/capacity /sys/class/power_supply/BAT0/status 2>/dev/null | tr '\\n' ':'"]
+        command: ["sh", "-c", "b=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -n1); cat \"$b/capacity\" \"$b/status\" 2>/dev/null | tr '\\n' ':'"]
         stdout: SplitParser {
             onRead: data => {
                 if (!data) return

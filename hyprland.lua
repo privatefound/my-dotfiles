@@ -25,7 +25,11 @@ dofile(os.getenv("HOME") .. "/.config/hypr/monitors.lua")
 -------------------------------
 
 -- PATH (serve a rofi per trovare gli script in ~/.local/bin, vedi install.sh)
-hl.env("PATH", os.getenv("HOME") .. "/.local/bin:" .. (os.getenv("PATH") or "/usr/local/sbin:/usr/local/bin:/usr/bin"))
+local localBin = os.getenv("HOME") .. "/.local/bin"
+local curPath = os.getenv("PATH") or "/usr/local/sbin:/usr/local/bin:/usr/bin"
+if not string.find(curPath, localBin, 1, true) then
+    hl.env("PATH", localBin .. ":" .. curPath)
+end
 
 -- Cursore
 hl.env("XCURSOR_SIZE", "24")
@@ -41,7 +45,8 @@ hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 hl.env("WLR_NO_HARDWARE_CURSORS", "1")
 
 -- GTK
-hl.env("GTK_THEME", "Adwaita-dark")
+-- (niente GTK_THEME qui: forzerebbe un tema fisso per tutte le app GTK3,
+--  ha priorita' sul gtk-theme-name di settings.ini e disabilita nwg-look)
 hl.env("GTK_USE_PORTAL", "1")
 
 -- Qt

@@ -19,6 +19,7 @@ A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential 
 - ⌨️ **Keybindings**: Intuitive shortcuts, Vim-style and multimedia keys
 - 🔊 **Full audio**: PipeWire + Pavucontrol + hardware controls
 - 📶 **Network configured**: NetworkManager with WiFi menu via Rofi
+- ☕ **Caffeine toggle**: One click in the bar inhibits screen lock/dim/sleep (native Wayland idle-inhibit, no extra daemon)
 
 ---
 
@@ -86,6 +87,8 @@ For full control over each step, follow the detailed guide:
 │   ├── Battery.qml             #    Battery indicator
 │   ├── CpuRam.qml              #    CPU/RAM monitor
 │   ├── Notifications.qml       #    Notification widget
+│   ├── OpacityToggle.qml       #    Window opacity toggle (eye icon)
+│   ├── Caffeine.qml            #    Idle-inhibit toggle (coffee icon)
 │   └── PowerMenu.qml           #    Power menu
 ├── waybar/                     # 📊 Waybar (alternative status bar)
 │   ├── config                  #    Modules and layout
