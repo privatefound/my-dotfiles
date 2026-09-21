@@ -38,6 +38,8 @@ Scope {
     Process { id: pavucontrolProc; command: ["pavucontrol"] }
     Process { id: volUpProc; command: ["pamixer", "--allow-boost", "-i", "5"] }
     Process { id: volDownProc; command: ["pamixer", "--allow-boost", "-d", "5"] }
+    Process { id: networkDisplayProc; command: ["gnome-network-displays"] }
+    Process { id: moniqueProc; command: ["monique"] }
 
     function executePowerAction(action) {
         switch (action) {
@@ -421,6 +423,27 @@ Scope {
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: caffeineWidget.toggle()
+                            }
+                        }
+
+                        NetworkDisplay {
+                            id: networkDisplayWidget
+                            fontFamily: root.fontFamily
+                            fontSize: root.fontSize
+                            activeColor: root.colAccent
+                            dimColor: root.colFgDim
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onClicked: (mouse) => {
+                                    if (mouse.button === Qt.LeftButton) {
+                                        networkDisplayProc.running = true
+                                    } else if (mouse.button === Qt.RightButton) {
+                                        moniqueProc.running = true
+                                    }
+                                }
                             }
                         }
 
