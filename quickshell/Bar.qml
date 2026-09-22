@@ -418,6 +418,7 @@ Scope {
                             fontSize: root.fontSize
                             activeColor: root.colAccent
                             dimColor: root.colFgDim
+                            window: barWindow
 
                             MouseArea {
                                 anchors.fill: parent

@@ -8,14 +8,15 @@ Text {
     property color activeColor: "#00ff41"
     property color dimColor: "#008f11"
     property bool awake: false
+    property var window: null
 
     id: caffeineText
     color: awake ? activeColor : dimColor
     font { family: fontFamily; pixelSize: fontSize }
-    text: ""
+    text: ""
 
     IdleInhibitor {
-        window: caffeineText.Window.window
+        window: caffeineText.window
         enabled: caffeineText.awake
     }
 
