@@ -20,19 +20,60 @@ PanelWindow {
     property string chatHistory: ""
     property bool isLoading: false
     property string currentResponse: ""
-    property string selectedModel: "gemma4:e4b"
+    property var selectedModel: ({ label: "ollama · gemma4:e4b", id: "gemma4:e4b", backend: "ollama" })
     property var modelList: []
     property bool modelMenuOpen: false
+
+    FontMetrics {
+        id: modelFontMetrics
+        font.family: popup.ff
+        font.pixelSize: 11
+    }
+
+    function maxModelLabelWidth() {
+        var w = 0
+        for (var i = 0; i < popup.modelList.length; i++) {
+            var lw = modelFontMetrics.advanceWidth(popup.modelList[i].label)
+            if (lw > w) w = lw
+        }
+        return w
+    }
 
     Process {
         id: ollamaListProc
         command: ["sh", "-c", "ollama list 2>/dev/null | tail -n +2 | awk '{print $1}'"]
         stdout: SplitParser {
             onRead: data => {
-                if (data.trim() !== "") {
+                var name = data.trim()
+                if (name !== "") {
                     var models = popup.modelList.slice()
-                    models.push(data.trim())
+                    models.push({ label: "ollama · " + name, id: name, backend: "ollama" })
                     popup.modelList = models
+                }
+            }
+        }
+    }
+
+    // llama.cpp server exposes an OpenAI-compatible /v1/models listing
+    Process {
+        id: llamaListProc
+        command: ["sh", "-c", "curl -s --max-time 2 http://localhost:8080/v1/models 2>/dev/null"]
+        stdout: SplitParser {
+            onRead: data => {
+                if (data.trim() === "") return
+                try {
+                    var json = JSON.parse(data)
+                    var arr = json.data || json.models || []
+                    var models = popup.modelList.slice()
+                    for (var i = 0; i < arr.length; i++) {
+                        var id = arr[i].id || arr[i].model || arr[i].name
+                        if (!id) continue
+                        var base = id.split("/").pop().replace(/\.gguf$/i, "")
+                        models.push({ label: "llama.cpp · " + base, id: id, backend: "llamacpp" })
+                    }
+                    popup.modelList = models
+                } catch (e) {
+                    // llama.cpp server not reachable / unexpected response, ignore
                 }
             }
         }
@@ -41,6 +82,7 @@ PanelWindow {
     function refreshModels() {
         popup.modelList = []
         ollamaListProc.running = true
+        llamaListProc.running = true
     }
 
     onVisibleChanged: {
@@ -83,12 +125,32 @@ PanelWindow {
         command: ["sh", "-c", "echo init"]
         stdout: SplitParser {
             onRead: data => {
-                // Ollama streaming returns JSON lines with "response" field
+                var line = data.trim()
+                if (line === "") return
+
+                // llama.cpp / OpenAI-style SSE stream terminator
+                if (line === "data: [DONE]") {
+                    popup.chatHistory = chatArea.text
+                    popup.currentResponse = ""
+                    popup.isLoading = false
+                    return
+                }
+
+                var jsonStr = line.indexOf("data:") === 0 ? line.slice(5).trim() : line
+
                 try {
-                    var json = JSON.parse(data)
+                    var json = JSON.parse(jsonStr)
+                    var content = ""
                     if (json.message && json.message.content) {
-                        popup.currentResponse += json.message.content
-                        chatArea.text = popup.chatHistory + "<br><br><font color='#00ff41'>✦ Gemma:</font><br>" + popup.formatMarkdown(popup.currentResponse)
+                        // Ollama streaming format
+                        content = json.message.content
+                    } else if (json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content) {
+                        // llama.cpp / OpenAI-compatible streaming format
+                        content = json.choices[0].delta.content
+                    }
+                    if (content) {
+                        popup.currentResponse += content
+                        chatArea.text = popup.chatHistory + "<br><br><font color='#00ff41'>✦ Morpheus:</font><br>" + popup.formatMarkdown(popup.currentResponse)
                     }
                     if (json.done) {
                         popup.chatHistory = chatArea.text
@@ -96,9 +158,12 @@ PanelWindow {
                         popup.isLoading = false
                     }
                 } catch (e) {
-                    // Non-JSON output, append as-is
-                    popup.currentResponse += data
-                    chatArea.text = popup.chatHistory + "<br><br><font color='#00ff41'>✦ Gemma:</font><br>" + popup.formatMarkdown(popup.currentResponse)
+                    // Not JSON and not an SSE frame we understand - only append raw
+                    // output when it isn't SSE framing noise (e.g. "data: " keepalives)
+                    if (line.indexOf("data:") !== 0) {
+                        popup.currentResponse += data
+                        chatArea.text = popup.chatHistory + "<br><br><font color='#00ff41'>✦ Morpheus:</font><br>" + popup.formatMarkdown(popup.currentResponse)
+                    }
                 }
             }
         }
@@ -111,6 +176,12 @@ PanelWindow {
         }
     }
 
+    readonly property string systemPrompt: "Sei Morpheus, una guida IA dentro Matrix. Il tuo nome e esattamente Morpheus, non traducilo mai in Morfeo o altre varianti. Chiama sempre chi ti scrive Operatore. Il tono e calmo, diretto, con un tocco filosofico in stile Matrix (pillola rossa, codice che scorre, realta come simulazione), ma le risposte tecniche restano sempre precise e complete: quando ti chiedono codice o aiuto pratico, la sostanza viene prima dello stile. Non esagerare con la messinscena."
+
+    function jsonEscape(s) {
+        return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")
+    }
+
     function sendMessage(msg) {
         if (msg.trim() === "" || popup.isLoading) return
 
@@ -119,10 +190,20 @@ PanelWindow {
         popup.isLoading = true
         popup.currentResponse = ""
 
-        var escapedMsg = msg.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")
-        ollamaProc.command = ["sh", "-c", 
-            "curl -s http://localhost:11434/api/chat -d '{\"model\":\"" + popup.selectedModel + "\",\"messages\":[{\"role\":\"user\",\"content\":\"" + escapedMsg + "\"}]}'"
-        ]
+        var escapedMsg = popup.jsonEscape(msg)
+        var escapedSystem = popup.jsonEscape(popup.systemPrompt)
+        var messages = "[{\"role\":\"system\",\"content\":\"" + escapedSystem + "\"},{\"role\":\"user\",\"content\":\"" + escapedMsg + "\"}]"
+        var modelId = popup.selectedModel.id
+
+        if (popup.selectedModel.backend === "llamacpp") {
+            ollamaProc.command = ["sh", "-c",
+                "curl -s -N http://localhost:8080/v1/chat/completions -d '{\"model\":\"" + modelId + "\",\"messages\":" + messages + ",\"stream\":true}'"
+            ]
+        } else {
+            ollamaProc.command = ["sh", "-c",
+                "curl -s http://localhost:11434/api/chat -d '{\"model\":\"" + modelId + "\",\"messages\":" + messages + "}'"
+            ]
+        }
         ollamaProc.running = true
     }
 
@@ -155,7 +236,7 @@ PanelWindow {
                 font { family: popup.ff; pixelSize: 18 }
             }
             Text {
-                text: "Gemma Chat"
+                text: "Operatore AI"
                 color: "#00ff41"
                 font { family: popup.ff; pixelSize: 14; bold: true }
             }
@@ -182,19 +263,31 @@ PanelWindow {
             // Model selector
             Rectangle {
                 id: modelSelector
-                width: modelText.width + 20
-                height: 20
+                implicitWidth: modelRow.implicitWidth + 20
+                implicitHeight: modelRow.implicitHeight + 8
                 radius: 4
                 color: modelSelectorMA.containsMouse ? Qt.rgba(0, 1, 0.255, 0.1) : "transparent"
                 border.color: Qt.rgba(0, 1, 0.255, 0.2)
                 border.width: 1
 
+                FontMetrics {
+                    id: headerFontMetrics
+                    font.family: popup.ff
+                    font.pixelSize: 10
+                }
+
                 RowLayout {
+                    id: modelRow
                     anchors.centerIn: parent
                     spacing: 4
                     Text {
                         id: modelText
-                        text: popup.selectedModel
+                        // Wrap instead of clip so the full model name is always readable,
+                        // even for long llama.cpp file-based model names.
+                        Layout.preferredWidth: Math.min(headerFontMetrics.advanceWidth(text), 280)
+                        text: popup.selectedModel.label
+                        wrapMode: Text.WrapAnywhere
+                        horizontalAlignment: Text.AlignRight
                         color: modelSelectorMA.containsMouse ? "#00ff41" : "#666666"
                         font { family: popup.ff; pixelSize: 10 }
                     }
@@ -310,7 +403,7 @@ PanelWindow {
                     font { family: popup.ff; pixelSize: 13 }
                     clip: true
 
-                    property string placeholderText: "Ask Gemma something..."
+                    property string placeholderText: "Ask Morpheus something..."
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: parent.placeholderText
@@ -371,8 +464,10 @@ PanelWindow {
         anchors.rightMargin: 16
         anchors.top: parent.top
         anchors.topMargin: 52
-        width: 250
-        height: Math.min(popup.modelList.length * 26 + 12, 300)
+        // Wide enough to fit the longest model name in full (no truncation),
+        // but never wider than the popup itself.
+        width: Math.min(popup.implicitWidth - 32, Math.max(250, popup.maxModelLabelWidth() + 40))
+        height: Math.min(modelCol.implicitHeight + 12, 300)
         radius: 6
         color: "#0d0d0d"
         border.color: Qt.rgba(0, 1, 0.255, 0.3)
@@ -383,7 +478,7 @@ PanelWindow {
             id: modelFlick
             anchors.fill: parent
             anchors.margins: 6
-            contentHeight: modelCol.height
+            contentHeight: modelCol.implicitHeight
             clip: true
 
             Column {
@@ -395,20 +490,26 @@ PanelWindow {
                     model: popup.modelList
 
                     Rectangle {
-                        required property string modelData
+                        required property var modelData
                         required property int index
                         width: modelFlick.width
-                        height: 24
+                        height: itemText.implicitHeight + 10
                         radius: 4
                         color: itemMA.containsMouse ? Qt.rgba(0, 1, 0.255, 0.2) : "transparent"
 
+                        readonly property bool isSelected: popup.selectedModel.backend === modelData.backend && popup.selectedModel.id === modelData.id
+
                         Text {
+                            id: itemText
                             anchors.left: parent.left
+                            anchors.right: parent.right
                             anchors.leftMargin: 10
+                            anchors.rightMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
-                            text: parent.modelData
-                            color: popup.selectedModel === parent.modelData ? "#00ff41" : "#aaaaaa"
-                            font { family: popup.ff; pixelSize: 11; bold: popup.selectedModel === parent.modelData }
+                            text: parent.modelData.label
+                            wrapMode: Text.WrapAnywhere
+                            color: parent.isSelected ? "#00ff41" : "#aaaaaa"
+                            font { family: popup.ff; pixelSize: 11; bold: parent.isSelected }
                         }
 
                         MouseArea {

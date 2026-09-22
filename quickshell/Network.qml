@@ -18,11 +18,11 @@ Text {
 
     Process {
         id: netProc
-        command: ["sh", "-c", "nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi | grep '^yes' | cut -d: -f2,3 || echo 'DISCONNECTED'"]
+        command: ["sh", "-c", "nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi | grep '^yes' | cut -d: -f2,3; true"]
         stdout: SplitParser {
             onRead: data => {
                 var info = data ? data.trim() : ""
-                if (info === "DISCONNECTED" || info === "") {
+                if (info === "") {
                     netText.text = "󰤭 Offline"
                     netText.color = inactiveColor
                 } else {
