@@ -187,10 +187,13 @@ hl.config({
         kb_options   = "",
         kb_rules     = "",
         follow_mouse = 1,
+        mouse_refocus = false,
         sensitivity  = 0,
         
         touchpad = {
             natural_scroll = true,
+            disable_while_typing = true,
+            drag_lock = false,
         },
     },
 })
