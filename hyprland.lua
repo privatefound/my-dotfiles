@@ -239,12 +239,18 @@ hl.curve("analogSnap",    { type = "bezier", points = { {0.1, 1.05},  {0.2, 1.1}
 hl.curve("matrixRain",    { type = "bezier", points = { {0.76, 0},    {0.24, 1}    } })
 hl.curve("plasmaFlow",    { type = "bezier", points = { {0.25, 0.46}, {0.45, 0.94} } })
 hl.curve("emphasized",    { type = "bezier", points = { {0.05, 0.7},  {0.1, 1}     } })
+hl.curve("powerDown",     { type = "bezier", points = { {0.4, 0},     {1, 0.6}     } })  -- accelera in uscita
+hl.curve("fadeFast",      { type = "bezier", points = { {0.2, 0},     {0, 1}       } })
 
-hl.animation({ leaf = "windowsIn",        enabled = true, speed = 5,  bezier = "mainframeBoot", style = "popin 80%" })
-hl.animation({ leaf = "windowsOut",       enabled = true, speed = 4,  bezier = "decodingTrace", style = "popin 85%" })
-hl.animation({ leaf = "windowsMove",      enabled = true, speed = 3,  bezier = "glitchJump" })
-hl.animation({ leaf = "fadeIn",           enabled = true, speed = 4,  bezier = "dataStream" })
-hl.animation({ leaf = "fadeOut",          enabled = true, speed = 4,  bezier = "dataStream" })
+-- Molle (fisica vera): apertura reattiva con un filo di rimbalzo, spostamenti morbidi
+hl.curve("bootSpring",    { type = "spring", mass = 1, stiffness = 320, dampening = 23 })
+hl.curve("glideSpring",   { type = "spring", mass = 1, stiffness = 260, dampening = 28 })
+
+hl.animation({ leaf = "windowsIn",        enabled = true, speed = 4,   spring = "bootSpring",  style = "popin 86%" })
+hl.animation({ leaf = "windowsOut",       enabled = true, speed = 2,   bezier = "powerDown",   style = "popin 90%" })
+hl.animation({ leaf = "windowsMove",      enabled = true, speed = 4,   spring = "glideSpring" })
+hl.animation({ leaf = "fadeIn",           enabled = true, speed = 2.5, bezier = "fadeFast" })
+hl.animation({ leaf = "fadeOut",          enabled = true, speed = 1.8, bezier = "powerDown" })
 hl.animation({ leaf = "fadeSwitch",       enabled = true, speed = 6,  bezier = "neuralLink" })
 hl.animation({ leaf = "fadeShadow",       enabled = true, speed = 5,  bezier = "binaryDrift" })
 hl.animation({ leaf = "fadeDim",          enabled = true, speed = 4,  bezier = "sectorScan" })
