@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import QtQuick
 
 Text {
@@ -13,8 +14,15 @@ Text {
     id: caffeineText
     color: awake ? activeColor : dimColor
     font { family: fontFamily; pixelSize: fontSize }
-    text: ""
+    text: "󰅶"
 
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: caffeineText.toggle()
+    }
+
+    // Idle inhibitor nativo per Wayland
     IdleInhibitor {
         window: caffeineText.window
         enabled: caffeineText.awake
