@@ -14,28 +14,28 @@ Scope {
         appid: "greenshell"
     }
 
-    Shortcut { name: "launcher"; description: "Apri il launcher"; onPressed: Ui.toggleModal("launcher", "apps") }
-    Shortcut { name: "clipboard"; description: "Cronologia appunti"; onPressed: Ui.toggleModal("launcher", "clipboard") }
+    Shortcut { name: "launcher"; description: I18n.tr("Apri il launcher"); onPressed: Ui.toggleModal("launcher", "apps") }
+    Shortcut { name: "clipboard"; description: I18n.tr("Cronologia appunti"); onPressed: Ui.toggleModal("launcher", "clipboard") }
     Shortcut { name: "commands"; description: "Comandi rapidi"; onPressed: Ui.toggleModal("launcher", "commands") }
-    Shortcut { name: "session"; description: "Menu sessione"; onPressed: Ui.toggleModal("session") }
-    Shortcut { name: "wallpaper"; description: "Selettore sfondi"; onPressed: Ui.toggleModal("wallpaper") }
-    Shortcut { name: "settings"; description: "Impostazioni"; onPressed: Ui.toggleModal("settings") }
+    Shortcut { name: "session"; description: I18n.tr("Menu sessione"); onPressed: Ui.toggleModal("session") }
+    Shortcut { name: "wallpaper"; description: I18n.tr("Selettore sfondi"); onPressed: Ui.toggleModal("wallpaper") }
+    Shortcut { name: "settings"; description: I18n.tr("Impostazioni"); onPressed: Ui.toggleModal("settings") }
     Shortcut { name: "control"; description: "Control center"; onPressed: Ui.togglePopout("control", "", -1) }
-    Shortcut { name: "notifications"; description: "Centro notifiche"; onPressed: Ui.togglePopout("notifications", "", -1) }
-    Shortcut { name: "ai"; description: "Chat Morpheus"; onPressed: Ui.togglePopout("ai", "", 320) }
-    Shortcut { name: "subnet"; description: "Calcolatore subnet"; onPressed: Ui.togglePopout("subnet", "", 320) }
-    Shortcut { name: "sysmon"; description: "Monitor di sistema"; onPressed: Ui.togglePopout("sysmon", "", -1) }
-    Shortcut { name: "calendar"; description: "Calendario"; onPressed: Ui.togglePopout("calendar", "", -1 ) }
-    Shortcut { name: "dnd"; description: "Non disturbare"; onPressed: Notifs.toggleDnd() }
+    Shortcut { name: "notifications"; description: I18n.tr("Centro notifiche"); onPressed: Ui.togglePopout("notifications", "", -1) }
+    Shortcut { name: "ai"; description: I18n.tr("Chat Morpheus"); onPressed: Ui.togglePopout("ai", "", 320) }
+    Shortcut { name: "subnet"; description: I18n.tr("Calcolatore subnet"); onPressed: Ui.togglePopout("subnet", "", 320) }
+    Shortcut { name: "sysmon"; description: I18n.tr("Monitor di sistema"); onPressed: Ui.togglePopout("sysmon", "", -1) }
+    Shortcut { name: "calendar"; description: I18n.tr("Calendario"); onPressed: Ui.togglePopout("calendar", "", -1 ) }
+    Shortcut { name: "dnd"; description: I18n.tr("Non disturbare"); onPressed: Notifs.toggleDnd() }
     Shortcut { name: "caffeine"; description: "Caffeine"; onPressed: Settings.caffeine = !Settings.caffeine }
-    Shortcut { name: "transparency"; description: "Trasparenza finestre"; onPressed: Settings.windowTransparency = !Settings.windowTransparency }
+    Shortcut { name: "transparency"; description: I18n.tr("Trasparenza finestre"); onPressed: Settings.windowTransparency = !Settings.windowTransparency }
     Shortcut { name: "volumeUp"; description: "Volume +"; onPressed: Audio.changeVolume(0.05) }
     Shortcut { name: "volumeDown"; description: "Volume -"; onPressed: Audio.changeVolume(-0.05) }
-    Shortcut { name: "volumeMute"; description: "Muto"; onPressed: Audio.toggleMute() }
-    Shortcut { name: "micMute"; description: "Muto microfono"; onPressed: Audio.toggleMicMute() }
-    Shortcut { name: "brightnessUp"; description: "Luminosità +"; onPressed: Brightness.change(0.05) }
-    Shortcut { name: "brightnessDown"; description: "Luminosità -"; onPressed: Brightness.change(-0.05) }
-    Shortcut { name: "closeAll"; description: "Chiudi popup"; onPressed: Ui.closeAll() }
+    Shortcut { name: "volumeMute"; description: I18n.tr("Muto"); onPressed: Audio.toggleMute() }
+    Shortcut { name: "micMute"; description: I18n.tr("Muto microfono"); onPressed: Audio.toggleMicMute() }
+    Shortcut { name: "brightnessUp"; description: I18n.tr("Luminosità +"); onPressed: Brightness.change(0.05) }
+    Shortcut { name: "brightnessDown"; description: I18n.tr("Luminosità -"); onPressed: Brightness.change(-0.05) }
+    Shortcut { name: "closeAll"; description: I18n.tr("Chiudi popup"); onPressed: Ui.closeAll() }
 
     IpcHandler {
         target: "shell"

@@ -114,7 +114,7 @@ Singleton {
                 try {
                     const j = JSON.parse(line);
                     if (j.error) {
-                        root.error = typeof j.error === "string" ? j.error : (j.error.message ?? "Errore");
+                        root.error = typeof j.error === "string" ? j.error : (j.error.message ?? I18n.tr("Errore"));
                         return;
                     }
                     const c = j.message?.content ?? j.choices?.[0]?.delta?.content ?? "";
@@ -128,7 +128,7 @@ Singleton {
         onExited: code => {
             root.busy = false;
             if (code !== 0 && code !== 15 && code !== 9)
-                root.error = "Impossibile contattare " + (Settings.aiBackend === "llamacpp" ? "llama.cpp (localhost:8080)" : "Ollama (localhost:11434)");
+                root.error = I18n.tr("Impossibile contattare ") + (Settings.aiBackend === "llamacpp" ? "llama.cpp (localhost:8080)" : "Ollama (localhost:11434)");
             const i = root.messages.count - 1;
             if (i >= 0 && root.messages.get(i).role === "assistant" && root.messages.get(i).content === "")
                 root.messages.remove(i);

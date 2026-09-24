@@ -106,7 +106,7 @@ StyledRect {
                     Layout.fillWidth: true
                     spacing: 6
                     StyledText {
-                        text: root.notification?.appName || "Sistema"
+                        text: root.notification?.appName || I18n.tr("Sistema")
                         font.pixelSize: Theme.font.tiny
                         font.weight: Font.Bold
                         font.letterSpacing: 0.6
@@ -185,7 +185,7 @@ StyledRect {
                     Layout.fillWidth: true
                     implicitHeight: 32
                     variant: "tonal"
-                    text: modelData.text || "Apri"
+                    text: modelData.text || I18n.tr("Apri")
                     onClicked: Notifs.invoke(root.notification, modelData)
                 }
             }

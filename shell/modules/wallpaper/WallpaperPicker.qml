@@ -47,7 +47,7 @@ StyledRect {
             ColumnLayout {
                 spacing: 0
                 StyledText {
-                    text: "Sfondi"
+                    text: I18n.tr("Sfondi")
                     font.pixelSize: Theme.font.title
                     font.weight: Font.DemiBold
                 }
@@ -62,7 +62,7 @@ StyledRect {
                 Layout.fillWidth: true
             }
             StyledText {
-                text: "Transizione"
+                text: I18n.tr("Transizione")
                 font.pixelSize: Theme.font.small
                 color: Theme.textDim
             }

@@ -107,7 +107,7 @@ PanelWindow {
             StyledText {
                 Layout.preferredWidth: 44
                 horizontalAlignment: Text.AlignRight
-                text: win.kind === "volume" ? (Audio.muted ? "muto" : Math.round(Audio.volume * 100) + "%") : Math.round(Brightness.value * 100) + "%"
+                text: win.kind === "volume" ? (Audio.muted ? I18n.tr("muto") : Math.round(Audio.volume * 100) + "%") : Math.round(Brightness.value * 100) + "%"
                 font.family: Theme.font.mono
                 font.weight: Font.Bold
             }

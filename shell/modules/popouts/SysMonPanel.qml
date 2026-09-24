@@ -85,7 +85,7 @@ Item {
             }
             StyledText {
                 Layout.fillWidth: true
-                text: "Sistema"
+                text: I18n.tr("Sistema")
                 font.pixelSize: Theme.font.title
                 font.weight: Font.DemiBold
             }
@@ -107,12 +107,12 @@ Item {
                 title: "CPU"
                 icon: Icons.chip
                 value: Math.round(SysStats.cpu * 100) + "%"
-                detail: SysStats.cpuTemp > 0 ? Math.round(SysStats.cpuTemp) + " °C" + (SysStats.fanRpm > 0 ? "  ·  ventola " + SysStats.fanRpm + " rpm" : "") : ""
+                detail: SysStats.cpuTemp > 0 ? Math.round(SysStats.cpuTemp) + " °C" + (SysStats.fanRpm > 0 ? I18n.tr("  ·  ventola ") + SysStats.fanRpm + " rpm" : "") : ""
                 values: SysStats.cpuHistory
                 tint: SysStats.cpu > 0.85 ? Theme.error : Theme.primary
             }
             GraphCard {
-                title: "Memoria"
+                title: I18n.tr("Memoria")
                 icon: Icons.memory
                 value: Math.round(SysStats.mem * 100) + "%"
                 detail: SysStats.memUsedGb.toFixed(1) + " / " + SysStats.memTotalGb.toFixed(1) + " GB" + (SysStats.swap > 0.01 ? "  ·  swap " + Math.round(SysStats.swap * 100) + "%" : "")
@@ -146,7 +146,7 @@ Item {
                             color: Theme.primary
                         }
                         StyledText {
-                            text: "Rete · " + (Network.defaultIface || "—")
+                            text: I18n.tr("Rete · ") + (Network.defaultIface || "—")
                             font.pixelSize: Theme.font.small
                             color: Theme.textDim
                         }
@@ -227,7 +227,7 @@ Item {
         // Processi
         SectionHeader {
             Layout.topMargin: 4
-            text: "Processi più attivi"
+            text: I18n.tr("Processi più attivi")
             icon: Icons.cli
         }
 

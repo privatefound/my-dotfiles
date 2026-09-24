@@ -75,7 +75,7 @@ ColumnLayout {
 
         Tile {
             icon: Network.icon
-            title: Network.wiredConnected ? "Rete" : "Wi‑Fi"
+            title: Network.wiredConnected ? I18n.tr("Rete") : "Wi‑Fi"
             subtitle: Network.label + (Network.vpnActive ? " · VPN" : "")
             toggled: Network.connected || Network.wifiEnabled
             hasPage: true
@@ -105,8 +105,8 @@ ColumnLayout {
 
         Tile {
             icon: Network.vpnActive ? Icons.vpn : Icons.lan
-            title: "Schede & VPN"
-            subtitle: Network.defaultIface ? "via " + Network.defaultIface : "Nessuna route"
+            title: I18n.tr("Schede & VPN")
+            subtitle: Network.defaultIface ? "via " + Network.defaultIface : I18n.tr("Nessuna route")
             toggled: Network.vpnActive
             hasPage: true
             onClicked: {
@@ -130,8 +130,8 @@ ColumnLayout {
 
         Tile {
             icon: Settings.dnd ? Icons.bellOff : Icons.bell
-            title: "Non disturbare"
-            subtitle: Settings.dnd ? "Attivo" : "Spento"
+            title: I18n.tr("Non disturbare")
+            subtitle: Settings.dnd ? I18n.tr("Attivo") : I18n.tr("Spento")
             toggled: Settings.dnd
             onClicked: Notifs.toggleDnd()
         }
@@ -139,31 +139,31 @@ ColumnLayout {
         Tile {
             icon: Settings.caffeine ? Icons.coffee : Icons.coffeeOutline
             title: "Caffeine"
-            subtitle: Settings.caffeine ? "Schermo sempre acceso" : "Spento"
+            subtitle: Settings.caffeine ? I18n.tr("Schermo sempre acceso") : I18n.tr("Spento")
             toggled: Settings.caffeine
             onClicked: Settings.caffeine = !Settings.caffeine
         }
 
         Tile {
             icon: Icons.opacity
-            title: "Trasparenza"
-            subtitle: Settings.windowTransparency ? "Finestre trasparenti" : "Finestre opache"
+            title: I18n.tr("Trasparenza")
+            subtitle: Settings.windowTransparency ? I18n.tr("Finestre trasparenti") : I18n.tr("Finestre opache")
             toggled: Settings.windowTransparency
             onClicked: Settings.windowTransparency = !Settings.windowTransparency
         }
 
         Tile {
             icon: Audio.micIcon
-            title: "Microfono"
-            subtitle: Audio.micMuted ? "Muto" : "Attivo"
+            title: I18n.tr("Microfono")
+            subtitle: Audio.micMuted ? I18n.tr("Muto") : I18n.tr("Attivo")
             toggled: !Audio.micMuted
             onClicked: Audio.toggleMicMute()
         }
 
         Tile {
             icon: Icons.cast
-            title: "Trasmetti"
-            subtitle: "Click destro: monitor"
+            title: I18n.tr("Trasmetti")
+            subtitle: I18n.tr("Click destro: monitor")
             onClicked: mouse => {
                 Ui.closePopout();
                 mouse.button === Qt.RightButton ? Session.monitors() : Session.castScreen();
@@ -173,7 +173,7 @@ ColumnLayout {
         Tile {
             icon: Icons.screenshot
             title: "Screenshot"
-            subtitle: "Area · click destro: schermo"
+            subtitle: I18n.tr("Area · click destro: schermo")
             onClicked: mouse => {
                 Ui.closePopout();
                 const cmd = mouse.button === Qt.RightButton ? "sleep 0.4; grim - | swappy -f -" : "sleep 0.4; g=$(slurp) && sleep 0.05 && grim -g \"$g\" - | swappy -f -";
@@ -219,7 +219,7 @@ ColumnLayout {
                 font.pixelSize: Theme.font.small
             }
             StyledText {
-                text: Power.acPlugged ? "Alimentatore" : "Batteria"
+                text: Power.acPlugged ? I18n.tr("Alimentatore") : I18n.tr("Batteria")
                 color: Theme.textDim
                 font.pixelSize: Theme.font.small
             }

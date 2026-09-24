@@ -80,7 +80,7 @@ Scope {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Autenticazione richiesta"
+                        text: I18n.tr("Autenticazione richiesta")
                         font.pixelSize: Theme.font.large
                         font.weight: Font.Bold
                     }
@@ -97,7 +97,7 @@ Scope {
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
                         visible: (root.flow?.selectedIdentity?.displayName ?? "") !== ""
-                        text: "come " + (root.flow?.selectedIdentity?.displayName ?? "")
+                        text: I18n.tr("come ") + (root.flow?.selectedIdentity?.displayName ?? "")
                         font.family: Theme.font.mono
                         font.pixelSize: Theme.font.small
                         color: Theme.primary
@@ -108,7 +108,7 @@ Scope {
                         Layout.fillWidth: true
                         icon: Icons.key
                         password: !(root.flow?.responseVisible ?? false)
-                        placeholder: (root.flow?.inputPrompt || "Password").replace(/:\s*$/, "")
+                        placeholder: (root.flow?.inputPrompt || I18n.tr("Password")).replace(/:\s*$/, "")
                         error: root.flow?.failed ?? false
                         onAccepted: {
                             root.flow.submit(text);
@@ -121,7 +121,7 @@ Scope {
                         Layout.fillWidth: true
                         visible: text !== ""
                         horizontalAlignment: Text.AlignHCenter
-                        text: root.flow?.failed ? "Password errata, riprova" : (root.flow?.supplementaryMessage ?? "")
+                        text: root.flow?.failed ? I18n.tr("Password errata, riprova") : (root.flow?.supplementaryMessage ?? "")
                         color: root.flow?.failed || root.flow?.supplementaryIsError ? Theme.error : Theme.textDim
                         font.pixelSize: Theme.font.small
                         wrapMode: Text.Wrap
@@ -133,14 +133,14 @@ Scope {
                         StyledButton {
                             Layout.fillWidth: true
                             variant: "outline"
-                            text: "Annulla"
+                            text: I18n.tr("Annulla")
                             onClicked: root.flow.cancelAuthenticationRequest()
                         }
                         StyledButton {
                             Layout.fillWidth: true
                             variant: "filled"
                             icon: Icons.lockOpen
-                            text: "Autentica"
+                            text: I18n.tr("Autentica")
                             onClicked: {
                                 root.flow.submit(pw.text);
                                 pw.text = "";

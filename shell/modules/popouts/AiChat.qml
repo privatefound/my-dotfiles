@@ -45,7 +45,7 @@ Item {
                     color: Theme.primary
                 }
                 StyledText {
-                    text: Ai.busy ? "sta scrivendo…" : "IA locale"
+                    text: Ai.busy ? I18n.tr("sta scrivendo…") : I18n.tr("IA locale")
                     font.pixelSize: Theme.font.tiny
                     color: Theme.textDim
                 }
@@ -157,12 +157,12 @@ Item {
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Benvenuto nel deserto del reale, Operatore."
+                    text: I18n.tr("Benvenuto nel deserto del reale, Operatore.")
                     color: Theme.textDim
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Fai una domanda. Enter per inviare."
+                    text: I18n.tr("Fai una domanda. Enter per inviare.")
                     font.pixelSize: Theme.font.small
                     color: Theme.textFaint
                 }
@@ -205,7 +205,7 @@ Item {
                         StyledText {
                             visible: Ai.models.length === 0
                             Layout.margins: 10
-                            text: "Nessun modello trovato (Ollama / llama.cpp spenti?)"
+                            text: I18n.tr("Nessun modello trovato (Ollama / llama.cpp spenti?)")
                             color: Theme.textFaint
                             font.pixelSize: Theme.font.small
                             wrapMode: Text.Wrap
@@ -233,7 +233,7 @@ Item {
                 id: input
                 Layout.fillWidth: true
                 icon: Icons.sparkle
-                placeholder: "Scrivi a Morpheus…"
+                placeholder: I18n.tr("Scrivi a Morpheus…")
                 onAccepted: {
                     Ai.send(text);
                     text = "";

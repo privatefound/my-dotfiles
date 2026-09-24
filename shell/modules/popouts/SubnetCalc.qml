@@ -77,7 +77,7 @@ Item {
         }
         const ip = ipToInt(ipStr.trim());
         if (ip === null) {
-            error = "Indirizzo IP non valido";
+            error = I18n.tr("Indirizzo IP non valido");
             result = null;
             return;
         }
@@ -90,7 +90,7 @@ Item {
             prefix = m === null ? -1 : prefixFromMask(m);
         }
         if (prefix < 0 || prefix > 32) {
-            error = "Netmask / prefisso non valido";
+            error = I18n.tr("Netmask / prefisso non valido");
             result = null;
             return;
         }
@@ -104,7 +104,7 @@ Item {
         const o1 = ip >>> 24;
         const cls = o1 < 128 ? "A" : o1 < 192 ? "B" : o1 < 224 ? "C" : o1 < 240 ? "D (multicast)" : "E";
         const priv = (o1 === 10) || (o1 === 172 && ((ip >>> 16) & 255) >= 16 && ((ip >>> 16) & 255) <= 31) || (o1 === 192 && ((ip >>> 16) & 255) === 168);
-        const special = o1 === 127 ? "Loopback" : (o1 === 169 && ((ip >>> 16) & 255) === 254) ? "Link-local" : (o1 === 100 && ((ip >>> 16) & 255) >= 64 && ((ip >>> 16) & 255) <= 127) ? "CGNAT" : priv ? "Privata (RFC1918)" : "Pubblica";
+        const special = o1 === 127 ? "Loopback" : (o1 === 169 && ((ip >>> 16) & 255) === 254) ? "Link-local" : (o1 === 100 && ((ip >>> 16) & 255) >= 64 && ((ip >>> 16) & 255) <= 127) ? "CGNAT" : priv ? I18n.tr("Privata (RFC1918)") : I18n.tr("Pubblica");
         result = {
             ip: intToIp(ip), prefix, mask: intToIp(mask), wildcard: intToIp(~mask >>> 0),
             network: intToIp(net), broadcast: intToIp(bc), first: intToIp(first), last: intToIp(last),
@@ -175,12 +175,12 @@ Item {
             }
             StyledText {
                 Layout.fillWidth: true
-                text: "Calcolatore subnet"
+                text: I18n.tr("Calcolatore subnet")
                 font.pixelSize: Theme.font.title
                 font.weight: Font.DemiBold
             }
             StyledText {
-                text: "click su un campo = copia"
+                text: I18n.tr("click su un campo = copia")
                 font.pixelSize: Theme.font.tiny
                 color: Theme.textFaint
             }
@@ -210,15 +210,15 @@ Item {
             rowSpacing: 6
             columnSpacing: 6
 
-            Field { label: "Rete"; value: root.result ? root.result.network + "/" + root.result.prefix : ""; accent: true }
+            Field { label: I18n.tr("Rete"); value: root.result ? root.result.network + "/" + root.result.prefix : ""; accent: true }
             Field { label: "Netmask"; value: root.result?.mask ?? "" }
             Field { label: "Wildcard"; value: root.result?.wildcard ?? "" }
-            Field { label: "Primo host"; value: root.result?.first ?? "" }
-            Field { label: "Ultimo host"; value: root.result?.last ?? "" }
+            Field { label: I18n.tr("Primo host"); value: root.result?.first ?? "" }
+            Field { label: I18n.tr("Ultimo host"); value: root.result?.last ?? "" }
             Field { label: "Broadcast"; value: root.result?.broadcast ?? "" }
-            Field { label: "Host utilizzabili"; value: root.result ? root.result.hosts.toLocaleString(Qt.locale("it_IT"), "f", 0) : ""; accent: true }
-            Field { label: "Classe"; value: root.result?.cls ?? "" }
-            Field { label: "Tipo"; value: root.result?.type ?? "" }
+            Field { label: I18n.tr("Host utilizzabili"); value: root.result ? root.result.hosts.toLocaleString(I18n.locale, "f", 0) : ""; accent: true }
+            Field { label: I18n.tr("Classe"); value: root.result?.cls ?? "" }
+            Field { label: I18n.tr("Tipo"); value: root.result?.type ?? "" }
         }
 
         StyledRect {
@@ -254,7 +254,7 @@ Item {
             visible: root.result !== null && root.result.prefix < 32
             spacing: 6
             SectionHeader {
-                text: "Suddividi in /" + root.splitPrefix + "  (" + (root.result ? Math.pow(2, root.splitPrefix - root.result.prefix) : 0) + " subnet)"
+                text: I18n.tr("Suddividi in /") + root.splitPrefix + "  (" + (root.result ? Math.pow(2, root.splitPrefix - root.result.prefix) : 0) + I18n.tr(" subnet)")
                 icon: Icons.grid
             }
             IconButton {

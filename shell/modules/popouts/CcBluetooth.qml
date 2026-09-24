@@ -34,7 +34,7 @@ ColumnLayout {
 
         SectionHeader {
             visible: Bt.enabled && Bt.pairedDevices.length > 0
-            text: "Dispositivi associati"
+            text: I18n.tr("Dispositivi associati")
             icon: Icons.bluetoothConnect
         }
 
@@ -62,7 +62,7 @@ ColumnLayout {
         SectionHeader {
             Layout.topMargin: 8
             visible: Bt.enabled
-            text: Bt.discovering ? "Dispositivi disponibili" : "Premi il radar per cercare"
+            text: Bt.discovering ? I18n.tr("Dispositivi disponibili") : I18n.tr("Premi il radar per cercare")
             icon: Icons.radar
         }
 
@@ -83,7 +83,7 @@ ColumnLayout {
             visible: !Bt.enabled
             Layout.fillWidth: true
             Layout.margins: 20
-            text: Bt.available ? "Bluetooth spento" : "Nessun adattatore Bluetooth"
+            text: Bt.blocked ? I18n.tr("Bluetooth bloccato (rfkill): accendilo con l'interruttore") : I18n.tr("Bluetooth spento")
             color: Theme.textFaint
             horizontalAlignment: Text.AlignHCenter
         }

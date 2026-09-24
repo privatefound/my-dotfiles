@@ -92,13 +92,12 @@ StyledRect {
 
         // ── Bluetooth ──
         Segment {
-            visible: Bt.available
             onClicked: mouse => mouse.button === Qt.RightButton ? Session.bluetoothManager() : root.open("bluetooth")
 
             Icon {
                 text: Bt.icon
                 size: 16
-                color: Bt.connectedDevices.length > 0 ? Theme.primary : Bt.enabled ? Theme.textDim : Theme.textFaint
+                color: Bt.connectedDevices.length > 0 ? Theme.primary : Bt.enabled ? Theme.text : Theme.textDim
             }
         }
 

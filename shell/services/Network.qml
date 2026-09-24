@@ -23,7 +23,7 @@ Singleton {
     readonly property bool connected: wifiConnected || wiredConnected
     readonly property bool scanning: wifiDevice?.scannerEnabled ?? false
 
-    readonly property string label: wiredConnected ? "Ethernet" : wifiConnected ? activeNetwork.name : wifiEnabled ? "Disconnesso" : "Wi‑Fi spento"
+    readonly property string label: wiredConnected ? "Ethernet" : wifiConnected ? activeNetwork.name : wifiEnabled ? I18n.tr("Disconnesso") : I18n.tr("Wi‑Fi spento")
     readonly property string icon: wiredConnected ? Icons.ethernet : !wifiEnabled ? Icons.wifiOff : wifiConnected ? strengthIcon(activeNetwork.signalStrength) : Icons.wifi0
     readonly property bool limited: Networking.connectivity === NetworkConnectivity.Limited || Networking.connectivity === NetworkConnectivity.Portal
 
@@ -80,9 +80,9 @@ Singleton {
             function onConnectionFailed(reason) {
                 if (reason === ConnectionFailReason.NoSecrets || reason === ConnectionFailReason.WifiAuthTimeout || reason === ConnectionFailReason.WifiClientFailed) {
                     root.pendingNetwork = modelData;
-                    root.lastError = "Password errata o mancante";
+                    root.lastError = I18n.tr("Password errata o mancante");
                 } else {
-                    root.lastError = "Connessione non riuscita";
+                    root.lastError = I18n.tr("Connessione non riuscita");
                 }
             }
         }

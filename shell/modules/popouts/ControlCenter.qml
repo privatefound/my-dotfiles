@@ -60,7 +60,7 @@ Item {
                     color: Theme.primary
                 }
                 StyledText {
-                    text: "attivo da " + SysStats.uptime
+                    text: I18n.tr("attivo da ") + SysStats.uptime
                     font.pixelSize: Theme.font.small
                     color: Theme.textDim
                 }

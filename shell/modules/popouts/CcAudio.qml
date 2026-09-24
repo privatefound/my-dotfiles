@@ -34,7 +34,7 @@ ColumnLayout {
 
         // ── Uscita ──
         SectionHeader {
-            text: "Uscita"
+            text: I18n.tr("Uscita")
             icon: Icons.speaker
         }
 
@@ -103,7 +103,7 @@ ColumnLayout {
         // ── Ingresso ──
         SectionHeader {
             Layout.topMargin: 8
-            text: "Ingresso"
+            text: I18n.tr("Ingresso")
             icon: Icons.mic
         }
 
@@ -131,7 +131,7 @@ ColumnLayout {
         SectionHeader {
             Layout.topMargin: 8
             visible: Audio.streams.length > 0
-            text: "Applicazioni"
+            text: I18n.tr("Applicazioni")
             icon: Icons.apps
         }
 

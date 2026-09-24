@@ -11,13 +11,13 @@ Singleton {
     // ── Accenti disponibili ──
     readonly property var accents: ({
         matrix:  { name: "Matrix",   color: "#00ff41" },
-        emerald: { name: "Smeraldo", color: "#3ddc97" },
-        cyan:    { name: "Ciano",    color: "#00e5ff" },
-        ice:     { name: "Ghiaccio", color: "#8ab4f8" },
-        violet:  { name: "Viola",    color: "#b388ff" },
-        rose:    { name: "Rosa",     color: "#ff6e9c" },
-        amber:   { name: "Ambra",    color: "#ffb000" },
-        red:     { name: "Rosso",    color: "#ff4d4d" }
+        emerald: { name: I18n.tr("Smeraldo"), color: "#3ddc97" },
+        cyan:    { name: I18n.tr("Ciano"),    color: "#00e5ff" },
+        ice:     { name: I18n.tr("Ghiaccio"), color: "#8ab4f8" },
+        violet:  { name: I18n.tr("Viola"),    color: "#b388ff" },
+        rose:    { name: I18n.tr("Rosa"),     color: "#ff6e9c" },
+        amber:   { name: I18n.tr("Ambra"),    color: "#ffb000" },
+        red:     { name: I18n.tr("Rosso"),    color: "#ff4d4d" }
     })
     readonly property var accentKeys: ["matrix", "emerald", "cyan", "ice", "violet", "rose", "amber", "red"]
 
@@ -34,6 +34,7 @@ Singleton {
     readonly property color _n5: "#232a24"
     readonly property color _text: "#e4ece6"
     readonly property color _textDim: "#97a39a"
+    readonly property color _textFaint: "#5b665e"
 
     function mix(a, b, t) {
         return Qt.rgba(a.r * (1 - t) + b.r * t, a.g * (1 - t) + b.g * t, a.b * (1 - t) + b.b * t, a.a * (1 - t) + b.a * t);
@@ -60,7 +61,7 @@ Singleton {
 
     readonly property color text: mix(_text, primary, 0.05)
     readonly property color textDim: mix(_textDim, primary, 0.08)
-    readonly property color textFaint: mix("#5b665e", primary, 0.05)
+    readonly property color textFaint: mix(_textFaint, primary, 0.05)
 
     readonly property color outline: alpha(primary, 0.18)
     readonly property color outlineVariant: alpha(_white, 0.07)

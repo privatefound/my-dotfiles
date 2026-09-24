@@ -11,12 +11,12 @@ Item {
     id: root
 
     readonly property var actions: [
-        { id: "lock", label: "Blocca", key: "L", icon: "lock", glyph: Icons.lock, confirm: false, run: () => Session.lock() },
-        { id: "suspend", label: "Sospendi", key: "S", icon: "suspend", glyph: Icons.sleep, confirm: false, run: () => Session.suspend() },
-        { id: "hibernate", label: "Iberna", key: "H", icon: "hibernate", glyph: Icons.snowflake, confirm: false, run: () => Session.hibernate() },
-        { id: "logout", label: "Esci", key: "E", icon: "logout", glyph: Icons.logout, confirm: true, run: () => Session.logout() },
-        { id: "reboot", label: "Riavvia", key: "R", icon: "reboot", glyph: Icons.restart, confirm: true, run: () => Session.reboot() },
-        { id: "shutdown", label: "Spegni", key: "P", icon: "shutdown", glyph: Icons.power, confirm: true, run: () => Session.poweroff() }
+        { id: "lock", label: I18n.tr("Blocca"), key: "L", icon: "lock", glyph: Icons.lock, confirm: false, run: () => Session.lock() },
+        { id: "suspend", label: I18n.tr("Sospendi"), key: "S", icon: "suspend", glyph: Icons.sleep, confirm: false, run: () => Session.suspend() },
+        { id: "hibernate", label: I18n.tr("Iberna"), key: "H", icon: "hibernate", glyph: Icons.snowflake, confirm: false, run: () => Session.hibernate() },
+        { id: "logout", label: I18n.tr("Esci"), key: "E", icon: "logout", glyph: Icons.logout, confirm: true, run: () => Session.logout() },
+        { id: "reboot", label: I18n.tr("Riavvia"), key: "R", icon: "reboot", glyph: Icons.restart, confirm: true, run: () => Session.reboot() },
+        { id: "shutdown", label: I18n.tr("Spegni"), key: "P", icon: "shutdown", glyph: Icons.power, confirm: true, run: () => Session.poweroff() }
     ]
     property int current: 0
     property string pending: ""
@@ -99,7 +99,7 @@ Item {
             }
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
-                text: root.pending !== "" ? "Premi di nuovo per confermare" : "Arrivederci, Operatore  ·  attivo da " + SysStats.uptime
+                text: root.pending !== "" ? I18n.tr("Premi di nuovo per confermare") : I18n.tr("Arrivederci, Operatore  ·  attivo da ") + SysStats.uptime
                 color: root.pending !== "" ? Theme.warning : Theme.textDim
             }
         }
@@ -165,7 +165,7 @@ Item {
                         }
                         StyledText {
                             Layout.alignment: Qt.AlignHCenter
-                            text: btn.confirming ? "Conferma?" : btn.modelData.label
+                            text: btn.confirming ? I18n.tr("Conferma?") : btn.modelData.label
                             font.pixelSize: Theme.font.title
                             font.weight: Font.DemiBold
                             color: btn.confirming ? Theme.error : btn.sel ? Theme.fgPrimaryContainer : Theme.text
@@ -203,7 +203,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             variant: "outline"
             icon: Icons.speedometer
-            text: "Monitor di sistema"
+            text: I18n.tr("Monitor di sistema")
             onClicked: {
                 Ui.closeModal();
                 Session.sysMonitor();

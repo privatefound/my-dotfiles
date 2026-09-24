@@ -11,7 +11,7 @@ Item {
     property int monthOffset: 0
     readonly property date today: Time.now
     readonly property date shownMonth: new Date(today.getFullYear(), today.getMonth() + monthOffset, 1)
-    readonly property var locale: Qt.locale("it_IT")
+    readonly property var locale: I18n.locale
 
     implicitWidth: 400
     implicitHeight: col.implicitHeight + 32
@@ -104,7 +104,7 @@ Item {
                     columnSpacing: 2
 
                     Repeater {
-                        model: ["lu", "ma", "me", "gi", "ve", "sa", "do"]
+                        model: [1, 2, 3, 4, 5, 6, 0].map(d => root.locale.dayName(d, Locale.ShortFormat).slice(0, 2).toLowerCase())
                         delegate: StyledText {
                             required property string modelData
                             required property int index

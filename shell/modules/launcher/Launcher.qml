@@ -15,7 +15,7 @@ StyledRect {
 
     readonly property var modes: [
         { id: "apps", label: "App", icon: Icons.apps },
-        { id: "clipboard", label: "Appunti", icon: Icons.clipboard },
+        { id: "clipboard", label: I18n.tr("Appunti"), icon: Icons.clipboard },
         { id: "commands", label: "Comandi", icon: Icons.cli }
     ]
     property string mode: Ui.launcherMode
@@ -70,38 +70,38 @@ StyledRect {
 
     // ── Comandi (ex rofi-control + azioni di sessione) ──
     readonly property var commands: [
-        { name: "Blocca schermo", icon: Icons.lock, run: () => Session.lock() },
-        { name: "Sospendi", icon: Icons.sleep, run: () => Session.suspend() },
-        { name: "Iberna", icon: Icons.snowflake, run: () => Session.hibernate() },
-        { name: "Riavvia", icon: Icons.restart, run: () => Ui.openModal("session") },
-        { name: "Spegni", icon: Icons.power, run: () => Ui.openModal("session") },
-        { name: "Esci dalla sessione", icon: Icons.logout, run: () => Ui.openModal("session") },
+        { name: I18n.tr("Blocca schermo"), icon: Icons.lock, run: () => Session.lock() },
+        { name: I18n.tr("Sospendi"), icon: Icons.sleep, run: () => Session.suspend() },
+        { name: I18n.tr("Iberna"), icon: Icons.snowflake, run: () => Session.hibernate() },
+        { name: I18n.tr("Riavvia"), icon: Icons.restart, run: () => Ui.openModal("session") },
+        { name: I18n.tr("Spegni"), icon: Icons.power, run: () => Ui.openModal("session") },
+        { name: I18n.tr("Esci dalla sessione"), icon: Icons.logout, run: () => Ui.openModal("session") },
         { name: "Volume +5%", icon: Icons.volumeHigh, run: () => Audio.changeVolume(0.05), keep: true },
         { name: "Volume -5%", icon: Icons.volumeLow, run: () => Audio.changeVolume(-0.05), keep: true },
-        { name: "Muto audio", icon: Icons.volumeOff, run: () => Audio.toggleMute(), keep: true },
-        { name: "Muto microfono", icon: Icons.micOff, run: () => Audio.toggleMicMute(), keep: true },
-        { name: "Luminosità +10%", icon: Icons.brightnessHigh, run: () => Brightness.change(0.1), keep: true },
-        { name: "Luminosità -10%", icon: Icons.brightnessLow, run: () => Brightness.change(-0.1), keep: true },
+        { name: I18n.tr("Muto audio"), icon: Icons.volumeOff, run: () => Audio.toggleMute(), keep: true },
+        { name: I18n.tr("Muto microfono"), icon: Icons.micOff, run: () => Audio.toggleMicMute(), keep: true },
+        { name: I18n.tr("Luminosità +10%"), icon: Icons.brightnessHigh, run: () => Brightness.change(0.1), keep: true },
+        { name: I18n.tr("Luminosità -10%"), icon: Icons.brightnessLow, run: () => Brightness.change(-0.1), keep: true },
         { name: "Wi‑Fi on/off", icon: Icons.wifi4, run: () => Network.setWifiEnabled(!Network.wifiEnabled), keep: true },
         { name: "Bluetooth on/off", icon: Icons.bluetooth, run: () => Bt.setEnabled(!Bt.enabled), keep: true },
-        { name: "Non disturbare on/off", icon: Icons.bellOff, run: () => Notifs.toggleDnd(), keep: true },
+        { name: I18n.tr("Non disturbare on/off"), icon: Icons.bellOff, run: () => Notifs.toggleDnd(), keep: true },
         { name: "Caffeine on/off", icon: Icons.coffee, run: () => Settings.caffeine = !Settings.caffeine, keep: true },
-        { name: "Trasparenza finestre on/off", icon: Icons.opacity, run: () => Settings.windowTransparency = !Settings.windowTransparency, keep: true },
-        { name: "Cambia sfondo", icon: Icons.wallpaper, run: () => Ui.openModal("wallpaper") },
-        { name: "Sfondo casuale", icon: Icons.imageMulti, run: () => Wallpaper.random() },
-        { name: "Impostazioni shell", icon: Icons.cog, run: () => Ui.openModal("settings") },
+        { name: I18n.tr("Trasparenza finestre on/off"), icon: Icons.opacity, run: () => Settings.windowTransparency = !Settings.windowTransparency, keep: true },
+        { name: I18n.tr("Cambia sfondo"), icon: Icons.wallpaper, run: () => Ui.openModal("wallpaper") },
+        { name: I18n.tr("Sfondo casuale"), icon: Icons.imageMulti, run: () => Wallpaper.random() },
+        { name: I18n.tr("Impostazioni shell"), icon: Icons.cog, run: () => Ui.openModal("settings") },
         { name: "Screenshot area", icon: Icons.screenshot, run: () => Quickshell.execDetached(["sh", "-c", "sleep 0.4; g=$(slurp) && sleep 0.05 && grim -g \"$g\" - | swappy -f -"]) },
         { name: "Screenshot schermo", icon: Icons.monitor, run: () => Quickshell.execDetached(["sh", "-c", "sleep 0.4; grim - | swappy -f -"]) },
         { name: "Selettore colore", icon: Icons.eyedropper, run: () => Quickshell.execDetached(["sh", "-c", "sleep 0.3; hyprpicker -a"]) },
-        { name: "Trasmetti schermo", icon: Icons.cast, run: () => Session.castScreen() },
-        { name: "Gestione monitor (Monique)", icon: Icons.monitorMulti, run: () => Session.monitors() },
-        { name: "Mixer audio", icon: Icons.tune, run: () => Session.audioMixer() },
-        { name: "Connessioni di rete", icon: Icons.lan, run: () => Network.openEditor() },
-        { name: "Monitor di sistema", icon: Icons.speedometer, run: () => Session.sysMonitor() },
-        { name: "Calcolatore subnet", icon: Icons.ipNetwork, run: () => Ui.openPopout("subnet", Ui.focusedScreen, 200) },
-        { name: "Chat con Morpheus", icon: Icons.sparkle, run: () => Ui.openPopout("ai", Ui.focusedScreen, 200) },
-        { name: "Pulisci cronologia appunti", icon: Icons.trash, run: () => Clipboard.wipe() },
-        { name: "Ricarica shell", icon: Icons.refresh, run: () => Quickshell.reload(true) }
+        { name: I18n.tr("Trasmetti schermo"), icon: Icons.cast, run: () => Session.castScreen() },
+        { name: I18n.tr("Gestione monitor (Monique)"), icon: Icons.monitorMulti, run: () => Session.monitors() },
+        { name: I18n.tr("Mixer audio"), icon: Icons.tune, run: () => Session.audioMixer() },
+        { name: I18n.tr("Connessioni di rete"), icon: Icons.lan, run: () => Network.openEditor() },
+        { name: I18n.tr("Monitor di sistema"), icon: Icons.speedometer, run: () => Session.sysMonitor() },
+        { name: I18n.tr("Calcolatore subnet"), icon: Icons.ipNetwork, run: () => Ui.openPopout("subnet", Ui.focusedScreen, 200) },
+        { name: I18n.tr("Chat con Morpheus"), icon: Icons.sparkle, run: () => Ui.openPopout("ai", Ui.focusedScreen, 200) },
+        { name: I18n.tr("Pulisci cronologia appunti"), icon: Icons.trash, run: () => Clipboard.wipe() },
+        { name: I18n.tr("Ricarica shell"), icon: Icons.refresh, run: () => Quickshell.reload(true) }
     ]
 
     readonly property var items: {
@@ -182,7 +182,7 @@ StyledRect {
             Layout.fillWidth: true
             implicitHeight: 52
             icon: root.mode === "clipboard" ? Icons.clipboard : root.mode === "commands" ? Icons.cli : Icons.magnify
-            placeholder: root.mode === "clipboard" ? "Cerca negli appunti…" : root.mode === "commands" ? "Cerca un comando…" : "Cerca app…   ( = calcola · > esegui · ? chiedi a Morpheus )"
+            placeholder: root.mode === "clipboard" ? I18n.tr("Cerca negli appunti…") : root.mode === "commands" ? I18n.tr("Cerca un comando…") : I18n.tr("Cerca app…   ( = calcola · > esegui · ? chiedi a Morpheus )")
             input.font.pixelSize: Theme.font.title
             onTextChanged: list.currentIndex = 0
             onAccepted: root.activate(list.currentIndex)
@@ -262,7 +262,7 @@ StyledRect {
                 Layout.fillWidth: true
             }
             StyledText {
-                text: "Tab cambia modalità"
+                text: I18n.tr("Tab cambia modalità")
                 font.pixelSize: Theme.font.tiny
                 color: Theme.textFaint
             }
@@ -290,14 +290,14 @@ StyledRect {
                     spacing: 2
                     StyledText {
                         Layout.fillWidth: true
-                        text: root.calcMode ? (root.calcResult !== "" ? "= " + root.calcResult : "…") : root.runMode ? root.query.slice(1).trim() || "comando…" : root.query.slice(1).trim() || "domanda…"
+                        text: root.calcMode ? (root.calcResult !== "" ? "= " + root.calcResult : "…") : root.runMode ? root.query.slice(1).trim() || I18n.tr("comando…") : root.query.slice(1).trim() || I18n.tr("domanda…")
                         font.family: Theme.font.mono
                         font.pixelSize: Theme.font.large
                         font.weight: Font.Bold
                         color: Theme.fgPrimaryContainer
                     }
                     StyledText {
-                        text: root.calcMode ? "Invio per copiare il risultato" : root.runMode ? "Invio per eseguire" : "Invio per chiedere a Morpheus"
+                        text: root.calcMode ? I18n.tr("Invio per copiare il risultato") : root.runMode ? I18n.tr("Invio per eseguire") : I18n.tr("Invio per chiedere a Morpheus")
                         font.pixelSize: Theme.font.small
                         color: Theme.alpha(Theme.fgPrimaryContainer, 0.7)
                     }
@@ -381,7 +381,7 @@ StyledRect {
                         spacing: 1
                         StyledText {
                             Layout.fillWidth: true
-                            text: root.mode === "apps" ? row.modelData.name : root.mode === "commands" ? row.modelData.name : (row.modelData.isImage ? "Immagine" : row.modelData.text.replace(/\s+/g, " "))
+                            text: root.mode === "apps" ? row.modelData.name : root.mode === "commands" ? row.modelData.name : (row.modelData.isImage ? I18n.tr("Immagine") : row.modelData.text.replace(/\s+/g, " "))
                             font.weight: root.mode === "clipboard" ? Font.Normal : Font.DemiBold
                             font.family: root.mode === "clipboard" && !row.modelData.isImage ? Theme.font.mono : Theme.font.sans
                             font.pixelSize: root.mode === "clipboard" ? Theme.font.small : Theme.font.body
@@ -434,7 +434,7 @@ StyledRect {
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: root.mode === "clipboard" ? (Clipboard.loading ? "Carico…" : "Appunti vuoti (serve cliphist)") : "Nessun risultato"
+                    text: root.mode === "clipboard" ? (Clipboard.loading ? I18n.tr("Carico…") : I18n.tr("Appunti vuoti (serve cliphist)")) : I18n.tr("Nessun risultato")
                     color: Theme.textDim
                 }
             }

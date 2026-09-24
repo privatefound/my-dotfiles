@@ -22,7 +22,7 @@ Singleton {
         const map = {};
         const order = [];
         for (const n of list) {
-            const key = n.appName || "Sistema";
+            const key = n.appName || I18n.tr("Sistema");
             if (!map[key]) {
                 map[key] = { app: key, icon: n.appIcon, items: [] };
                 order.push(key);
@@ -110,12 +110,12 @@ Singleton {
             return "";
         const s = Math.floor((Time.now.getTime() - t) / 1000);
         if (s < 60)
-            return "ora";
+            return I18n.tr("ora");
         if (s < 3600)
-            return Math.floor(s / 60) + " min fa";
+            return Math.floor(s / 60) + I18n.tr(" min fa");
         if (s < 86400)
-            return Math.floor(s / 3600) + " h fa";
-        return Math.floor(s / 86400) + " g fa";
+            return Math.floor(s / 3600) + I18n.tr(" h fa");
+        return Math.floor(s / 86400) + I18n.tr(" g fa");
     }
 
     function iconFor(n) {

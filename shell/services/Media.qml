@@ -3,6 +3,7 @@ pragma Singleton
 import Quickshell
 import Quickshell.Services.Mpris
 import QtQuick
+import qs.config
 
 // Lettori multimediali (MPRIS).
 Singleton {
@@ -13,7 +14,7 @@ Singleton {
     readonly property var active: (selected && players.includes(selected)) ? selected : (players.find(p => p.isPlaying) ?? players[0] ?? null)
     readonly property bool hasPlayer: active !== null
     readonly property bool playing: active?.isPlaying ?? false
-    readonly property string title: active?.trackTitle || "Nessun brano"
+    readonly property string title: active?.trackTitle || I18n.tr("Nessun brano")
     readonly property string artist: active?.trackArtist || active?.identity || ""
     readonly property string art: active?.trackArtUrl ?? ""
 

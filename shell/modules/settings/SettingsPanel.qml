@@ -12,10 +12,10 @@ StyledRect {
 
     property string section: "look"
     readonly property var sections: [
-        { id: "look", label: "Aspetto", icon: Icons.palette },
-        { id: "bar", label: "Barra", icon: Icons.dotsHorizontal },
-        { id: "notif", label: "Notifiche", icon: Icons.bell },
-        { id: "apps", label: "App & AI", icon: Icons.apps },
+        { id: "look", label: I18n.tr("Aspetto"), icon: Icons.palette },
+        { id: "bar", label: I18n.tr("Barra"), icon: Icons.dotsHorizontal },
+        { id: "notif", label: I18n.tr("Notifiche"), icon: Icons.bell },
+        { id: "apps", label: I18n.tr("App & AI"), icon: Icons.apps },
         { id: "about", label: "Info", icon: Icons.information }
     ]
 
@@ -99,7 +99,7 @@ StyledRect {
                         color: Theme.primary
                     }
                     StyledText {
-                        text: "Impostazioni"
+                        text: I18n.tr("Impostazioni")
                         font.pixelSize: Theme.font.title
                         font.weight: Font.Bold
                     }
@@ -144,7 +144,7 @@ StyledRect {
                     Layout.fillWidth: true
                     variant: "outline"
                     icon: Icons.textBox
-                    text: "Apri settings.json"
+                    text: I18n.tr("Apri settings.json")
                     onClicked: Quickshell.execDetached(["xdg-open", Settings.rootDir + "/settings.json"])
                 }
             }
@@ -173,7 +173,27 @@ StyledRect {
                     spacing: 6
 
                     SectionHeader {
-                        text: "Colore d'accento"
+                        text: I18n.tr("Lingua")
+                        icon: Icons.earth
+                    }
+                    Row_ {
+                        title: I18n.tr("Lingua")
+                        subtitle: Settings.language === "auto" ? I18n.tr("Segue la lingua del sistema") + " (" + I18n.lang + ")" : ""
+                        Repeater {
+                            model: I18n.languages
+                            delegate: StyledButton {
+                                required property var modelData
+                                implicitHeight: 32
+                                padding: 12
+                                variant: Settings.language === modelData.id ? "filled" : "tonal"
+                                text: modelData.id === "auto" ? I18n.tr(modelData.name) : modelData.name
+                                onClicked: Settings.language = modelData.id
+                            }
+                        }
+                    }
+
+                    SectionHeader {
+                        text: I18n.tr("Colore d'accento")
                         icon: Icons.palette
                     }
                     Flow {
@@ -220,11 +240,11 @@ StyledRect {
                     }
 
                     SectionHeader {
-                        text: "Superfici"
+                        text: I18n.tr("Superfici")
                         icon: Icons.opacity
                     }
                     Row_ {
-                        title: "Opacità barra"
+                        title: I18n.tr("Opacità barra")
                         StyledSlider {
                             implicitWidth: 220
                             implicitHeight: 32
@@ -234,7 +254,7 @@ StyledRect {
                         }
                     }
                     Row_ {
-                        title: "Opacità pannelli"
+                        title: I18n.tr("Opacità pannelli")
                         StyledSlider {
                             implicitWidth: 220
                             implicitHeight: 32
@@ -244,7 +264,7 @@ StyledRect {
                         }
                     }
                     Row_ {
-                        title: "Dimensione testo"
+                        title: I18n.tr("Dimensione testo")
                         subtitle: Math.round(Settings.fontScale * 100) + "%"
                         StyledSlider {
                             implicitWidth: 220
@@ -258,19 +278,19 @@ StyledRect {
                         }
                     }
                     ToggleRow {
-                        title: "Effetto CRT"
-                        subtitle: "Righe di scansione e raggio verde sulla barra"
+                        title: I18n.tr("Effetto CRT")
+                        subtitle: I18n.tr("Righe di scansione e raggio verde sulla barra")
                         checked: Settings.scanlineEffect
                         onToggled: v => Settings.scanlineEffect = v
                     }
                     ToggleRow {
-                        title: "Animazioni"
+                        title: I18n.tr("Animazioni")
                         checked: Settings.animations
                         onToggled: v => Settings.animations = v
                     }
                     ToggleRow {
-                        title: "Trasparenza finestre"
-                        subtitle: "Finestre leggermente trasparenti (come il vecchio toggle)"
+                        title: I18n.tr("Trasparenza finestre")
+                        subtitle: I18n.tr("Finestre leggermente trasparenti (come il vecchio toggle)")
                         checked: Settings.windowTransparency
                         onToggled: v => Settings.windowTransparency = v
                     }
@@ -283,17 +303,17 @@ StyledRect {
                     spacing: 6
 
                     SectionHeader {
-                        text: "Barra"
+                        text: I18n.tr("Barra")
                         icon: Icons.dotsHorizontal
                     }
                     ToggleRow {
-                        title: "Barra flottante"
-                        subtitle: "Staccata dai bordi, con angoli arrotondati"
+                        title: I18n.tr("Barra flottante")
+                        subtitle: I18n.tr("Staccata dai bordi, con angoli arrotondati")
                         checked: Settings.barFloating
                         onToggled: v => Settings.barFloating = v
                     }
                     ToggleRow {
-                        title: "Titolo finestra"
+                        title: I18n.tr("Titolo finestra")
                         checked: Settings.showWindowTitle
                         onToggled: v => Settings.showWindowTitle = v
                     }
@@ -303,7 +323,7 @@ StyledRect {
                         onToggled: v => Settings.showSysStats = v
                     }
                     ToggleRow {
-                        title: "Lettore multimediale"
+                        title: I18n.tr("Lettore multimediale")
                         checked: Settings.showMedia
                         onToggled: v => Settings.showMedia = v
                     }
@@ -314,23 +334,23 @@ StyledRect {
                         icon: Icons.grid
                     }
                     Row_ {
-                        title: "Modalità"
-                        subtitle: Settings.workspaceMode === "fixed" ? "Sempre 1–" + Settings.workspaceCount + " su ogni monitor (come prima)" : "Solo i workspace del monitor"
+                        title: I18n.tr("Modalità")
+                        subtitle: Settings.workspaceMode === "fixed" ? I18n.tr("Sempre 1–") + Settings.workspaceCount + I18n.tr(" su ogni monitor (come prima)") : I18n.tr("Solo i workspace del monitor")
                         StyledButton {
                             implicitHeight: 32
                             variant: Settings.workspaceMode === "fixed" ? "filled" : "tonal"
-                            text: "Fissi"
+                            text: I18n.tr("Fissi")
                             onClicked: Settings.workspaceMode = "fixed"
                         }
                         StyledButton {
                             implicitHeight: 32
                             variant: Settings.workspaceMode === "monitor" ? "filled" : "tonal"
-                            text: "Per monitor"
+                            text: I18n.tr("Per monitor")
                             onClicked: Settings.workspaceMode = "monitor"
                         }
                     }
                     Row_ {
-                        title: "Numero di workspace"
+                        title: I18n.tr("Numero di workspace")
                         visible: Settings.workspaceMode === "fixed"
                         IconButton {
                             icon: Icons.minus
@@ -347,28 +367,28 @@ StyledRect {
                         }
                     }
                     ToggleRow {
-                        title: "Icone delle app nei workspace"
+                        title: I18n.tr("Icone delle app nei workspace")
                         checked: Settings.workspaceIcons
                         onToggled: v => Settings.workspaceIcons = v
                     }
 
                     SectionHeader {
                         Layout.topMargin: 10
-                        text: "Orologio"
+                        text: I18n.tr("Orologio")
                         icon: Icons.clock
                     }
                     ToggleRow {
-                        title: "Formato 24 ore"
+                        title: I18n.tr("Formato 24 ore")
                         checked: Settings.clock24h
                         onToggled: v => Settings.clock24h = v
                     }
                     ToggleRow {
-                        title: "Mostra i secondi"
+                        title: I18n.tr("Mostra i secondi")
                         checked: Settings.clockSeconds
                         onToggled: v => Settings.clockSeconds = v
                     }
                     ToggleRow {
-                        title: "Mostra la data"
+                        title: I18n.tr("Mostra la data")
                         checked: Settings.showDate
                         onToggled: v => Settings.showDate = v
                     }
@@ -381,23 +401,23 @@ StyledRect {
                     spacing: 6
 
                     SectionHeader {
-                        text: "Notifiche"
+                        text: I18n.tr("Notifiche")
                         icon: Icons.bell
                     }
                     ToggleRow {
-                        title: "Non disturbare"
-                        subtitle: "Solo le notifiche critiche compaiono a schermo"
+                        title: I18n.tr("Non disturbare")
+                        subtitle: I18n.tr("Solo le notifiche critiche compaiono a schermo")
                         checked: Settings.dnd
                         onToggled: Notifs.toggleDnd()
                     }
                     ToggleRow {
-                        title: "Suono"
+                        title: I18n.tr("Suono")
                         checked: Settings.notifSound
                         onToggled: v => Settings.notifSound = v
                     }
                     Row_ {
-                        title: "Durata popup"
-                        subtitle: (Settings.notifTimeout / 1000).toFixed(0) + " secondi"
+                        title: I18n.tr("Durata popup")
+                        subtitle: (Settings.notifTimeout / 1000).toFixed(0) + I18n.tr(" secondi")
                         IconButton {
                             icon: Icons.minus
                             onClicked: Settings.notifTimeout = Math.max(2000, Settings.notifTimeout - 1000)
@@ -411,7 +431,7 @@ StyledRect {
                         Layout.topMargin: 8
                         variant: "tonal"
                         icon: Icons.bellRing
-                        text: "Invia notifica di prova"
+                        text: I18n.tr("Invia notifica di prova")
                         onClicked: Quickshell.execDetached(["notify-send", "-a", "greenshell", "Wake up, Neo…", "The Matrix has you. Segui il coniglio bianco 🐇", "-A", "ok=Seguilo"])
                     }
                 }
@@ -423,11 +443,11 @@ StyledRect {
                     spacing: 6
 
                     SectionHeader {
-                        text: "Applicazioni predefinite"
+                        text: I18n.tr("Applicazioni predefinite")
                         icon: Icons.apps
                     }
                     Row_ {
-                        title: "Terminale"
+                        title: I18n.tr("Terminale")
                         TextField {
                             implicitWidth: 240
                             text: Settings.terminal
@@ -436,7 +456,7 @@ StyledRect {
                         }
                     }
                     Row_ {
-                        title: "Monitor di sistema"
+                        title: I18n.tr("Monitor di sistema")
                         TextField {
                             implicitWidth: 240
                             text: Settings.sysMonitor
@@ -444,7 +464,7 @@ StyledRect {
                         }
                     }
                     Row_ {
-                        title: "Cartella sfondi"
+                        title: I18n.tr("Cartella sfondi")
                         TextField {
                             implicitWidth: 320
                             text: Settings.wallpaperDir
@@ -457,16 +477,16 @@ StyledRect {
 
                     SectionHeader {
                         Layout.topMargin: 10
-                        text: "Morpheus (IA locale)"
+                        text: I18n.tr("Morpheus (IA locale)")
                         icon: Icons.sparkle
                     }
                     Row_ {
-                        title: "Modello"
-                        subtitle: Ai.modelLabel + "  ·  cambialo dal menu della chat"
+                        title: I18n.tr("Modello")
+                        subtitle: Ai.modelLabel + I18n.tr("  ·  cambialo dal menu della chat")
                     }
                     StyledText {
                         Layout.fillWidth: true
-                        text: "Prompt di sistema"
+                        text: I18n.tr("Prompt di sistema")
                         color: Theme.textDim
                         font.pixelSize: Theme.font.small
                     }

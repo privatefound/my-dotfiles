@@ -32,10 +32,10 @@ Singleton {
     readonly property string timeLabel: {
         const secs = charging ? device?.timeToFull : device?.timeToEmpty;
         if (!secs || secs <= 0)
-            return full ? "Carica completa" : charging ? "In carica" : "";
+            return full ? I18n.tr("Carica completa") : charging ? I18n.tr("In carica") : "";
         const h = Math.floor(secs / 3600);
         const m = Math.floor((secs % 3600) / 60);
-        return (h > 0 ? `${h}h ${m}m` : `${m}m`) + (charging ? " alla carica completa" : " rimanenti");
+        return (h > 0 ? `${h}h ${m}m` : `${m}m`) + (charging ? I18n.tr(" alla carica completa") : I18n.tr(" rimanenti"));
     }
 
 }

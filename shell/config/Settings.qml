@@ -13,6 +13,7 @@ Singleton {
     readonly property string rootDir: Quickshell.env("HOME") + "/.config/hypr"
 
     // ── Aspetto ──
+    property alias language: adapter.language
     property alias accent: adapter.accent
     property alias barFloating: adapter.barFloating
     property alias barOpacity: adapter.barOpacity
@@ -71,6 +72,7 @@ Singleton {
         JsonAdapter {
             id: adapter
 
+            property string language: "auto"   // "auto" | "it" | "en"
             property string accent: "matrix"
             property bool barFloating: true
             property real barOpacity: 0.82

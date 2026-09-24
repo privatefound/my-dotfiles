@@ -30,12 +30,12 @@ Item {
             }
             StyledText {
                 Layout.fillWidth: true
-                text: "Notifiche" + (Notifs.count > 0 ? "  ·  " + Notifs.count : "")
+                text: I18n.tr("Notifiche") + (Notifs.count > 0 ? "  ·  " + Notifs.count : "")
                 font.pixelSize: Theme.font.title
                 font.weight: Font.DemiBold
             }
             StyledText {
-                text: "Non disturbare"
+                text: I18n.tr("Non disturbare")
                 color: Theme.textDim
                 font.pixelSize: Theme.font.small
             }
@@ -109,7 +109,7 @@ Item {
                 }
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: Settings.dnd ? "Non disturbare attivo" : "Tutto tranquillo, Operatore"
+                    text: Settings.dnd ? I18n.tr("Non disturbare attivo") : I18n.tr("Tutto tranquillo, Operatore")
                     color: Theme.textDim
                 }
             }
@@ -120,7 +120,7 @@ Item {
             visible: Notifs.count > 0
             variant: "tonal"
             icon: Icons.clearAll
-            text: "Cancella tutto"
+            text: I18n.tr("Cancella tutto")
             onClicked: Notifs.clearAll()
         }
     }

@@ -20,18 +20,32 @@ Singleton {
     readonly property var otherDevices: devices.filter(d => !d.paired && !d.bonded && d.name && d.name !== d.address.replace(/:/g, "-"))
 
     readonly property string icon: !enabled ? Icons.bluetoothOff : connectedDevices.length > 0 ? Icons.bluetoothConnect : Icons.bluetooth
-    readonly property string label: !available ? "Non disponibile" : !enabled ? "Spento" : connectedDevices.length === 1 ? deviceName(connectedDevices[0]) : connectedDevices.length > 1 ? connectedDevices.length + " dispositivi" : "Acceso"
+    readonly property string label: !available ? I18n.tr("Spento") : !enabled ? I18n.tr("Spento") : connectedDevices.length === 1 ? deviceName(connectedDevices[0]) : connectedDevices.length > 1 ? connectedDevices.length + I18n.tr(" dispositivi") : I18n.tr("Acceso")
 
+    readonly property bool blocked: !adapter || adapter.state === BluetoothAdapterState.Blocked
+
+    // Accende/spegne; se la radio è bloccata (rfkill) la sblocca prima
     function setEnabled(on) {
+        if (on && blocked) {
+            Quickshell.execDetached(["rfkill", "unblock", "bluetooth"]);
+            powerOnLater.restart();
+            return;
+        }
         if (adapter)
             adapter.enabled = on;
+    }
+
+    Timer {
+        id: powerOnLater
+        interval: 900
+        onTriggered: if (root.adapter) root.adapter.enabled = true
     }
     function setDiscovering(on) {
         if (adapter)
             adapter.discovering = on;
     }
     function deviceName(d) {
-        return d?.name || d?.deviceName || d?.address || "Dispositivo";
+        return d?.name || d?.deviceName || d?.address || I18n.tr("Dispositivo");
     }
     function deviceIcon(d) {
         const i = d?.icon ?? "";
@@ -57,15 +71,15 @@ Singleton {
     }
     function stateLabel(d) {
         if (d.pairing)
-            return "Associazione…";
+            return I18n.tr("Associazione…");
         switch (d.state) {
         case BluetoothDeviceState.Connecting:
-            return "Connessione…";
+            return I18n.tr("Connessione…");
         case BluetoothDeviceState.Disconnecting:
-            return "Disconnessione…";
+            return I18n.tr("Disconnessione…");
         case BluetoothDeviceState.Connected:
-            return d.batteryAvailable ? `Connesso · ${Math.round(d.battery * 100)}%` : "Connesso";
+            return d.batteryAvailable ? `Connesso · ${Math.round(d.battery * 100)}%` : I18n.tr("Connesso");
         }
-        return d.paired || d.bonded ? "Associato" : "Disponibile";
+        return d.paired || d.bonded ? I18n.tr("Associato") : I18n.tr("Disponibile");
     }
 }

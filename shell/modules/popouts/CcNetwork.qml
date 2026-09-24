@@ -33,7 +33,7 @@ ColumnLayout {
     }
 
     PageHeader {
-        title: "Rete"
+        title: I18n.tr("Rete")
         icon: Icons.lan
 
         IconButton {
@@ -124,7 +124,7 @@ ColumnLayout {
             Layout.leftMargin: 4
             StyledText {
                 Layout.fillWidth: true
-                text: Network.wifiEnabled ? (Network.wifiConnected ? "Connesso a " + Network.activeNetwork.name : "Non connesso") : "Wi‑Fi spento"
+                text: Network.wifiEnabled ? (Network.wifiConnected ? I18n.tr("Connesso a ") + Network.activeNetwork.name : I18n.tr("Non connesso")) : I18n.tr("Wi‑Fi spento")
                 color: Theme.textDim
             }
             Toggle {
@@ -158,7 +158,7 @@ ColumnLayout {
                     ListRow {
                         icon: Network.strengthIcon(netItem.modelData.signalStrength)
                         title: netItem.modelData.name
-                        subtitle: (netItem.modelData.connected ? "Connesso" : netItem.modelData.stateChanging ? "Connessione…" : netItem.modelData.known ? "Salvata" : Network.isSecure(netItem.modelData) ? "Protetta" : "Aperta") + "  ·  " + Math.round(Network.strength(netItem.modelData.signalStrength) * 100) + "%"
+                        subtitle: (netItem.modelData.connected ? I18n.tr("Connesso") : netItem.modelData.stateChanging ? I18n.tr("Connessione…") : netItem.modelData.known ? I18n.tr("Salvata") : Network.isSecure(netItem.modelData) ? I18n.tr("Protetta") : I18n.tr("Aperta")) + "  ·  " + Math.round(Network.strength(netItem.modelData.signalStrength) * 100) + "%"
                         highlighted: netItem.modelData.connected
                         busy: netItem.modelData.stateChanging
                         onClicked: Network.connectTo(netItem.modelData)
@@ -190,7 +190,7 @@ ColumnLayout {
                             id: pw
                             Layout.fillWidth: true
                             icon: Icons.key
-                            placeholder: "Password di " + netItem.modelData.name
+                            placeholder: I18n.tr("Password di ") + netItem.modelData.name
                             password: true
                             onAccepted: Network.connectWithPassword(netItem.modelData, text)
                             onEscapePressed: Network.pendingNetwork = null
@@ -213,7 +213,7 @@ ColumnLayout {
                 visible: Network.wifiEnabled && Network.networks.length === 0
                 Layout.fillWidth: true
                 Layout.margins: 16
-                text: "Ricerca reti in corso…"
+                text: I18n.tr("Ricerca reti in corso…")
                 color: Theme.textFaint
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -227,7 +227,7 @@ ColumnLayout {
         spacing: 4
 
         SectionHeader {
-            text: "Schede di rete"
+            text: I18n.tr("Schede di rete")
             icon: Icons.ethernet
         }
 
@@ -239,7 +239,7 @@ ColumnLayout {
                 readonly property bool up: modelData.state.startsWith("connected")
                 icon: modelData.type === "wifi" ? Icons.wifi4 : modelData.type === "ethernet" ? Icons.ethernet : modelData.type === "wireguard" || modelData.type === "tun" ? Icons.vpn : Icons.lan
                 title: modelData.device + (modelData.connection && modelData.connection !== "--" ? "  ·  " + modelData.connection : "")
-                subtitle: (modelData.ip || "nessun IP") + "  ·  " + modelData.state
+                subtitle: (modelData.ip || I18n.tr("nessun IP")) + "  ·  " + modelData.state
                 highlighted: up
                 badge: modelData.isDefault ? "predefinita" : ""
                 onClicked: Network.toggleInterface(modelData)
@@ -248,7 +248,7 @@ ColumnLayout {
                     implicitHeight: 30
                     padding: 12
                     variant: up ? "outline" : "tonal"
-                    text: up ? "Scollega" : "Collega"
+                    text: up ? I18n.tr("Scollega") : I18n.tr("Collega")
                     onClicked: Network.toggleInterface(modelData)
                 }
             }
@@ -258,14 +258,14 @@ ColumnLayout {
             visible: Network.interfaces.length === 0
             Layout.fillWidth: true
             Layout.margins: 12
-            text: "Nessuna scheda trovata"
+            text: I18n.tr("Nessuna scheda trovata")
             color: Theme.textFaint
             horizontalAlignment: Text.AlignHCenter
         }
 
         SectionHeader {
             Layout.topMargin: 10
-            text: "Profili ethernet"
+            text: I18n.tr("Profili ethernet")
             icon: Icons.lanConnect
         }
 
@@ -276,7 +276,7 @@ ColumnLayout {
                 required property var modelData
                 icon: modelData.active ? Icons.lanConnect : Icons.lanDisconnect
                 title: modelData.name
-                subtitle: modelData.active ? "Attivo su " + modelData.device : "Non attivo"
+                subtitle: modelData.active ? I18n.tr("Attivo su ") + modelData.device : I18n.tr("Non attivo")
                 highlighted: modelData.active
                 onClicked: Network.toggleProfile(modelData)
 
@@ -294,7 +294,7 @@ ColumnLayout {
             visible: Network.wiredProfiles.length === 0
             Layout.fillWidth: true
             Layout.margins: 12
-            text: "Nessun profilo ethernet"
+            text: I18n.tr("Nessun profilo ethernet")
             color: Theme.textFaint
             horizontalAlignment: Text.AlignHCenter
         }
@@ -313,7 +313,7 @@ ColumnLayout {
                 required property var modelData
                 icon: modelData.active ? Icons.shieldLock : Icons.vpn
                 title: modelData.name
-                subtitle: (modelData.type === "wireguard" ? "WireGuard" : "VPN") + (modelData.active ? "  ·  connessa" + (modelData.device && modelData.device !== "--" ? " (" + modelData.device + ")" : "") : "  ·  disconnessa")
+                subtitle: (modelData.type === "wireguard" ? "WireGuard" : "VPN") + (modelData.active ? I18n.tr("  ·  connessa") + (modelData.device && modelData.device !== "--" ? " (" + modelData.device + ")" : "") : I18n.tr("  ·  disconnessa"))
                 highlighted: modelData.active
                 onClicked: Network.toggleVpn(modelData)
 
@@ -337,14 +337,14 @@ ColumnLayout {
             }
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
-                text: "Nessuna VPN configurata"
+                text: I18n.tr("Nessuna VPN configurata")
                 color: Theme.textFaint
             }
             StyledButton {
                 Layout.alignment: Qt.AlignHCenter
                 variant: "tonal"
                 icon: Icons.plus
-                text: "Aggiungi VPN"
+                text: I18n.tr("Aggiungi VPN")
                 onClicked: {
                     Ui.closePopout();
                     Network.openEditor();
@@ -358,7 +358,7 @@ ColumnLayout {
         visible: Network.nmBusy
         Layout.fillWidth: true
         horizontalAlignment: Text.AlignHCenter
-        text: "Applico…"
+        text: I18n.tr("Applico…")
         color: Theme.primary
         font.pixelSize: Theme.font.small
     }
