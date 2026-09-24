@@ -61,11 +61,41 @@ Singleton {
         Quickshell.execDetached(["hyprctl", "eval", lua]);
     }
 
+    // ── Animazioni di finestre e workspace (preset in ~/.config/hypr/animations) ──
+    readonly property var animationPresets: [
+        { id: "matrix", name: "Matrix", desc: "Molle reattive, chiusura rapida" },
+        { id: "slide", name: "Slide", desc: "Le finestre scivolano dal basso" },
+        { id: "gnome", name: "GNOME", desc: "Si espandono e si ritraggono dal basso" },
+        { id: "elastic", name: "Elastico", desc: "Rimbalzo evidente, giocoso" },
+        { id: "glitch", name: "Glitch", desc: "Lo stile della vecchia config" },
+        { id: "minimal", name: "Minimal", desc: "Solo dissolvenze rapide" },
+        { id: "off", name: "Spente", desc: "Nessuna animazione, massime prestazioni" }
+    ]
+
+    function applyAnimations() {
+        const name = animationPresets.some(p => p.id === Settings.windowAnimations) ? Settings.windowAnimations : "matrix";
+        const speed = Math.max(0.25, Math.min(3, Settings.animationSpeed || 1));
+        Quickshell.execDetached(["hyprctl", "eval", `dofile("${Settings.rootDir}/animations/init.lua").apply("${name}", ${speed})`]);
+    }
+
     Connections {
         target: Settings
         function onWindowTransparencyChanged() {
             root.applyTransparency();
         }
+        function onWindowAnimationsChanged() {
+            animDebounce.restart();
+        }
+        function onAnimationSpeedChanged() {
+            animDebounce.restart();
+        }
+    }
+
+    // accorpa più modifiche ravvicinate in un'unica applicazione (evita comandi in gara)
+    Timer {
+        id: animDebounce
+        interval: 150
+        onTriggered: root.applyAnimations()
     }
 
     Timer {

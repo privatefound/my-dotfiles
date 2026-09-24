@@ -21,7 +21,8 @@ Singleton {
     // "launcher" | "session" | "wallpaper" | "settings"
     property string modal: ""
     property string modalScreen: ""
-    property string launcherMode: "apps"   // "apps" | "clipboard" | "calc" | "commands"
+    property string launcherMode: "apps"
+    property string settingsSection: "look"   // sezione iniziale del pannello impostazioni   // "apps" | "clipboard" | "calc" | "commands"
 
     readonly property string focusedScreen: Hyprland.focusedMonitor?.name ?? (Quickshell.screens[0]?.name ?? "")
 

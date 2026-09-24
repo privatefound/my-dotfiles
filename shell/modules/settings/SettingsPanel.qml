@@ -10,9 +10,10 @@ import qs.services
 StyledRect {
     id: root
 
-    property string section: "look"
+    property string section: Ui.settingsSection
     readonly property var sections: [
         { id: "look", label: I18n.tr("Aspetto"), icon: Icons.palette },
+        { id: "anim", label: I18n.tr("Animazioni"), icon: Icons.lightning },
         { id: "bar", label: I18n.tr("Barra"), icon: Icons.dotsHorizontal },
         { id: "notif", label: I18n.tr("Notifiche"), icon: Icons.bell },
         { id: "apps", label: I18n.tr("App & AI"), icon: Icons.apps },
@@ -284,15 +285,118 @@ StyledRect {
                         onToggled: v => Settings.scanlineEffect = v
                     }
                     ToggleRow {
-                        title: I18n.tr("Animazioni")
-                        checked: Settings.animations
-                        onToggled: v => Settings.animations = v
-                    }
-                    ToggleRow {
                         title: I18n.tr("Trasparenza finestre")
                         subtitle: I18n.tr("Finestre leggermente trasparenti (come il vecchio toggle)")
                         checked: Settings.windowTransparency
                         onToggled: v => Settings.windowTransparency = v
+                    }
+                }
+
+                // ═══ Animazioni ═══
+                ColumnLayout {
+                    visible: root.section === "anim"
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    SectionHeader {
+                        text: I18n.tr("Animazioni finestre")
+                        icon: Icons.lightning
+                    }
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: I18n.tr("Apertura, chiusura e spostamento delle finestre e cambio workspace. Si applicano subito: apri e chiudi una finestra per vedere l'effetto.")
+                        wrapMode: Text.Wrap
+                        color: Theme.textDim
+                        font.pixelSize: Theme.font.small
+                    }
+
+                    GridLayout {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 4
+                        columns: 2
+                        rowSpacing: 8
+                        columnSpacing: 8
+
+                        Repeater {
+                            model: Hypr.animationPresets
+                            delegate: StyledRect {
+                                id: presetCard
+                                required property var modelData
+                                readonly property bool sel: Settings.windowAnimations === modelData.id
+                                Layout.fillWidth: true
+                                implicitHeight: 62
+                                radius: sel ? Theme.radius.large : Theme.radius.normal
+                                color: sel ? Theme.primaryContainer : Theme.surfaceContainerHigh
+                                border.width: sel ? 1 : 0
+                                border.color: Theme.alpha(Theme.primary, 0.6)
+
+                                Behavior on radius {
+                                    Anim {}
+                                }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 14
+                                    anchors.rightMargin: 12
+                                    spacing: 10
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 1
+                                        StyledText {
+                                            Layout.fillWidth: true
+                                            text: I18n.tr(presetCard.modelData.name)
+                                            font.weight: Font.DemiBold
+                                            color: presetCard.sel ? Theme.fgPrimaryContainer : Theme.text
+                                        }
+                                        StyledText {
+                                            Layout.fillWidth: true
+                                            text: I18n.tr(presetCard.modelData.desc)
+                                            font.pixelSize: Theme.font.small
+                                            color: Theme.textDim
+                                        }
+                                    }
+                                    Icon {
+                                        visible: presetCard.sel
+                                        text: Icons.checkCircle
+                                        size: 20
+                                        color: Theme.primary
+                                    }
+                                }
+                                StateLayer {
+                                    tint: Theme.primary
+                                    onClicked: Settings.windowAnimations = presetCard.modelData.id
+                                }
+                            }
+                        }
+                    }
+
+                    Row_ {
+                        Layout.topMargin: 6
+                        title: I18n.tr("Velocità")
+                        subtitle: Settings.windowAnimations === "off" ? I18n.tr("Non usata con le animazioni spente") : ""
+                        Repeater {
+                            model: [0.5, 0.75, 1, 1.5, 2]
+                            delegate: StyledButton {
+                                required property real modelData
+                                implicitHeight: 32
+                                padding: 10
+                                variant: Math.abs(Settings.animationSpeed - modelData) < 0.01 ? "filled" : "tonal"
+                                text: modelData + "×"
+                                onClicked: Settings.animationSpeed = modelData
+                            }
+                        }
+                    }
+
+                    SectionHeader {
+                        Layout.topMargin: 10
+                        text: I18n.tr("Shell")
+                        icon: Icons.apps
+                    }
+                    ToggleRow {
+                        title: I18n.tr("Animazioni della shell")
+                        subtitle: I18n.tr("Popup, pannelli, barra e menu")
+                        checked: Settings.animations
+                        onToggled: v => Settings.animations = v
                     }
                 }
 

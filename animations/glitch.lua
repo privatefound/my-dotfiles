@@ -1,0 +1,12 @@
+-- Glitch: lo stile della vecchia config (pop lento, spostamenti che "scattano" oltre)
+return function(a)
+    a("windowsIn",        5,   "mainframeBoot", "popin 80%")
+    a("windowsOut",       4,   "decodingTrace", "popin 85%")
+    a("windowsMove",      3,   "glitchJump")
+    a("fadeIn",           4,   "linear")
+    a("fadeOut",          4,   "linear")
+    a("workspaces",       6,   "matrixRain",    "slide")
+    a("workspacesIn",     5,   "plasmaFlow",    "slide")
+    a("workspacesOut",    5,   "plasmaFlow",    "slide")
+    a("specialWorkspace", 5,   "analogSnap",    "slidevert")
+end

@@ -30,7 +30,7 @@ native services instead of polling scripts, animated popouts anchored to the bar
 Everything talks to the system through Quickshell's native services — PipeWire, NetworkManager,
 BlueZ, UPower, MPRIS, StatusNotifier, Hyprland IPC — so it's instant and nothing polls `pamixer`/`nmcli` in a loop.
 
-**Hyprland** (Lua config): matrix‑style animation curves, gradient borders, blur behind the shell,
+**Hyprland** (Lua config): 7 window/workspace animation presets (Matrix, Slide, GNOME, Elastic, Glitch, Minimal, Off) with speed control, switchable live from the shell settings, gradient borders, blur behind the shell,
 fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 
 **Lock screen**: hyprlock with blurred desktop, clock, avatar and green input.

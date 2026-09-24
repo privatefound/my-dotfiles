@@ -226,38 +226,31 @@ hl.gesture({
 ---- ANIMATIONS ----
 --------------------
 
--- Curve "Matrix"
+-- Curve per bordi, ombre e layer (quelle di finestre/workspace sono in animations/init.lua)
 hl.curve("crtFlicker",    { type = "bezier", points = { {0.05, 0.9},  {0.1, 1.05}  } })
 hl.curve("binaryDrift",   { type = "bezier", points = { {0.22, 1},    {0.36, 1}    } })
 hl.curve("mainframeBoot", { type = "bezier", points = { {0.16, 1},    {0.3, 1}     } })
-hl.curve("glitchJump",    { type = "bezier", points = { {0.34, 1.56}, {0.64, 1}    } })
 hl.curve("dataStream",    { type = "bezier", points = { {0, 0},       {1, 1}       } })
 hl.curve("neuralLink",    { type = "bezier", points = { {0.45, 0},    {0.55, 1}    } })
 hl.curve("sectorScan",    { type = "bezier", points = { {0.0, 0.5},   {0.5, 1.0}   } })
 hl.curve("decodingTrace", { type = "bezier", points = { {0.7, 0},     {0.3, 1}     } })
-hl.curve("analogSnap",    { type = "bezier", points = { {0.1, 1.05},  {0.2, 1.1}   } })
-hl.curve("matrixRain",    { type = "bezier", points = { {0.76, 0},    {0.24, 1}    } })
-hl.curve("plasmaFlow",    { type = "bezier", points = { {0.25, 0.46}, {0.45, 0.94} } })
 hl.curve("emphasized",    { type = "bezier", points = { {0.05, 0.7},  {0.1, 1}     } })
-hl.curve("powerDown",     { type = "bezier", points = { {0.4, 0},     {1, 0.6}     } })  -- accelera in uscita
-hl.curve("fadeFast",      { type = "bezier", points = { {0.2, 0},     {0, 1}       } })
 
--- Molle (fisica vera): apertura reattiva con un filo di rimbalzo, spostamenti morbidi
-hl.curve("bootSpring",    { type = "spring", mass = 1, stiffness = 320, dampening = 23 })
-hl.curve("glideSpring",   { type = "spring", mass = 1, stiffness = 260, dampening = 28 })
 
-hl.animation({ leaf = "windowsIn",        enabled = true, speed = 4,   spring = "bootSpring",  style = "popin 86%" })
-hl.animation({ leaf = "windowsOut",       enabled = true, speed = 2,   bezier = "powerDown",   style = "popin 90%" })
-hl.animation({ leaf = "windowsMove",      enabled = true, speed = 4,   spring = "glideSpring" })
-hl.animation({ leaf = "fadeIn",           enabled = true, speed = 2.5, bezier = "fadeFast" })
-hl.animation({ leaf = "fadeOut",          enabled = true, speed = 1.8, bezier = "powerDown" })
+-- Finestre e workspace: preset scelto dalla shell (Impostazioni → Aspetto → Animazioni finestre).
+-- I preset sono in animations/*.lua; qui si legge la scelta salvata in settings.json.
+local function setting(key, default)
+    local f = io.open(CONF .. "/settings.json", "r")
+    if not f then return default end
+    local content = f:read("*a")
+    f:close()
+    return content:match('"' .. key .. '"%s*:%s*"([^"]*)"') or content:match('"' .. key .. '"%s*:%s*([%d%.]+)') or default
+end
+dofile(CONF .. "/animations/init.lua").apply(setting("windowAnimations", "matrix"), tonumber(setting("animationSpeed", "1")))
+
 hl.animation({ leaf = "fadeSwitch",       enabled = true, speed = 6,  bezier = "neuralLink" })
 hl.animation({ leaf = "fadeShadow",       enabled = true, speed = 5,  bezier = "binaryDrift" })
 hl.animation({ leaf = "fadeDim",          enabled = true, speed = 4,  bezier = "sectorScan" })
-hl.animation({ leaf = "workspaces",       enabled = true, speed = 6,  bezier = "matrixRain",  style = "slide" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 5,  bezier = "analogSnap",  style = "slidevert" })
-hl.animation({ leaf = "workspacesIn",     enabled = true, speed = 5,  bezier = "plasmaFlow",  style = "slide" })
-hl.animation({ leaf = "workspacesOut",    enabled = true, speed = 5,  bezier = "plasmaFlow",  style = "slide" })
 hl.animation({ leaf = "borderangle",      enabled = true, speed = 40, bezier = "dataStream" })
 hl.animation({ leaf = "border",           enabled = true, speed = 10, bezier = "crtFlicker" })
 hl.animation({ leaf = "layers",           enabled = true, speed = 4,  bezier = "emphasized",  style = "slide top" })

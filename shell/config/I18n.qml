@@ -27,6 +27,21 @@ Singleton {
     }
 
     readonly property var en: ({
+        "Animazioni finestre": "Window animations",
+        "Apertura, chiusura e spostamento delle finestre e cambio workspace. Si applicano subito: apri e chiudi una finestra per vedere l'effetto.": "Opening, closing and moving windows, and switching workspaces. Applied instantly: open and close a window to see the effect.",
+        "Velocità": "Speed",
+        "Non usata con le animazioni spente": "Not used when animations are off",
+        "Animazioni della shell": "Shell animations",
+        "Popup, pannelli, barra e menu": "Popups, panels, bar and menus",
+        "Molle reattive, chiusura rapida": "Snappy springs, quick close",
+        "Le finestre scivolano dal basso": "Windows slide in from the bottom",
+        "Si espandono e si ritraggono dal basso": "Grow and shrink from the bottom",
+        "Rimbalzo evidente, giocoso": "Noticeable bounce, playful",
+        "Elastico": "Elastic",
+        "Lo stile della vecchia config": "The old config's style",
+        "Solo dissolvenze rapide": "Quick fades only",
+        "Spente": "Off",
+        "Nessuna animazione, massime prestazioni": "No animations, maximum performance",
         "  ·  cambialo dal menu della chat": "  ·  change it from the chat menu",
         "  ·  connessa": "  ·  connected",
         "  ·  disconnessa": "  ·  disconnected",

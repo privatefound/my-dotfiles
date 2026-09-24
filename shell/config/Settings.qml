@@ -21,6 +21,8 @@ Singleton {
     property alias scanlineEffect: adapter.scanlineEffect
     property alias fontScale: adapter.fontScale
     property alias animations: adapter.animations
+    property alias windowAnimations: adapter.windowAnimations
+    property alias animationSpeed: adapter.animationSpeed
 
     // ── Orologio ──
     property alias clock24h: adapter.clock24h
@@ -80,6 +82,8 @@ Singleton {
             property bool scanlineEffect: true
             property real fontScale: 1.0
             property bool animations: true
+            property string windowAnimations: "matrix"   // preset in ~/.config/hypr/animations
+            property real animationSpeed: 1.0
 
             property bool clock24h: true
             property bool clockSeconds: false

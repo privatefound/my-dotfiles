@@ -45,6 +45,10 @@ Scope {
         function session(): void { Ui.toggleModal("session"); }
         function wallpaper(): void { Ui.toggleModal("wallpaper"); }
         function settings(): void { Ui.toggleModal("settings"); }
+        function settingsAt(section: string): void {
+            Ui.settingsSection = section;
+            Ui.openModal("settings");
+        }
         function control(): void { Ui.togglePopout("control", "", -1); }
         function notifications(): void { Ui.togglePopout("notifications", "", -1); }
         function ai(): void { Ui.togglePopout("ai", "", 320); }

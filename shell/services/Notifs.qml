@@ -105,6 +105,8 @@ Singleton {
     }
 
     function timeAgo(n) {
+        if (!n)
+            return "";
         const t = times[n.id];
         if (!t)
             return "";
@@ -119,6 +121,8 @@ Singleton {
     }
 
     function iconFor(n) {
+        if (!n)
+            return "";
         const img = n.image || "";
         if (img)
             return img.startsWith("/") ? "file://" + img : img;
@@ -134,6 +138,8 @@ Singleton {
     }
 
     function appIconFor(n) {
+        if (!n)
+            return "";
         const ic = n.appIcon || "";
         if (ic && !ic.startsWith("/") && !ic.includes("://"))
             return Quickshell.iconPath(ic, true);
