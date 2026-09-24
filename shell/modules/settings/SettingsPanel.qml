@@ -23,7 +23,7 @@ StyledRect {
     implicitWidth: 820
     implicitHeight: 620
     radius: Theme.radius.xl
-    color: Theme.alpha(Theme.surface, Settings.panelOpacity)
+    color: Theme.alpha(Theme.surface, Theme.panelOpacity)
     border.width: 1
     border.color: Theme.outline
     clip: true
@@ -254,7 +254,14 @@ StyledRect {
                             onMoved: v => Settings.barOpacity = Math.round(v * 100) / 100
                         }
                     }
+                    ToggleRow {
+                        title: I18n.tr("Pannelli come la barra")
+                        subtitle: I18n.tr("Popup, launcher, notifiche e OSD usano la stessa opacità della barra")
+                        checked: Settings.panelsFollowBar
+                        onToggled: v => Settings.panelsFollowBar = v
+                    }
                     Row_ {
+                        visible: !Settings.panelsFollowBar
                         title: I18n.tr("Opacità pannelli")
                         StyledSlider {
                             implicitWidth: 220
@@ -286,9 +293,33 @@ StyledRect {
                     }
                     ToggleRow {
                         title: I18n.tr("Trasparenza finestre")
-                        subtitle: I18n.tr("Finestre leggermente trasparenti (come il vecchio toggle)")
+                        subtitle: I18n.tr("Rende trasparenti le finestre; regola sotto quanto")
                         checked: Settings.windowTransparency
                         onToggled: v => Settings.windowTransparency = v
+                    }
+                    Row_ {
+                        visible: Settings.windowTransparency
+                        title: I18n.tr("Finestra attiva")
+                        subtitle: Math.round(Settings.windowOpacityActive * 100) + "%"
+                        StyledSlider {
+                            implicitWidth: 220
+                            implicitHeight: 32
+                            icon: Icons.opacity
+                            value: Settings.windowOpacityActive
+                            onMoved: v => Settings.windowOpacityActive = Math.max(0.3, Math.round(v * 100) / 100)
+                        }
+                    }
+                    Row_ {
+                        visible: Settings.windowTransparency
+                        title: I18n.tr("Finestre inattive")
+                        subtitle: Math.round(Settings.windowOpacityInactive * 100) + "%"
+                        StyledSlider {
+                            implicitWidth: 220
+                            implicitHeight: 32
+                            icon: Icons.opacity
+                            value: Settings.windowOpacityInactive
+                            onMoved: v => Settings.windowOpacityInactive = Math.max(0.3, Math.round(v * 100) / 100)
+                        }
                     }
                 }
 

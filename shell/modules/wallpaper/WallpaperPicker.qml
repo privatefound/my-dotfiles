@@ -15,7 +15,7 @@ StyledRect {
     implicitWidth: 980
     implicitHeight: 640
     radius: Theme.radius.xl
-    color: Theme.alpha(Theme.surface, Settings.panelOpacity)
+    color: Theme.alpha(Theme.surface, Theme.panelOpacity)
     border.width: 1
     border.color: Theme.outline
     clip: true

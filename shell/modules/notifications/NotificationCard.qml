@@ -25,7 +25,7 @@ StyledRect {
     implicitWidth: 380
     implicitHeight: content.implicitHeight + 24
     radius: Theme.radius.large
-    color: popup ? Theme.alpha(Theme.surface, Settings.panelOpacity) : Theme.surfaceContainer
+    color: popup ? Theme.alpha(Theme.surface, Theme.panelOpacity) : Theme.surfaceContainer
     border.width: popup || critical ? 1 : 0
     border.color: critical ? Theme.error : Theme.outline
     clip: true

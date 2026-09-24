@@ -27,6 +27,11 @@ Singleton {
     }
 
     readonly property var en: ({
+        "Finestra attiva": "Active window",
+        "Finestre inattive": "Inactive windows",
+        "Rende trasparenti le finestre; regola sotto quanto": "Makes windows transparent; adjust how much below",
+        "Pannelli come la barra": "Panels match the bar",
+        "Popup, launcher, notifiche e OSD usano la stessa opacità della barra": "Popups, launcher, notifications and OSD use the bar's opacity",
         "Animazioni finestre": "Window animations",
         "Apertura, chiusura e spostamento delle finestre e cambio workspace. Si applicano subito: apri e chiudi una finestra per vedere l'effetto.": "Opening, closing and moving windows, and switching workspaces. Applied instantly: open and close a window to see the effect.",
         "Velocità": "Speed",

@@ -66,6 +66,9 @@ Singleton {
     readonly property color outline: alpha(primary, 0.18)
     readonly property color outlineVariant: alpha(_white, 0.07)
 
+    // Opacità dei pannelli (popout, launcher, notifiche, OSD…): segue la barra se richiesto
+    readonly property real panelOpacity: Math.max(0.15, Settings.panelsFollowBar ? Settings.barOpacity : Settings.panelOpacity)
+
     readonly property color error: "#ff5c6c"
     readonly property color errorContainer: mix(_n2, error, 0.22)
     readonly property color warning: "#ffc857"

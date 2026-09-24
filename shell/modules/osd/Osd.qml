@@ -56,7 +56,7 @@ PanelWindow {
         id: card
         anchors.fill: parent
         radius: height / 2
-        color: Theme.alpha(Theme.surface, Settings.panelOpacity)
+        color: Theme.alpha(Theme.surface, Theme.panelOpacity)
         border.width: 1
         border.color: Theme.outline
         opacity: win.shown ? 1 : 0

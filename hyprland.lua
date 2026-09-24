@@ -7,6 +7,20 @@ local HOME   = os.getenv("HOME")
 local CONF   = HOME .. "/.config/hypr"
 local SHELL  = CONF .. "/shell"
 
+-- Legge un valore da settings.json (scritto dal pannello Impostazioni della shell)
+local function setting(key, default)
+    local f = io.open(CONF .. "/settings.json", "r")
+    if not f then return default end
+    local content = f:read("*a")
+    f:close()
+    return content:match('"' .. key .. '"%s*:%s*"([^"]*)"') or content:match('"' .. key .. '"%s*:%s*([%w%.]+)') or default
+end
+
+-- Opacità finestre (Impostazioni → Aspetto → Trasparenza finestre)
+local transparent   = setting("windowTransparency", "true") ~= "false"
+local opacityActive   = transparent and (tonumber(setting("windowOpacityActive", "0.98")) or 0.98) or 1.0
+local opacityInactive = transparent and (tonumber(setting("windowOpacityInactive", "0.90")) or 0.90) or 1.0
+
 ---------------------
 ---- MY PROGRAMS ----
 ---------------------
@@ -141,9 +155,9 @@ hl.config({
         rounding       = 15,
         rounding_power = 2,
 
-        -- la shell riapplica queste due in base al toggle "Trasparenza"
-        active_opacity   = 0.98,
-        inactive_opacity = 0.90,
+        -- regolabili da Impostazioni → Aspetto (la shell le applica al volo)
+        active_opacity   = opacityActive,
+        inactive_opacity = opacityInactive,
 
         shadow = {
             enabled        = true,
@@ -237,15 +251,8 @@ hl.curve("decodingTrace", { type = "bezier", points = { {0.7, 0},     {0.3, 1}  
 hl.curve("emphasized",    { type = "bezier", points = { {0.05, 0.7},  {0.1, 1}     } })
 
 
--- Finestre e workspace: preset scelto dalla shell (Impostazioni → Aspetto → Animazioni finestre).
--- I preset sono in animations/*.lua; qui si legge la scelta salvata in settings.json.
-local function setting(key, default)
-    local f = io.open(CONF .. "/settings.json", "r")
-    if not f then return default end
-    local content = f:read("*a")
-    f:close()
-    return content:match('"' .. key .. '"%s*:%s*"([^"]*)"') or content:match('"' .. key .. '"%s*:%s*([%d%.]+)') or default
-end
+-- Finestre e workspace: preset scelto dalla shell (Impostazioni → Animazioni).
+-- I preset sono in animations/*.lua; la scelta è salvata in settings.json.
 dofile(CONF .. "/animations/init.lua").apply(setting("windowAnimations", "matrix"), tonumber(setting("animationSpeed", "1")))
 
 hl.animation({ leaf = "fadeSwitch",       enabled = true, speed = 6,  bezier = "neuralLink" })

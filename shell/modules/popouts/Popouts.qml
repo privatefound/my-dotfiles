@@ -79,7 +79,7 @@ PanelWindow {
         x: Math.max(8, Math.min(win.width - width - 8, centerX - width / 2))
         y: 6
         radius: Theme.radius.large
-        color: Theme.alpha(Theme.surface, Settings.panelOpacity)
+        color: Theme.alpha(Theme.surface, Theme.panelOpacity)
         border.width: 1
         border.color: Theme.outline
         clip: true

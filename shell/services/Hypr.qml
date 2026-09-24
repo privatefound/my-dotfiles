@@ -57,7 +57,10 @@ Singleton {
     // ── Trasparenza finestre (toggle della vecchia barra) ──
     function applyTransparency() {
         const on = Settings.windowTransparency;
-        const lua = on ? "hl.config({ decoration = { active_opacity = 0.98, inactive_opacity = 0.90 } })" : "hl.config({ decoration = { active_opacity = 1.0, inactive_opacity = 1.0 } })";
+        const clamp = v => Math.max(0.3, Math.min(1, Number(v) || 1)).toFixed(2);
+        const a = on ? clamp(Settings.windowOpacityActive) : "1.0";
+        const i = on ? clamp(Settings.windowOpacityInactive) : "1.0";
+        const lua = `hl.config({ decoration = { active_opacity = ${a}, inactive_opacity = ${i} } })`;
         Quickshell.execDetached(["hyprctl", "eval", lua]);
     }
 
@@ -83,12 +86,24 @@ Singleton {
         function onWindowTransparencyChanged() {
             root.applyTransparency();
         }
+        function onWindowOpacityActiveChanged() {
+            opacityDebounce.restart();
+        }
+        function onWindowOpacityInactiveChanged() {
+            opacityDebounce.restart();
+        }
         function onWindowAnimationsChanged() {
             animDebounce.restart();
         }
         function onAnimationSpeedChanged() {
             animDebounce.restart();
         }
+    }
+
+    Timer {
+        id: opacityDebounce
+        interval: 60
+        onTriggered: root.applyTransparency()
     }
 
     // accorpa più modifiche ravvicinate in un'unica applicazione (evita comandi in gara)

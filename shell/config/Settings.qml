@@ -18,6 +18,7 @@ Singleton {
     property alias barFloating: adapter.barFloating
     property alias barOpacity: adapter.barOpacity
     property alias panelOpacity: adapter.panelOpacity
+    property alias panelsFollowBar: adapter.panelsFollowBar
     property alias scanlineEffect: adapter.scanlineEffect
     property alias fontScale: adapter.fontScale
     property alias animations: adapter.animations
@@ -46,6 +47,8 @@ Singleton {
     // ── Sistema ──
     property alias caffeine: adapter.caffeine
     property alias windowTransparency: adapter.windowTransparency
+    property alias windowOpacityActive: adapter.windowOpacityActive
+    property alias windowOpacityInactive: adapter.windowOpacityInactive
     property alias wallpaper: adapter.wallpaper
     property alias wallpaperDir: adapter.wallpaperDir
     property alias wallpaperTransition: adapter.wallpaperTransition
@@ -79,6 +82,7 @@ Singleton {
             property bool barFloating: true
             property real barOpacity: 0.82
             property real panelOpacity: 0.92
+            property bool panelsFollowBar: true   // popup e pannelli usano l'opacità della barra
             property bool scanlineEffect: true
             property real fontScale: 1.0
             property bool animations: true
@@ -103,6 +107,8 @@ Singleton {
 
             property bool caffeine: false
             property bool windowTransparency: true
+            property real windowOpacityActive: 0.98
+            property real windowOpacityInactive: 0.90
             property string wallpaper: root.rootDir + "/wallpapers/walp3.jpg"
             property string wallpaperDir: root.rootDir + "/wallpapers"
             property string wallpaperTransition: "grow"
