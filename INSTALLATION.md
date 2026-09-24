@@ -1,257 +1,88 @@
-# 🛠️ Manual Installation Guide - green-hyprtheme
+# Installation guide
 
-> **Prefer automation?** Run `./install.sh` from the repo root — it handles backup, symlink, permissions, and optional services interactively.
-> This guide is for those who want full manual control over each step.
+`./install.sh` does all of this for you. This page explains each step so you can do it by hand.
 
-This guide explains how to manually install the theme and all its dependencies on **Arch Linux**. Following these steps gives you full control over your system.
-
-> [!CAUTION]
-> I use [monique](https://github.com/ToRvaLDz/monique) for managing my monitors.
-
----
-
-## 📦 1. Dependencies List
+## 1. Packages (Arch Linux)
 
 ```bash
-paru -S hyprland hyprlock hypridle hyprpicker \
-        xdg-desktop-portal-hyprland xdg-desktop-portal-gtk \
-        quickshell \
-        qt6-base qt6-declarative qt6-svg qt6-wayland \
-        swaync libnotify \
-        rofi rofi-calc gnome-keyring \
-        kitty terminology nemo fish starship \
-        brave-bin sublime-text-4 \
-        ttf-jetbrains-mono-nerd ttf-fira-code-nerd ttf-hack-nerd \
-        ttf-font-awesome otf-font-awesome noto-fonts-emoji \
-        pipewire pipewire-alsa pipewire-pulse wireplumber \
-        pavucontrol pasystray pamixer playerctl \
-        bluez bluez-utils blueman \
-        networkmanager network-manager-applet nm-connection-editor \
-        networkmanager-openvpn iwgtk \
-        polkit-kde-agent \
-        grim slurp swappy \
-        wl-clipboard cliphist copyq \
-        brightnessctl awww \
-        jq curl ipcalc \
-        ollama \
-        gsimplecal \
-        greetd greetd-tuigreet \
-        nwg-look qt5ct qt6ct \
-        papirus-icon-theme breeze-gtk xcursor-breeze \
-        conky mission-center
+sudo pacman -S --needed \
+  hyprland hyprlock hypridle hyprpicker hyprshutdown xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-utils \
+  quickshell qt6-base qt6-declarative qt6-svg qt6-wayland qt6-imageformats qt6-5compat \
+  pipewire pipewire-alsa pipewire-pulse wireplumber pavucontrol playerctl \
+  networkmanager network-manager-applet nm-connection-editor networkmanager-openvpn wireguard-tools \
+  bluez bluez-utils blueman upower \
+  wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww curl jq gnome-keyring polkit \
+  greetd greetd-tuigreet \
+  ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji papirus-icon-theme nwg-look qt5ct qt6ct \
+  terminology nemo conky mission-center
 ```
 
----
+Everything above is in the official repos. Optional: `ollama` (Morpheus AI, official repo), `gnome-network-displays` (screen cast, AUR), `monique` (monitor layout GUI, AUR).
+The cursor theme `Breeze_Dark_Lime` is not packaged: install any cursor theme and change `XCURSOR_THEME` in `hyprland.lua`, or it falls back to the default one.
 
-## 🗂️ 2. Package Descriptions
+Requirements: **Hyprland ≥ 0.56 (Lua config)** and **Quickshell ≥ 0.3**.
 
-### Core & Compositor
-- `hyprland` - Wayland tiling compositor
-- `hyprlock` - Graphical lock screen coordinated with the theme
-- `hypridle` - Daemon for power management (dim, lock, suspend)
-- `hyprpicker` - Color picker for Wayland
-- `xdg-desktop-portal-hyprland` - Wayland portal for screenshots and screen sharing
-- `xdg-desktop-portal-gtk` - GTK portal as fallback
+## 2. Config
 
-### Status Bar & Launcher
-- `quickshell` - QML-based status bar (workspaces, clock, network, AI chat, etc.)
-- `qt6-base`, `qt6-declarative`, `qt6-svg`, `qt6-wayland` - Qt6 dependencies for quickshell
-- `rofi` - Application launcher, WiFi menu, control menu, AI cmd, subnet calculator
-- `swaync` - Notification daemon with side panel and custom theme
-- `libnotify` - Library for `notify-send`
-- `gsimplecal` - Popup calendar (click on the clock)
-
-### Terminal & Shell
-- `terminology` - Main terminal emulator (default)
-- `kitty` - Alternative terminal emulator (GPU-accelerated)
-- `fish` - Friendly interactive shell
-- `starship` - Customizable cross-shell prompt
-
-### Main Applications
-- `nemo` - File manager (Cinnamon), lighter than Dolphin
-- `brave-bin` - Browser (can be replaced with `firefox`, `chromium`, etc.)
-- `sublime-text-4` - Text/code editor (`subl`)
-- `mission-center` - System monitor GUI (CPU, RAM, GPU usage)
-
-### Fonts & Icons
-- `ttf-jetbrains-mono-nerd` - Theme's main font
-- `ttf-fira-code-nerd` - Alternative Nerd Font
-- `ttf-hack-nerd` - Alternative Nerd Font
-- `ttf-font-awesome` / `otf-font-awesome` - Font Awesome icons
-- `noto-fonts-emoji` - Emoji
-
-### Audio
-- `pipewire`, `pipewire-alsa`, `pipewire-pulse`, `wireplumber` - Modern audio stack
-- `pavucontrol` - PulseAudio/PipeWire GUI volume control
-- `pasystray` - Tray volume icon
-- `pamixer` - CLI for volume (multimedia key bindings)
-- `playerctl` - Media player control (Spotify, VLC, browser)
-
-### Bluetooth
-- `bluez`, `bluez-utils` - Bluetooth stack
-- `blueman` - Graphical Bluetooth applet and manager
-
-### Network & VPN
-- `networkmanager` - WiFi/Ethernet network management
-- `network-manager-applet` (`nm-applet`) - Network tray icon
-- `nm-connection-editor` - Graphical connection editor
-- `networkmanager-openvpn` - OpenVPN support
-- `iwgtk` - Alternative WiFi GUI (optional)
-
-### Screenshot
-- `grim` - Screenshot tool for Wayland
-- `slurp` - Screen area selection
-- `swappy` - Screenshot annotation editor
-
-### System Utilities
-- `wl-clipboard` (`wl-copy`, `wl-paste`) - Wayland clipboard
-- `cliphist` - Clipboard history
-- `copyq` - Advanced clipboard manager with GUI
-- `brightnessctl` - Screen brightness control
-- `awww` - Animated wallpaper daemon for Wayland (used by wallpaper-selector.sh)
-- `polkit-kde-agent` - Graphical authentication agent (sudo GUI)
-- `jq` - JSON parsing (used in rofi scripts)
-- `curl` - HTTP requests (weather from wttr.in, Ollama API)
-- `ipcalc` - IPv4 subnet calculator (used in rofi-subnet.sh)
-
-### Local AI
-- `ollama` - Runtime for local LLM models
-  - Recommended model: `gemma4:e4b` (download with `ollama pull gemma4:e4b`)
-  - Used by QuickShell AI Chat (✦) and `rofi-subnet.sh` (subnet fallback)
-
-### Login Manager
-- `greetd` - Minimalist display manager
-- `greetd-tuigreet` - TUI frontend for greetd (green/black minimal style)
-
-### GTK/Qt Theme & Cursors
-- `nwg-look` - GTK theme configuration in Wayland
-- `qt5ct`, `qt6ct` - Qt5/Qt6 theme configuration
-- `papirus-icon-theme` - Icon theme
-- `breeze-gtk` - Breeze GTK theme
-- `xcursor-breeze` - Breeze cursor theme (Breeze_Dark_Lime variant)
-
-### Extra (Optional)
-- `conky` - System monitor overlay (enabled in autostart, can be disabled for battery saving)
-- `waybar` - Alternative status bar (if you prefer waybar over quickshell)
-
----
-
-## 🖥️ Conky — Network Interface Configuration
-
-The conky overlay (`conky/cyberconky.conf`) monitors three network interfaces hardcoded to the original machine. **You must update them to match your system** or the network section will show no data.
-
-The three interfaces currently configured are:
-
-| Section | Interface | Description |
-| :--- | :--- | :--- |
-| DOCKING | `eno1` | USB/dock ethernet adapter |
-| ETHERNET | `eth0` | Built-in ethernet |
-| WIRELESS | `wlan0` | WiFi |
-
-To find your interface names:
 ```bash
-ip link show
+mv ~/.config/hypr ~/.config/hypr.backup        # if you have one
+ln -s ~/green-hyprtheme ~/.config/hypr          # or clone directly into ~/.config/hypr
+ln -sfn ~/.config/hypr/shell ~/.config/quickshell
 ```
 
-Then replace them in `conky/cyberconky.conf`:
+Monitors: copy `monitors.lua.example` to `monitors.lua` and edit it (`hyprctl monitors` lists your outputs),
+or use Monique. Without it every monitor uses its preferred mode.
+
+Apps: terminal, file manager, browser and editor are at the top of `hyprland.lua`.
+The shell's own preferences (accent color, opacity, clock, terminal, wallpaper folder, AI model…) are in the
+settings panel (`SUPER + ,`) and saved to `~/.config/hypr/settings.json`.
+
+## 3. Notifications
+
+The shell *is* the notification server. Stop other daemons so they don't grab `org.freedesktop.Notifications`:
+
 ```bash
-# Example: replace eth0 with your ethernet interface
-sed -i 's/eth0/your_interface/g' ~/.config/hypr/conky/cyberconky.conf
-
-# Example: replace wlan0 with your wifi interface
-sed -i 's/wlan0/your_wifi_interface/g' ~/.config/hypr/conky/cyberconky.conf
-
-# Example: replace the dock interface
-sed -i 's/eno1/your_dock_interface/g' ~/.config/hypr/conky/cyberconky.conf
+systemctl --user disable --now swaync.service dunst.service mako.service 2>/dev/null
 ```
 
-> If you don't use a docking station, you can leave `eno1` as-is — conky will simply show no data for that section.
+## 4. Lock screen
 
----
+`hyprlock.conf` (blurred desktop + clock + avatar) and `hypridle.conf`
+(dim 2.5 min → lock 5 min → screen off 5.5 min → suspend 10 min) are used automatically.
+Caffeine in the bar/control center inhibits all of it.
 
-## 🚀 3. Manual Configuration
+## 5. Login screen (greetd + tuigreet)
 
-### Clone the repository
-
-**Option A — clone directly to the config dir** (no symlink needed):
 ```bash
-git clone https://github.com/privatefound/my-dotfiles.git ~/.config/hypr
-```
-
-**Option B — clone anywhere, then run the installer** (creates a symlink automatically):
-```bash
-git clone https://github.com/privatefound/my-dotfiles.git ~/green-hyprtheme
-cd ~/green-hyprtheme
-./install.sh
-```
-
-> All paths in the configuration files use `$HOME` or `~`, so they work with any user without modifications.
-
-> **Note:** This theme uses **Hyprland's Lua configuration** (`hyprland.lua`) instead of the legacy hyprlang format.
-> All settings, keybindings, window rules, and autostart are defined in a single `hyprland.lua` file.
-
-### Scripts and Permissions
-Make all scripts executable:
-```bash
-chmod +x ~/.config/hypr/rofi/scripts/*.sh
-```
-
-### Swaync - Disable the systemd service
-Swaync is launched via `hyprland.lua` autostart. The systemd service must be disabled to prevent it from starting without the correct parameters:
-```bash
-systemctl --user disable swaync.service
-```
-
-### Ollama - Download the AI model
-```bash
-systemctl enable --now ollama
-ollama pull gemma3:1b
-```
-
-### Login Screen Configuration (Greetd + Tuigreet)
-1. Edit `/etc/greetd/config.toml`:
-```toml
-[terminal]
-vt = 1
-
-[default_session]
-command = "tuigreet --time --remember --cmd start-hyprland --theme 'border=green;text=green;prompt=green;input=green;action=green;button=green;title=green'" 
-user = "greeter"
-```
-
-> **Note:** Using `start-hyprland` instead of `Hyprland` directly is mandatory.
-> The `start-hyprland` script correctly sets environment variables before launching the compositor.
-
-2. Add permissions to the greeter user:
-```bash
-sudo gpasswd -a greeter video
-sudo gpasswd -a greeter render
-```
-
-3. Enable the service:
-```bash
-sudo systemctl disable sddm   # or gdm, lightdm...
+sudo install -Dm644 ~/.config/hypr/greetd/config.toml /etc/greetd/config.toml
+sudo systemctl disable sddm gdm lightdm 2>/dev/null
 sudo systemctl enable greetd
 ```
 
----
+## 6. Services
 
-## 🎨 4. GTK/Qt Theme Application
-- Use `nwg-look` to set the GTK theme. The recommended theme is **Adwaita-dark**.
-- Use `qt5ct` / `qt6ct` for Qt applications.
-
----
-
-## 📡 5. Network Fix (Optional)
-If you encounter issues with NetworkManager at startup:
 ```bash
-sudo systemctl enable --now NetworkManager
+sudo systemctl enable --now NetworkManager bluetooth
+# optional: NetworkManager without conflicts with networkd/dhcpcd
+sudo install -Dm644 ~/.config/hypr/systemd/NetworkManager-fixed.service /etc/systemd/system/
 ```
-The `systemd/NetworkManager-fixed.service` file is available for systems with startup timeouts on some Arch configurations.
 
----
+## 7. Morpheus (local AI)
 
-## 🔊 6. Enable Bluetooth
 ```bash
-sudo systemctl enable --now bluetooth
+sudo systemctl enable --now ollama
+ollama pull gemma4:e4b
 ```
+
+A llama.cpp server on `localhost:8080` (OpenAI API) is detected too. Pick the model from the chat header.
+
+## 8. Clipboard history
+
+Started by Hyprland (`wl-paste --watch cliphist store`). Open it with `SUPER + Z`;
+`Delete` removes the selected entry.
+
+## Troubleshooting
+
+- Shell logs: `qs -p ~/.config/hypr/shell log` — restart it with `SUPER + SHIFT + W`.
+- Hyprland config check: `Hyprland --verify-config -c ~/.config/hypr/hyprland.lua`.
+- Stuck in the resize submap: `hyprctl dispatch 'hl.dsp.submap("reset")'`.

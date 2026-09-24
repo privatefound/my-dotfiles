@@ -1,37 +1,42 @@
-# 💻 green-hyprtheme - Hyprland Config
+# 💻 green-hyprtheme v2
 
-A **Dark Minimal** theme for Hyprland. Deep black, neon green, and an essential aesthetic.
+A **dark, terminal‑green** Hyprland rice with a complete desktop shell written from scratch in
+[Quickshell](https://quickshell.org) (QML) — in the spirit of DankMaterialShell and Noctalia:
+native services instead of polling scripts, animated popouts anchored to the bar, one design system.
 
-![Preview](preview.png)
-
-![Preview2](preview_lock.png)
+> Black `#0a0a0a` · Terminal green `#00ff41` · Material 3 shapes and motion · CRT scanlines (optional)
 
 ## ✨ Features
 
-- 🎨 **Minimal Theme**: Black (#0a0a0a) + Terminal Green (#00ff41)
-- 🖼️ **Wallpaper Selector**: Quick wallpaper switching via Rofi + awww (animated transitions)
-- ⚡ **Lightweight and minimal**: Only the essentials, perfect for performance
-- 🔒 **Integrated lock screen**: Hyprlock with coordinated style
-- 📱 **Login screen**: Greetd with Tuigreet (green/black style)
-- 🎯 **QuickShell Bar**: Custom QML status bar (Waybar config included as alternative)
-- 🚀 **Rofi**: Application launcher + WiFi menu, controls, subnet calculator, AI commands
-- 🤖 **Local AI**: Ollama integrated for command generation and network calculations
-- ⌨️ **Keybindings**: Intuitive shortcuts, Vim-style and multimedia keys
-- 🔊 **Full audio**: PipeWire + Pavucontrol + hardware controls
-- 📶 **Network configured**: NetworkManager with WiFi menu via Rofi
-- ☕ **Caffeine toggle**: One click in the bar inhibits screen lock/dim/sleep (native Wayland idle-inhibit, no extra daemon)
+**Shell (Quickshell)**
+- **Bar** per monitor: Arch logo/launcher, Morpheus AI, subnet calculator, animated workspaces with app icons,
+  window title, clock, media mini-player, CPU/RAM/temp, collapsible tray with **themed menus**,
+  caffeine · transparency · cast toggles, network/bluetooth/volume/battery cluster, notifications, power.
+- **Control center**: volume / mic / brightness sliders, quick tiles (Wi‑Fi, Bluetooth, DND, caffeine,
+  window transparency, mic, cast, screenshot), media card, battery.
+  - **Network**: Wi‑Fi (scan, connect, inline password, forget) · Ethernet (interfaces with default route,
+    connect/disconnect, wired profiles up/down) · **VPN** (NetworkManager VPN & WireGuard toggles)
+  - **Bluetooth**: power, scan, pair, connect, forget, device battery
+  - **Audio**: 0–150 % boost, presets, output/input selection, per‑app volume
+- **Launcher** (spotlight): fuzzy app search ranked by usage, `=` calculator, `>` run command,
+  `?` ask Morpheus, **clipboard history** with image previews (cliphist), **quick commands**.
+- **Notifications**: built‑in server (replaces swaync) — popups with actions and timeout bar,
+  grouped notification center, Do Not Disturb, sound.
+- **Session menu** (lock, suspend, hibernate, logout, reboot, shutdown — with confirmation),
+  **wallpaper picker** (awww transitions), **settings panel** (accent colors, opacity, bar, clock…),
+  **OSD** for volume/brightness, **polkit agent**, **Morpheus** local AI chat (Ollama / llama.cpp),
+  **system monitor** (graphs, temps, disks, network, top processes).
 
----
+Everything talks to the system through Quickshell's native services — PipeWire, NetworkManager,
+BlueZ, UPower, MPRIS, StatusNotifier, Hyprland IPC — so it's instant and nothing polls `pamixer`/`nmcli` in a loop.
 
-## 🚀 Installation
+**Hyprland** (Lua config): matrix‑style animation curves, gradient borders, blur behind the shell,
+fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 
-> [!CAUTION]
-> I use [monique](https://github.com/ToRvaLDz/monique) for managing my monitors.
+**Lock screen**: hyprlock with blurred desktop, clock, avatar and green input.
+**Login screen**: greetd + tuigreet in the same palette.
 
-
-### Automatic (recommended)
-
-Clone the repo and run the installer:
+## 🚀 Install
 
 ```bash
 git clone https://github.com/privatefound/my-dotfiles.git ~/green-hyprtheme
@@ -39,209 +44,71 @@ cd ~/green-hyprtheme
 ./install.sh
 ```
 
-The script will:
-- Back up any existing `~/.config/hypr/` config
-- Create a symlink `~/.config/hypr → <repo>` (or copy with `--copy`)
-- Generate a default `monitors.conf` if missing (edit it for your setup)
-- Set executable permissions on all scripts
-- Interactively configure Ollama, greetd, NetworkManager, and Bluetooth
+The installer installs dependencies with pacman (all in the official repos; AUR extras optional), backs up `~/.config/hypr`, links the repo there,
+points `~/.config/quickshell` to the shell, disables other notification daemons and optionally sets up
+greetd + tuigreet, NetworkManager/Bluetooth, Ollama and VA‑API. Flags: `--copy`, `--no-deps`, `--yes`.
 
-> [!NOTE]
-> `monitors.conf` is machine-specific and not tracked by git. After install, edit it to match your monitor setup. See `monitors.conf.example` for reference.
+Manual steps and details: **[INSTALLATION.md](./INSTALLATION.md)**.
 
-### Manual
+## ⌨️ Keybindings
 
-For full control over each step, follow the detailed guide:
-👉 **[INSTALLATION.md](./INSTALLATION.md)**
+| Keys | Action |
+|---|---|
+| `` ` `` / `SUPER + D` | Launcher |
+| `SUPER + Z` | Clipboard history |
+| `SUPER + X` | Quick commands |
+| `SUPER + A` | Control center |
+| `SUPER + N` / `SUPER + SHIFT + N` | Notifications / Do Not Disturb |
+| `SUPER + ESC` | Session menu |
+| `SUPER + W` | Wallpaper picker |
+| `SUPER + I` | Morpheus AI chat |
+| `SUPER + ,` | Shell settings |
+| `SUPER + SHIFT + W` | Restart the shell |
+| `SUPER + T` / `E` / `SHIFT+B` / `SHIFT+C` | Terminal / files / browser / editor |
+| `SUPER + K` / `V` / `F` / `SHIFT+F` / `P` | Close / float / maximize / fullscreen / pin |
+| `SUPER + O` | Toggle opacity of the active window |
+| `SUPER + R` | Resize mode (arrows / HJKL, `Esc` to exit) |
+| `SUPER + M` / `SHIFT+M` | Master / dwindle layout |
+| `SUPER + 1‑0` / `SHIFT+1‑0` | Workspace / move window |
+| `SUPER + S` / `SHIFT+S` | Scratchpad |
+| `ALT + TAB` | Cycle windows |
+| `SUPER + CTRL + L` | Lock |
+| `F1` / `Print` / `SHIFT + Print` | Screenshot area / area / screen |
+| `SUPER + SHIFT + P` | Color picker |
 
----
+**Bar mouse actions** — logo: launcher (right: session) · ✦: AI chat (right: clear) · volume: wheel to change,
+right click pavucontrol, middle mute · network: right click connection editor · cast: left
+gnome-network-displays, right monique · bell: right click Do Not Disturb · sysmon: right click Mission Center.
 
-## 📂 Folder Structure
+## 📂 Structure
 
-```text
-~/.config/hypr/
-├── install.sh                  # 🚀 Automatic installer
-├── INSTALLATION.md             # 🛠️ Manual installation guide
-├── README.md                   # 📖 This documentation
-├── README-THEME.md             # 🎨 Login/Lock screen details
-├── hyprland.conf               # ⚙️ Core configuration
-├── variables.conf              # 📋 Variables and apps (terminal, browser, editor...)
-├── look.conf                   # 💅 Aesthetics and animations
-├── keybindings.conf            # ⌨️ Keyboard shortcuts
-├── monitors.conf               # 🖥️ Monitors and resolutions (not tracked, see .example)
-├── monitors.conf.example       # 🖥️ Example monitor config
-├── autostart.conf              # ⏯️ Programs at startup
-├── windows.conf                # 🪟 Window rules
-├── workspaces.conf             # 🗂️ Workspace configuration
-├── permissions.conf            # 🔐 Hyprland permissions
-├── hypridle.conf               # 💤 Power management (dim/lock/suspend)
-├── hyprlock.conf               # 🔒 Lock screen
-├── quickshell/                 # 📊 QuickShell status bar (QML)
-│   ├── shell.qml               #    Main entry point
-│   ├── Bar.qml                 #    Bar layout
-│   ├── Clock.qml               #    Clock widget
-│   ├── GemmaChat.qml           #    Gemma AI chat
-│   ├── Workspaces.qml          #    Workspace indicators
-│   ├── Network.qml             #    Network status
-│   ├── Volume.qml              #    Volume control
-│   ├── Battery.qml             #    Battery indicator
-│   ├── CpuRam.qml              #    CPU/RAM monitor
-│   ├── Notifications.qml       #    Notification widget
-│   ├── OpacityToggle.qml       #    Window opacity toggle (eye icon)
-│   ├── Caffeine.qml            #    Idle-inhibit toggle (coffee icon)
-│   └── PowerMenu.qml           #    Power menu
-├── waybar/                     # 📊 Waybar (alternative status bar)
-│   ├── config                  #    Modules and layout
-│   ├── style.css               #    CSS style
-│   └── scripts/
-│       ├── waybar-helper.sh    #    Weather (wttr.in) and connection status
-│       ├── waybar-network-ip.sh #   Network IP display
-│       └── waybar-notifications.sh # Notification count for swaync
-├── rofi/                       # 🚀 Launcher and menus
-│   ├── config.rasi             #    Main config
-│   ├── theme.rasi              #    Graphical theme
-│   └── scripts/
-│       ├── rofi-wifi.sh        #    WiFi menu with nmcli
-│       ├── rofi-control.sh     #    Volume, brightness, power menu, app install
-│       └── rofi-subnet.sh      #    IPv4 subnet calculator (ipcalc / Ollama)
-├── swaync/                     # 🔔 Notifications
-│   ├── config.json             #    Panel configuration
-│   └── style.css               #    CSS style
-├── conky/                      # 📟 System monitor overlay
-│   ├── cyberconky.conf         #    Cyber theme config
-│   └── fonts/                  #    Dedicated fonts (Roboto Mono Nerd Font)
-├── scripts/                    # 🛠️ Utility scripts
-│   └── wallpaper-selector.sh   #    Wallpaper picker (Rofi + awww)
-├── wallpaper/                  # 🎨 Wallpapers
-└── systemd/                    # 🛠️ Custom systemd services
+```
+~/.config/hypr
+├── hyprland.lua           Hyprland (Lua)
+├── monitors.lua.example   copy to monitors.lua (or let Monique generate it) — not tracked
+├── hypridle.conf  hyprlock.conf
+├── greetd/config.toml     login screen
+├── conky/  wallpapers/  systemd/
+└── shell/                 Quickshell
+    ├── shell.qml
+    ├── config/            Theme · Settings · Icons
+    ├── components/        buttons, sliders, toggles, text fields, graphs…
+    ├── services/          Audio · Network · Bt · Power · Notifs · Media · SysStats · Ai · Apps · Clipboard…
+    ├── modules/           bar · popouts · launcher · session · wallpaper · settings · notifications · osd · polkit
+    └── assets/            icons (Inkscape) and notification sound
 ```
 
----
+User state lives outside git: `settings.json` (written by the settings panel) and `state/`.
 
-## ⌨️ Main Keybindings
-
-| Key | Action |
-| :--- | :--- |
-| `` ` `` (Backtick) | Open App Launcher (Rofi) |
-| `Super + T` | Open Terminal (Kitty) |
-| `Super + E` | Open File Manager (Nemo) |
-| `Super + Shift + B` | Open Browser (Brave) |
-| `Super + Shift + C` | Open Editor (Sublime Text) |
-| `Super + K` | Close Window |
-| `Super + X` | Shutdown menu / Exit Hyprland |
-| `Super + V` | Floating Mode |
-| `Super + F` | Fullscreen |
-| `Super + Ctrl + L` | Lock Screen (Hyprlock) |
-| `Super + S` | Scratchpad (hidden workspace) |
-| `Super + W` | Wallpaper Selector (Rofi + awww) |
-| `F1` | Area screenshot (grim + slurp + swappy) |
-| `XF86AudioRaiseVolume` | Volume Up |
-| `XF86AudioLowerVolume` | Volume Down |
-| `XF86AudioMute` | Mute Audio |
-| `XF86MonBrightnessUp/Down` | Brightness Up/Down |
-| `XF86AudioNext/Prev/Play` | Media controls (playerctl) |
-| `Alt + Tab` | Next window |
-
-*See `keybindings.conf` for the full list.*
-
----
-
-## 🌐 Browser Hardware Acceleration & Video Playback (Wayland)
-
-Chromium-based browsers (Brave, Chrome, VS Code/Electron) may have issues with WebGL, hardware acceleration, and video playback under Wayland.
-
-### VA-API Drivers (Required for Hardware Video Decode)
-
-Install the appropriate VA-API driver for your GPU:
-
-| GPU | Package | Notes |
-| :--- | :--- | :--- |
-| **Intel** (gen 8+) | `intel-media-driver libva-utils` | Broadwell and newer |
-| **Intel** (gen 7 and older) | `libva-intel-driver libva-utils` | Ivy Bridge, Haswell |
-| **AMD** | `libva-mesa-driver libva-utils` | All AMD GPUs |
-| **NVIDIA** (proprietary) | `libva-nvidia-driver libva-utils` | Requires nvidia 525+ |
+## 🔧 IPC
 
 ```bash
-# Verify VA-API is working
-vainfo
+qs -p ~/.config/hypr/shell ipc show
+qs -p ~/.config/hypr/shell ipc call shell launcher
+qs -p ~/.config/hypr/shell ipc call shell network vpn
+qs -p ~/.config/hypr/shell ipc call wallpaper set ~/Pictures/wall.jpg
 ```
 
-### Chromium / Google Chrome
-Add the following flags to `~/.config/chrome-flags.conf`:
-```text
---ozone-platform-hint=auto
---enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,Vulkan,AcceleratedVideoDecodeLinuxGL
---enable-gpu-rasterization
---enable-zero-copy
---ignore-gpu-blocklist
---use-gl=egl
---enable-accelerated-video-decode
-```
+## 📄 License
 
-### Brave Browser
-Add the following flags to `~/.config/brave-flags.conf`:
-```text
---ozone-platform-hint=auto
---enable-features=VaapiVideoDecodeLinuxGL,VaapiVideoEncoder,Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,AcceleratedVideoDecodeLinuxGL
---enable-gpu-rasterization
---enable-zero-copy
---ignore-gpu-blocklist
---use-gl=egl
---enable-accelerated-video-decode
---disable-gpu-driver-bug-workarounds
-```
-
-> [!TIP]
-> After configuring, verify at `brave://gpu` — look for "Video Decode: Hardware accelerated"
-
-### Firefox
-For Firefox, ensure the environment variable `MOZ_ENABLE_WAYLAND=1` is set, then open `about:config` and set:
-* `gfx.webrender.all` -> `true`
-* `webgl.disabled` -> `false`
-* `media.ffmpeg.vaapi.enabled` -> `true`
-
----
-
-## 🤖 Local AI (Ollama)
-
-This config integrates **Ollama** for local AI capabilities in multiple places:
-
-### Rofi Scripts
-- **`rofi-subnet.sh`**: Calculate IPv4 subnet info. Uses `ipcalc` if installed, otherwise queries Ollama as a fallback.
-
-### QuickShell AI Chat (✦)
-The status bar includes an integrated **AI Chat** accessible by clicking the ✦ icon (next to the subnet calculator book icon).
-
-| Action | Function |
-| :--- | :--- |
-| **Left click** on ✦ | Open chat popup |
-| **Right click** on ✦ | Clear chat history |
-
-Features:
-- 💬 **Interactive chat** with streaming responses
-- 📋 **Selectable/copyable** text for easy command copying
-- 🔄 **Model selector** dropdown (top-right) - automatically lists all installed Ollama models
-- 📝 **Markdown rendering** - code blocks, headers, lists, bold/italic are formatted
-- ⌨️ **Enter to send**, Escape to close
-
-### Recommended Model
-
-> [!TIP]
-> The recommended model for the AI chat is [gemma4:e2b](https://ollama.com/library/gemma4:e2b-it-q4_K_M) (Q4_K_M quantization).
-> It offers the best balance between speed, quality, and VRAM usage for local inference.
-
-```bash
-# Install Ollama and pull the recommended model
-systemctl enable --now ollama
-ollama pull gemma4:e2b-it-q4_K_M
-```
-
-You can also use other models like `gemma3:12b`, `llama3.2`, `qwen3`, or `deepseek-r1` - all installed models will appear in the dropdown selector.
-
----
-
-## 🛠️ Maintenance
-
-If you encounter network issues, the system includes a pre-configured service at `systemd/NetworkManager-fixed.service` to handle startup timeouts on some Arch configurations.
-
-> All paths in the configuration files use `$HOME` or `~` and are portable across any user without modifications.
+MIT — see [LICENSE](./LICENSE).

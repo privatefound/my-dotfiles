@@ -1,0 +1,17 @@
+-- Copia in monitors.lua e adatta (oppure lascia che Monique lo generi).
+-- hyprctl monitors  → nomi e descrizioni dei tuoi monitor
+
+hl.monitor({
+  output = "eDP-1",
+  mode = "preferred",
+  position = "0x0",
+  scale = 1,
+})
+
+-- Esempio con descrizione (stabile anche se cambia la porta):
+-- hl.monitor({
+--   output = "desc:HP Inc. HP E27u G5 XXXXXXXX",
+--   mode = "2560x1440@60",
+--   position = "1920x0",
+--   scale = 1,
+-- })
