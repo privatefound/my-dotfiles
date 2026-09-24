@@ -127,36 +127,36 @@ Item {
         return out;
     }
 
+    // Campo compatto: etichetta piccola + valore, senza riquadro proprio (click = copia)
     component Field: StyledRect {
+        id: field
         property string label
         property string value
         property bool accent: false
         Layout.fillWidth: true
-        implicitHeight: 52
-        radius: Theme.radius.normal
-        color: Theme.surfaceContainer
+        implicitHeight: 36
+        radius: Theme.radius.small
         ColumnLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 8
-            spacing: 0
+            anchors.leftMargin: 8
+            anchors.rightMargin: 6
+            spacing: -2
             StyledText {
-                text: parent.parent.label
+                text: field.label
                 font.pixelSize: Theme.font.tiny
                 color: Theme.textFaint
             }
             StyledText {
                 Layout.fillWidth: true
-                text: parent.parent.value
+                text: field.value
                 font.family: Theme.font.mono
-                font.pixelSize: Theme.font.body
-                font.weight: Font.DemiBold
-                color: parent.parent.accent ? Theme.primary : Theme.text
+                font.pixelSize: Theme.font.small
+                color: field.accent ? Theme.primary : Theme.text
             }
         }
         StateLayer {
             tint: Theme.primary
-            onClicked: Quickshell.clipboardText = parent.value
+            onClicked: Quickshell.clipboardText = field.value
         }
     }
 
@@ -203,22 +203,30 @@ Item {
             font.pixelSize: Theme.font.small
         }
 
-        GridLayout {
+        StyledRect {
             Layout.fillWidth: true
             visible: root.result !== null
-            columns: 3
-            rowSpacing: 6
-            columnSpacing: 6
+            implicitHeight: fields.implicitHeight + 12
+            radius: Theme.radius.normal
+            color: Theme.surfaceContainer
+            GridLayout {
+                id: fields
+                anchors.fill: parent
+                anchors.margins: 6
+                columns: 3
+                rowSpacing: 0
+                columnSpacing: 4
 
-            Field { label: I18n.tr("Rete"); value: root.result ? root.result.network + "/" + root.result.prefix : ""; accent: true }
-            Field { label: "Netmask"; value: root.result?.mask ?? "" }
-            Field { label: "Wildcard"; value: root.result?.wildcard ?? "" }
-            Field { label: I18n.tr("Primo host"); value: root.result?.first ?? "" }
-            Field { label: I18n.tr("Ultimo host"); value: root.result?.last ?? "" }
-            Field { label: "Broadcast"; value: root.result?.broadcast ?? "" }
-            Field { label: I18n.tr("Host utilizzabili"); value: root.result ? root.result.hosts.toLocaleString(I18n.locale, "f", 0) : ""; accent: true }
-            Field { label: I18n.tr("Classe"); value: root.result?.cls ?? "" }
-            Field { label: I18n.tr("Tipo"); value: root.result?.type ?? "" }
+                Field { label: I18n.tr("Rete"); value: root.result ? root.result.network + "/" + root.result.prefix : ""; accent: true }
+                Field { label: "Netmask"; value: root.result?.mask ?? "" }
+                Field { label: "Wildcard"; value: root.result?.wildcard ?? "" }
+                Field { label: I18n.tr("Primo host"); value: root.result?.first ?? "" }
+                Field { label: I18n.tr("Ultimo host"); value: root.result?.last ?? "" }
+                Field { label: "Broadcast"; value: root.result?.broadcast ?? "" }
+                Field { label: I18n.tr("Host utilizzabili"); value: root.result ? root.result.hosts.toLocaleString(I18n.locale, "f", 0) : ""; accent: true }
+                Field { label: I18n.tr("Classe"); value: root.result?.cls ?? "" }
+                Field { label: I18n.tr("Tipo"); value: root.result?.type ?? "" }
+            }
         }
 
         StyledRect {
