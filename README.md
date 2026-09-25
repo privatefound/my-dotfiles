@@ -30,6 +30,12 @@ native services instead of polling scripts, animated popouts anchored to the bar
 Everything talks to the system through Quickshell's native services — PipeWire, NetworkManager,
 BlueZ, UPower, MPRIS, StatusNotifier, Hyprland IPC — so it's instant and nothing polls `pamixer`/`nmcli` in a loop.
 
+**Plugins**: install [DankMaterialShell community plugins](https://danklinux.com/plugins) straight from
+**Settings → Plugin** (catalog with search and categories, install / update / remove, per‑plugin settings).
+Bar widgets and background (daemon) plugins run through a DMS compatibility layer built on
+[dank-qml-common](https://github.com/AvengeMedia/dank-qml-common); desktop, launcher and control‑center plugins
+are not supported yet. Installed plugins live in `~/.config/hypr/plugins/` and are **not tracked by git**.
+
 **Hyprland** (Lua config): 7 window/workspace animation presets (Matrix, Slide, GNOME, Elastic, Glitch, Minimal, Off) with speed control, switchable live from the shell settings, gradient borders, blur behind the shell,
 fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 
@@ -95,6 +101,7 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
     ├── components/        buttons, sliders, toggles, text fields, graphs…
     ├── services/          Audio · Network · Bt · Power · Notifs · Media · SysStats · Ai · Apps · Clipboard…
     ├── modules/           bar · popouts · launcher · session · wallpaper · settings · notifications · osd · polkit
+    ├── DankCommon/ Common/ Services/ Widgets/ Modules/Plugins/   DMS plugin compatibility layer
     └── assets/            icons (Inkscape) and notification sound
 ```
 
@@ -112,3 +119,7 @@ qs -p ~/.config/hypr/shell ipc call wallpaper set ~/Pictures/wall.jpg
 ## 📄 License
 
 MIT — see [LICENSE](./LICENSE).
+
+Credits: `shell/DankCommon/` is [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) and the plugin
+setting controls in `shell/Modules/Plugins/` come from [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell),
+both © Avenge Media LLC, MIT licensed.

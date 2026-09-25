@@ -17,6 +17,7 @@ StyledRect {
         { id: "bar", label: I18n.tr("Barra"), icon: Icons.dotsHorizontal },
         { id: "notif", label: I18n.tr("Notifiche"), icon: Icons.bell },
         { id: "apps", label: I18n.tr("App & AI"), icon: Icons.apps },
+        { id: "plugins", label: I18n.tr("Plugin"), icon: Icons.grid },
         { id: "about", label: "Info", icon: Icons.information }
     ]
 
@@ -650,6 +651,11 @@ StyledRect {
                             }
                         }
                     }
+                }
+
+                // ═══ Plugin ═══
+                PluginsPage {
+                    visible: root.section === "plugins"
                 }
 
                 // ═══ Info ═══

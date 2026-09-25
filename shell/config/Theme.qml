@@ -21,7 +21,16 @@ Singleton {
     })
     readonly property var accentKeys: ["matrix", "emerald", "cyan", "ice", "violet", "rose", "amber", "red"]
 
-    readonly property color primary: (accents[Settings.accent] ?? accents.matrix).color
+    // Accento temporaneo (es. plugin "Music Theme": colore della copertina). Trasparente = nessuno.
+    property color accentOverride: "transparent"
+    readonly property color accentBase: (accents[Settings.accent] ?? accents.matrix).color
+    readonly property color primary: accentOverride.a > 0 ? accentOverride : accentBase
+
+    Behavior on accentOverride {
+        ColorAnimation {
+            duration: 600
+        }
+    }
 
     // ── Basi neutre ──
     readonly property color _black: Qt.rgba(0, 0, 0, 1)

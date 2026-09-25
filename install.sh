@@ -83,7 +83,9 @@ PACKAGES=(
     # login screen
     greetd greetd-tuigreet
     # font e temi (JetBrainsMono Nerd Font per le icone, Adwaita Sans per il testo)
-    ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji
+    ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable
+    # plugin DMS: git per installarli, font delle icone Material Symbols
+    git
     papirus-icon-theme nwg-look qt5ct qt6ct
     # app usate dalla config (modificabili in hyprland.lua / impostazioni)
     terminology nemo conky mission-center
@@ -180,6 +182,9 @@ if command -v tuigreet &>/dev/null; then
             ok "Backup: /etc/greetd/config.toml.backup.$STAMP"
         fi
         sudo install -Dm644 "$REPO_DIR/greetd/config.toml" /etc/greetd/config.toml
+        # niente messaggi di avvio sopra il login (parte a boot finito, terminale pulito)
+        sudo install -Dm644 "$REPO_DIR/greetd/greetd-override.conf" /etc/systemd/system/greetd.service.d/override.conf
+        sudo systemctl daemon-reload
         sudo gpasswd -a greeter video &>/dev/null || true
         sudo gpasswd -a greeter render &>/dev/null || true
         for dm in sddm gdm lightdm ly; do

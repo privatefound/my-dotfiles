@@ -283,8 +283,8 @@ hl.bind(mainMod .. " + W",              shell("wallpaper"))
 hl.bind(mainMod .. " + I",              shell("ai"))
 hl.bind(mainMod .. " + comma",          shell("settings"))
 -- Riavvia la shell (come nella vecchia config): chiude l'istanza e la rilancia
--- (pattern ancorato a "^qs": non può colpire la riga "sh -c ..." di questo comando)
-hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd("pkill -f '^qs -p " .. SHELL .. "$'; sleep 0.6; " .. qs))
+-- (qs kill chiude le istanze avviate sia con il percorso della shell sia con ~/.config/quickshell)
+hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd("qs kill -p " .. SHELL .. "; qs kill -p " .. HOME .. "/.config/quickshell; sleep 0.6; " .. qs))
 
 -- ── Alt-Tab (sistemato per la config Lua) ──
 hl.bind("ALT + Tab", function()

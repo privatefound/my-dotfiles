@@ -8,3 +8,6 @@ monitors.conf
 *.log
 .claude/
 .qmlls.ini
+
+# Plugin installati dalle impostazioni (personali, non versionati)
+plugins/

@@ -153,6 +153,10 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 6
 
+            PluginWidgets {
+                screen: bar.modelData
+            }
+
             SysStatsWidget {
                 screenName: bar.screenName
             }

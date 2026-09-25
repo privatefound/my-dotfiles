@@ -4,6 +4,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.config
 import qs.services
+import qs.Services as P
 
 // Scorciatoie globali (Hyprland: hl.dsp.global("greenshell:<nome>")) e comandi IPC
 // (qs -p ~/.config/hypr/shell ipc call <target> <funzione>).
@@ -60,6 +61,23 @@ Scope {
             Ui.controlPage = "network";
         }
         function state(): string { return JSON.stringify({ popout: Ui.popout, popoutScreen: Ui.popoutScreen, modal: Ui.modal, modalScreen: Ui.modalScreen, focused: Ui.focusedScreen }); }
+    }
+
+    IpcHandler {
+        target: "plugins"
+        function list(): string { return JSON.stringify(P.PluginService.availablePluginsList.map(p => ({ id: p.id, surface: p.surface, supported: p.supported, enabled: P.PluginService.isEnabled(p.id) }))); }
+        function catalogSize(): string { return String(P.PluginService.catalog.length); }
+        function fetch(): void { P.PluginService.fetchCatalog(); }
+        function install(id: string): string {
+            const e = P.PluginService.catalog.find(x => x.id === id);
+            if (!e) return "non trovato nel catalogo";
+            P.PluginService.install(e);
+            return "installazione avviata";
+        }
+        function remove(id: string): void { P.PluginService.uninstall(id); }
+        function popout(id: string): string { return P.PluginService.openWidgetPopout(id, Ui.focusedScreen) ? "ok" : "widget non trovato"; }
+        function enable(id: string): void { P.PluginService.setEnabled(id, true); }
+        function disable(id: string): void { P.PluginService.setEnabled(id, false); }
     }
 
     IpcHandler {

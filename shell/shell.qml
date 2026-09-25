@@ -46,4 +46,7 @@ ShellRoot {
     PolkitDialog {}
 
     Shortcuts {}
+
+    // Plugin DankMaterialShell (Impostazioni → Plugin)
+    PluginHost {}
 }
