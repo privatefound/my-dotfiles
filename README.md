@@ -44,7 +44,7 @@ fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 **Login screen**: greetd + tuigreet in the same palette.
 
 **Battery mode** (`scripts/power-mode.sh`, started by `hyprland.lua`): when you unplug the charger the internal
-panel drops to 60Hz and blur, shadows and animations are turned off; plugging back in reloads the config and restores
+panel drops to 60Hz and blur and shadows are turned off; plugging back in reloads the config and restores
 everything. It also switches the power profile to `power-saver` on battery and `balanced` on AC.
 
 > [!TIP]

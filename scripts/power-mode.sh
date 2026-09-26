@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Adatta Hyprland all'alimentazione:
-#  - a batteria: pannello interno (eDP) a 60Hz, niente blur, ombre e animazioni,
+#  - a batteria: pannello interno (eDP) a 60Hz, niente blur e ombre,
 #                profilo power-profiles-daemon "power-saver"
 #  - collegato:  ricarica la config, così torna tutto come in hyprland.lua/monitors.lua,
 #                e profilo "balanced"
@@ -30,7 +30,6 @@ battery_mode() {
     hyprctl eval "$lua
         hl.config({
             decoration = { blur = { enabled = false }, shadow = { enabled = false } },
-            animations = { enabled = false },
         })" >/dev/null
 }
 
