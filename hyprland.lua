@@ -25,10 +25,26 @@ local opacityInactive = transparent and (tonumber(setting("windowOpacityInactive
 ---- MY PROGRAMS ----
 ---------------------
 
-local terminal    = "terminology"
-local fileManager = "nemo"
-local browser     = "brave"
-local editor      = "subl"
+-- primo programma installato della lista (così la config funziona anche su altri PC)
+-- (cerca nel PATH a mano: in Hyprland os.execute non restituisce l'esito)
+local function installed(bin)
+    for dir in (os.getenv("PATH") or "/usr/bin"):gmatch("[^:]+") do
+        local f = io.open(dir .. "/" .. bin, "r")
+        if f then f:close(); return true end
+    end
+    return false
+end
+local function first(...)
+    for _, cmd in ipairs({ ... }) do
+        if installed(cmd:match("^(%S+)")) then return cmd end
+    end
+    return select(1, ...)
+end
+
+local terminal    = first("terminology", "kitty", "alacritty", "foot")
+local fileManager = first("nemo", "nautilus", "thunar", "dolphin")
+local browser     = first("brave", "firefox", "chromium", "google-chrome-stable", "xdg-open https://")
+local editor      = first("subl", "code", "zeditor", "gnome-text-editor", "kate", terminal .. " -e nano")
 local qs          = "qs -p " .. SHELL
 
 -- Scorciatoie della shell (Quickshell GlobalShortcut, appid "greenshell")
@@ -58,8 +74,17 @@ end
 -- PATH (serve per gli script in ~/.local/bin)
 local localBin = HOME .. "/.local/bin"
 local curPath = os.getenv("PATH") or "/usr/local/sbin:/usr/local/bin:/usr/bin"
-if not string.find(curPath, localBin, 1, true) then
-    hl.env("PATH", localBin .. ":" .. curPath)
+-- in coda: comandi di compatibilità per i plugin Omarchy (omarchy-shell, omarchy-file-select…)
+local omarchyCompat = CONF .. "/scripts/omarchy-compat"
+local newPath = curPath
+if not string.find(newPath, localBin, 1, true) then
+    newPath = localBin .. ":" .. newPath
+end
+if not string.find(newPath, omarchyCompat, 1, true) then
+    newPath = newPath .. ":" .. omarchyCompat
+end
+if newPath ~= curPath then
+    hl.env("PATH", newPath)
 end
 
 -- Cursore
@@ -283,8 +308,8 @@ hl.bind(mainMod .. " + W",              shell("wallpaper"))
 hl.bind(mainMod .. " + I",              shell("ai"))
 hl.bind(mainMod .. " + comma",          shell("settings"))
 -- Riavvia la shell (come nella vecchia config): chiude l'istanza e la rilancia
--- (qs kill chiude le istanze avviate sia con il percorso della shell sia con ~/.config/quickshell)
-hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd("qs kill -p " .. SHELL .. "; qs kill -p " .. HOME .. "/.config/quickshell; sleep 0.6; " .. qs))
+-- (script: chiude tutte le istanze con SIGKILL, evitando il crash in chiusura di Quickshell)
+hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.exec_cmd(CONF .. "/scripts/restart-shell.sh"))
 
 -- ── Alt-Tab (sistemato per la config Lua) ──
 hl.bind("ALT + Tab", function()

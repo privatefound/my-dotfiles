@@ -74,7 +74,7 @@ PanelWindow {
                     running: beam.parent.visible
                     loops: Animation.Infinite
                     NumberAnimation { from: -160; to: bg.width; duration: 3800; easing.type: Easing.InOutQuad }
-                    PauseAnimation { duration: 2500 }
+                    PauseAnimation { duration: 20000 }
                 }
             }
         }
@@ -154,6 +154,10 @@ PanelWindow {
             spacing: 6
 
             PluginWidgets {
+                screen: bar.modelData
+            }
+
+            OmarchyWidgets {
                 screen: bar.modelData
             }
 

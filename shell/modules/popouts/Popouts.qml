@@ -140,6 +140,7 @@ PanelWindow {
                 case "ai": return aiComp;
                 case "subnet": return subnetComp;
                 case "plugin": return pluginComp;
+                case "media": return mediaComp;
                 }
                 return null;
             }
@@ -165,5 +166,6 @@ PanelWindow {
     Component { id: trayComp; TrayMenu { item: Ui.popoutData } }
     Component { id: aiComp; AiChat {} }
     Component { id: subnetComp; SubnetCalc {} }
+    Component { id: mediaComp; MediaPanel {} }
     Component { id: pluginComp; PluginPopoutHost { owner: Ui.popoutData } }
 }

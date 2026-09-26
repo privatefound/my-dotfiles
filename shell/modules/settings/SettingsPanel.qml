@@ -5,6 +5,7 @@ import Quickshell
 import qs.config
 import qs.components
 import qs.services
+import qs.Services as P
 
 // Impostazioni della shell (salvate in ~/.config/hypr/settings.json).
 StyledRect {
@@ -198,6 +199,49 @@ StyledRect {
                         text: I18n.tr("Colore d'accento")
                         icon: Icons.palette
                     }
+                    StyledRect {
+                        Layout.fillWidth: true
+                        visible: Theme.accentOverride.a > 0
+                        implicitHeight: 52
+                        radius: Theme.radius.normal
+                        color: Theme.primaryContainer
+                        border.width: 1
+                        border.color: Theme.alpha(Theme.primary, 0.5)
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 14
+                            anchors.rightMargin: 8
+                            spacing: 10
+                            Icon {
+                                text: Icons.musicNote
+                                size: 18
+                                color: Theme.primary
+                            }
+                            StyledText {
+                                Layout.fillWidth: true
+                                text: I18n.tr("Il colore ora viene dalla copertina del brano (plugin Music Theme)")
+                                font.pixelSize: Theme.font.small
+                                color: Theme.fgPrimaryContainer
+                                wrapMode: Text.Wrap
+                            }
+                            StyledButton {
+                                implicitHeight: 32
+                                variant: "outline"
+                                text: I18n.tr("Usa il mio colore")
+                                onClicked: Theme.accentOverride = "transparent"
+                            }
+                            StyledButton {
+                                implicitHeight: 32
+                                variant: "tonal"
+                                text: I18n.tr("Spegni plugin")
+                                onClicked: {
+                                    P.PluginService.setEnabled("musicTheme", false);
+                                    Theme.accentOverride = "transparent";
+                                }
+                            }
+                        }
+                    }
+
                     Flow {
                         Layout.fillWidth: true
                         Layout.topMargin: 6
@@ -228,7 +272,10 @@ StyledRect {
                                     }
                                     StateLayer {
                                         tint: "#000000"
-                                        onClicked: Settings.accent = modelData
+                                        onClicked: {
+                                            Theme.accentOverride = "transparent";
+                                            Settings.accent = modelData;
+                                        }
                                     }
                                 }
                                 StyledText {

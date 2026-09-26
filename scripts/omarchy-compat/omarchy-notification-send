@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Shim per i plugin Omarchy: omarchy-notification-send → notify-send.
+# Supporta --app-name, --urgency, --icon, --glyph (ignorato), --exec "<comando>" (azione al clic).
+args=(); exec_cmd=""; positional=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --app-name|-a) args+=(-a "$2"); shift 2 ;;
+        --urgency|-u)  args+=(-u "$2"); shift 2 ;;
+        --icon|-i)     args+=(-i "$2"); shift 2 ;;
+        --expire-time|-t) args+=(-t "$2"); shift 2 ;;
+        --glyph)       shift 2 ;;
+        --exec)        exec_cmd="$2"; shift 2 ;;
+        --*=*)         shift ;;
+        --*)           shift 2 ;;
+        *)             positional+=("$1"); shift ;;
+    esac
+done
+if [ -n "$exec_cmd" ]; then
+    (
+        choice=$(notify-send "${args[@]}" --action=default=Apri --wait "${positional[@]}")
+        [ "$choice" = "default" ] && sh -c "$exec_cmd"
+    ) >/dev/null 2>&1 &
+    disown
+else
+    exec notify-send "${args[@]}" "${positional[@]}"
+fi

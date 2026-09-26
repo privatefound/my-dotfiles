@@ -476,4 +476,22 @@ Singleton {
         else
             G.Theme.accentOverride = "transparent";
     }
+
+    // ── Durate di animazione DMS usate dai plugin ──
+    readonly property int _animBase: G.Settings.animations ? 300 : 0
+    readonly property int longDuration: _animBase
+    readonly property int popoutAnimationDuration: Math.round(_animBase * 0.9)
+    readonly property int modalAnimationDuration: Math.round(_animBase * 0.9)
+    readonly property int notificationAnimationBaseDuration: _animBase
+    readonly property int notificationEnterDuration: Math.round(_animBase * 0.875)
+    readonly property int notificationExitDuration: Math.round(_animBase * 0.75)
+    readonly property int notificationExpandDuration: _animBase
+    readonly property int notificationCollapseDuration: Math.round(_animBase * 0.9)
+    readonly property int notificationInlineExpandDuration: Math.round(_animBase * 0.925)
+    readonly property int notificationInlineCollapseDuration: Math.round(_animBase * 0.75)
+    readonly property int notificationStackShiftDuration: _animBase
+    readonly property int notificationStackStaggerDuration: Math.round(_animBase * 0.5)
+    readonly property real variantEnterDurationFactor: 1.0
+    readonly property real variantExitDurationFactor: 1.0
+    readonly property real variantOpacityDurationScale: 1.0
 }

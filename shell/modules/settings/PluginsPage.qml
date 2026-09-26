@@ -7,11 +7,15 @@ import qs.services
 import qs.Services as P
 import qs.Widgets as DW
 
-// Impostazioni → Plugin: plugin DankMaterialShell installati e catalogo ufficiale.
+// Impostazioni → Plugin: plugin DankMaterialShell e Omarchy, installati e cataloghi ufficiali.
 ColumnLayout {
     id: root
 
     property string tab: "installed"      // "installed" | "browse"
+    property string source: "dms"          // "dms" | "omarchy"
+    readonly property bool om: source === "omarchy"
+    readonly property var svc: om ? P.OmarchyPluginService : P.PluginService
+    readonly property var installedList: om ? P.OmarchyPluginService.installedList : P.PluginService.availablePluginsList
     property string query: ""
     property string category: ""
     property bool onlyCompatible: true
@@ -20,7 +24,7 @@ ColumnLayout {
 
     readonly property var categories: {
         const set = {};
-        for (const e of P.PluginService.catalog)
+        for (const e of root.svc.catalog)
             if (e.category)
                 set[e.category.toLowerCase()] = true;
         return Object.keys(set).sort();
@@ -28,23 +32,30 @@ ColumnLayout {
 
     readonly property var results: {
         const q = query.trim().toLowerCase();
-        return P.PluginService.catalog.filter(e => {
-            if (onlyCompatible && !P.PluginService.catalogSupported(e))
+        return root.svc.catalog.filter(e => {
+            if (onlyCompatible && !root.svc.catalogSupported(e))
                 return false;
             if (category && (e.category || "").toLowerCase() !== category)
                 return false;
             if (!q)
                 return true;
-            return ((e.name || "") + " " + (e.description || "") + " " + (e.author || "") + " " + (e.id || "")).toLowerCase().includes(q);
+            return ((e.name || "") + " " + (e.description || "") + " " + (e.author || "") + " " + (e.id || "") + " " + (e.tags || []).join(" ")).toLowerCase().includes(q);
         });
     }
 
     Layout.fillWidth: true
     spacing: 10
 
-    onTabChanged: {
-        if (tab === "browse" && P.PluginService.catalog.length === 0)
-            P.PluginService.fetchCatalog();
+    function _maybeFetch() {
+        if (tab === "browse" && svc.catalog.length === 0 && !svc.catalogLoading)
+            svc.fetchCatalog(false);
+    }
+    onTabChanged: _maybeFetch()
+    onSourceChanged: {
+        category = "";
+        shown = 40;
+        expanded = "";
+        _maybeFetch();
     }
     onQueryChanged: shown = 40
     onCategoryChanged: shown = 40
@@ -56,10 +67,38 @@ ColumnLayout {
 
     StyledText {
         Layout.fillWidth: true
-        text: I18n.tr("Plugin della community di DankMaterialShell. Si installano in ~/.config/hypr/plugins (esclusi da git). Sono supportati i widget per la barra e i plugin di sottofondo; alcuni potrebbero non funzionare del tutto.")
+        text: root.om ? I18n.tr("Plugin della community di Omarchy (plugins.omarchy.org). Si installano in ~/.config/hypr/plugins/omarchy (esclusi da git). Sono supportati widget per la barra, servizi, pannelli e overlay; quelli che usano comandi specifici di Omarchy potrebbero non funzionare del tutto.") : I18n.tr("Plugin della community di DankMaterialShell. Si installano in ~/.config/hypr/plugins (esclusi da git). Sono supportati i widget per la barra e i plugin di sottofondo; alcuni potrebbero non funzionare del tutto.")
         wrapMode: Text.Wrap
         color: Theme.textDim
         font.pixelSize: Theme.font.small
+    }
+
+    // ── Sorgente ──
+    RowLayout {
+        Layout.fillWidth: true
+        spacing: 6
+        StyledText {
+            text: I18n.tr("Sorgente")
+            font.pixelSize: Theme.font.small
+            color: Theme.textDim
+        }
+        Repeater {
+            model: [
+                { id: "dms", label: "DankMaterialShell", n: P.PluginService.availablePluginsList.length },
+                { id: "omarchy", label: "Omarchy", n: P.OmarchyPluginService.installedList.length }
+            ]
+            delegate: StyledButton {
+                required property var modelData
+                implicitHeight: 30
+                padding: 12
+                variant: root.source === modelData.id ? "filled" : "outline"
+                text: modelData.label + (modelData.n ? "  ·  " + modelData.n : "")
+                onClicked: root.source = modelData.id
+            }
+        }
+        Item {
+            Layout.fillWidth: true
+        }
     }
 
     // ── Schede ──
@@ -69,7 +108,7 @@ ColumnLayout {
 
         Repeater {
             model: [
-                { id: "installed", label: I18n.tr("Installati") + " (" + P.PluginService.availablePluginsList.length + ")", icon: Icons.checkCircle },
+                { id: "installed", label: I18n.tr("Installati") + " (" + root.installedList.length + ")", icon: Icons.checkCircle },
                 { id: "browse", label: I18n.tr("Sfoglia"), icon: Icons.magnify }
             ]
             delegate: StyledButton {
@@ -87,12 +126,12 @@ ColumnLayout {
         IconButton {
             icon: Icons.folder
             iconColor: Theme.textDim
-            onClicked: Quickshell.execDetached(["xdg-open", P.PluginService.pluginDirectory])
+            onClicked: Quickshell.execDetached(["sh", "-c", "mkdir -p \"$1\" && xdg-open \"$1\"", "_", root.svc.pluginDirectory])
         }
         IconButton {
             icon: Icons.refresh
             iconColor: Theme.textDim
-            onClicked: root.tab === "browse" ? P.PluginService.fetchCatalog() : P.PluginService.rescan()
+            onClicked: root.tab === "browse" ? root.svc.fetchCatalog(true) : root.svc.rescan()
         }
     }
 
@@ -103,7 +142,7 @@ ColumnLayout {
         spacing: 8
 
         ColumnLayout {
-            visible: P.PluginService.availablePluginsList.length === 0
+            visible: root.installedList.length === 0
             Layout.fillWidth: true
             Layout.topMargin: 20
             spacing: 10
@@ -128,13 +167,15 @@ ColumnLayout {
         }
 
         Repeater {
-            model: P.PluginService.availablePluginsList
+            model: root.installedList
 
             delegate: StyledRect {
                 id: card
                 required property var modelData
-                readonly property bool on: P.PluginService.isEnabled(modelData.id)
-                readonly property string busy: P.PluginService.busy[modelData.id] ?? ""
+                readonly property bool on: root.svc.enabledIds.includes(modelData.id)
+                readonly property string busy: root.svc.busy[modelData.id] ?? ""
+                readonly property bool supported: root.om ? P.OmarchyPluginService.isSupported(modelData) : modelData.supported
+                readonly property string kindLabel: root.om ? (modelData.kinds || []).join(", ") : modelData.surface
                 readonly property bool open: root.expanded === modelData.id
 
                 Layout.fillWidth: true
@@ -187,7 +228,7 @@ ColumnLayout {
                                     color: Theme.textFaint
                                 }
                                 StyledRect {
-                                    visible: !card.modelData.supported
+                                    visible: !card.supported
                                     implicitHeight: 18
                                     implicitWidth: unsup.implicitWidth + 12
                                     radius: 9
@@ -195,7 +236,7 @@ ColumnLayout {
                                     StyledText {
                                         id: unsup
                                         anchors.centerIn: parent
-                                        text: I18n.tr("non supportato") + " (" + card.modelData.surface + ")"
+                                        text: I18n.tr("non supportato") + " (" + card.kindLabel + ")"
                                         font.pixelSize: Theme.font.tiny
                                         color: Theme.error
                                     }
@@ -203,7 +244,7 @@ ColumnLayout {
                             }
                             StyledText {
                                 Layout.fillWidth: true
-                                text: (card.modelData.author ? card.modelData.author + "  ·  " : "") + (card.modelData.description || "")
+                                text: (card.modelData.author ? card.modelData.author + "  ·  " : "") + (root.om ? card.kindLabel + "  ·  " : "") + (card.modelData.description || "")
                                 font.pixelSize: Theme.font.small
                                 color: Theme.textDim
                                 wrapMode: Text.Wrap
@@ -212,7 +253,7 @@ ColumnLayout {
                         }
 
                         IconButton {
-                            visible: card.modelData.settingsPath !== ""
+                            visible: !root.om && card.modelData.settingsPath !== ""
                             icon: Icons.cog
                             toggled: card.open
                             onClicked: root.expanded = card.open ? "" : card.modelData.id
@@ -221,18 +262,18 @@ ColumnLayout {
                             icon: Icons.update
                             iconColor: Theme.textDim
                             disabled: card.busy !== ""
-                            onClicked: P.PluginService.update(card.modelData.id)
+                            onClicked: root.svc.update(card.modelData.id)
                         }
                         IconButton {
                             icon: Icons.trash
                             iconColor: Theme.error
                             disabled: card.busy !== ""
-                            onClicked: P.PluginService.uninstall(card.modelData.id)
+                            onClicked: root.svc.uninstall(card.modelData.id)
                         }
                         Toggle {
                             checked: card.on
-                            disabled: !card.modelData.supported
-                            onToggled: v => P.PluginService.setEnabled(card.modelData.id, v)
+                            disabled: !card.supported
+                            onToggled: v => root.svc.setEnabled(card.modelData.id, v)
                         }
                     }
 
@@ -320,8 +361,8 @@ ColumnLayout {
 
         StyledText {
             Layout.fillWidth: true
-            text: P.PluginService.catalogLoading ? I18n.tr("Scarico il catalogo…") : P.PluginService.catalogError !== "" ? I18n.tr(P.PluginService.catalogError) : root.results.length + " " + I18n.tr("plugin")
-            color: P.PluginService.catalogError !== "" ? Theme.error : Theme.textDim
+            text: root.svc.catalogLoading ? I18n.tr("Scarico il catalogo…") : root.svc.catalogError !== "" ? I18n.tr(root.svc.catalogError) : root.results.length + " " + I18n.tr("plugin")
+            color: root.svc.catalogError !== "" ? Theme.error : Theme.textDim
             font.pixelSize: Theme.font.small
         }
 
@@ -331,9 +372,9 @@ ColumnLayout {
             delegate: StyledRect {
                 id: entry
                 required property var modelData
-                readonly property bool installed: P.PluginService.isInstalled(modelData.id)
-                readonly property string busy: P.PluginService.busy[modelData.id] ?? ""
-                readonly property bool supported: P.PluginService.catalogSupported(modelData)
+                readonly property bool installed: root.om ? P.OmarchyPluginService.installed[modelData.id] !== undefined : P.PluginService.availablePlugins[modelData.id] !== undefined
+                readonly property string busy: root.svc.busy[modelData.id] ?? ""
+                readonly property bool supported: root.svc.catalogSupported(modelData)
 
                 Layout.fillWidth: true
                 implicitHeight: Math.max(96, entryRow.implicitHeight + 24)
@@ -358,7 +399,7 @@ ColumnLayout {
                         Image {
                             id: shot
                             anchors.fill: parent
-                            source: entry.modelData.screenshot || ""
+                            source: root.om ? (entry.modelData.thumb ? P.OmarchyPluginService.siteUrl + entry.modelData.thumb : "") : (entry.modelData.screenshot || "")
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             sourceSize: Qt.size(240, 144)
@@ -397,20 +438,26 @@ ColumnLayout {
                         }
                         StyledText {
                             Layout.fillWidth: true
-                            text: (entry.modelData.capabilities || []).join(" · ") + ((entry.modelData.dependencies || []).length ? "   ·   " + I18n.tr("richiede") + ": " + entry.modelData.dependencies.join(", ") : "")
+                            text: root.om ? [entry.modelData.kind, "★ " + (entry.modelData.stars || 0), entry.modelData.verified ? I18n.tr("verificato") : "", "v" + (entry.modelData.version || "?")].filter(x => x).join(" · ") : (entry.modelData.capabilities || []).join(" · ") + ((entry.modelData.dependencies || []).length ? "   ·   " + I18n.tr("richiede") + ": " + entry.modelData.dependencies.join(", ") : "")
                             font.family: Theme.font.mono
                             font.pixelSize: Theme.font.tiny
                             color: entry.supported ? Theme.primaryDim : Theme.warning
                         }
                     }
 
+                    IconButton {
+                        visible: root.om
+                        icon: Icons.web
+                        iconColor: Theme.textDim
+                        onClicked: Qt.openUrlExternally(P.OmarchyPluginService.siteUrl + "plugin.html?id=" + encodeURIComponent(entry.modelData.id))
+                    }
                     StyledButton {
                         implicitHeight: 34
                         variant: entry.installed ? "outline" : "filled"
                         disabled: entry.busy !== "" || entry.installed
                         icon: entry.installed ? Icons.check : Icons.download
                         text: entry.busy === "install" ? I18n.tr("Installo…") : entry.installed ? I18n.tr("Installato") : I18n.tr("Installa")
-                        onClicked: P.PluginService.install(entry.modelData)
+                        onClicked: root.svc.install(entry.modelData)
                     }
                 }
             }

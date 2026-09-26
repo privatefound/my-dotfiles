@@ -84,8 +84,9 @@ PACKAGES=(
     greetd greetd-tuigreet
     # font e temi (JetBrainsMono Nerd Font per le icone, Adwaita Sans per il testo)
     ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable
-    # plugin DMS: git per installarli, font delle icone Material Symbols
-    git
+    # plugin (DankMaterialShell e Omarchy, dalle impostazioni): git per installarli,
+    # font delle icone Material Symbols, selettore file; cava per lo spettro audio
+    git zenity cava
     papirus-icon-theme nwg-look qt5ct qt6ct
     # app usate dalla config (modificabili in hyprland.lua / impostazioni)
     terminology nemo conky mission-center
@@ -121,7 +122,7 @@ fi
 
 # Controllo finale dei comandi essenziali
 MISSING=()
-for c in Hyprland qs hyprlock hypridle awww cliphist wl-paste grim slurp swappy brightnessctl nmcli pw-play; do
+for c in Hyprland qs hyprlock hypridle awww cliphist wl-paste grim slurp swappy brightnessctl nmcli pw-play notify-send curl jq git zenity cava; do
     command -v "$c" &>/dev/null || MISSING+=("$c")
 done
 if [[ ${#MISSING[@]} -gt 0 ]]; then
@@ -156,6 +157,9 @@ if [[ -e "$QS_LINK" && ! -L "$QS_LINK" ]]; then
 fi
 ln -sfn "$HYPR_DIR/shell" "$QS_LINK"
 ok "~/.config/quickshell → ~/.config/hypr/shell"
+
+# Script eseguibili (restart della shell, comandi di compatibilità per i plugin Omarchy)
+chmod +x "$HYPR_DIR"/scripts/*.sh "$HYPR_DIR"/scripts/omarchy-compat/* 2>/dev/null || true
 
 # Monitor
 if [[ ! -f "$HYPR_DIR/monitors.lua" ]]; then
@@ -249,4 +253,5 @@ echo -e "${LGREEN}${BOLD}  Fatto. Esci e rientra (o riavvia) per avviare il tema
 echo -e "${LGREEN}${BOLD}════════════════════════════════════════════════════════════════${NC}"
 echo -e "  ${CYAN}Scorciatoie:${NC} SUPER+D launcher · SUPER+A control center · SUPER+ESC sessione"
 echo -e "  ${CYAN}Documentazione:${NC} $HYPR_DIR/README.md"
-echo -e "  ${CYAN}Già in Hyprland?${NC} ricarica con: hyprctl reload && qs -p ~/.config/hypr/shell &"
+echo -e "  ${CYAN}Plugin:${NC} Impostazioni → Plugin (DankMaterialShell o Omarchy), restano fuori da git"
+echo -e "  ${CYAN}Già in Hyprland?${NC} ricarica con: hyprctl reload && ~/.config/hypr/scripts/restart-shell.sh &"

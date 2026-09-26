@@ -5,6 +5,9 @@ import qs.Common as App
 import qs.Services as AppServices
 import qs.Widgets as AppWidgets
 import qs.Modules.Plugins as AppPlugins
+import qs.Modals.FileBrowser as AppFileBrowser
+import qs.Ui as OmarchyUi
+import qs.Commons as OmarchyCommons
 
 // Collega la libreria dank-qml-common (widget dei plugin DMS) alla shell
 // e avvia i plugin "daemon" attivi (senza interfaccia).

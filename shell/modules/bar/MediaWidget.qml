@@ -4,25 +4,29 @@ import qs.config
 import qs.components
 import qs.services
 
-// Mini player: click = popout media, click destro = play/pausa, rotella = brano succ./prec.
+// Mini player: click = pannello musica, click destro = play/pausa, rotella = brano succ./prec.
 BarButton {
     id: root
 
     required property string screenName
 
     visible: Settings.showMedia && Media.hasPlayer && Media.active?.trackTitle
-    active: Ui.popout === "calendar" && Ui.popoutScreen === screenName
+    active: Ui.popout === "media" && Ui.popoutScreen === screenName
     onClicked: mouse => {
         if (mouse.button === Qt.RightButton || mouse.button === Qt.MiddleButton)
             Media.toggle();
         else
-            Ui.togglePopout("calendar", screenName, centerX());
+            Ui.togglePopout("media", screenName, centerX());
     }
     onWheel: wheel => wheel.angleDelta.y > 0 ? Media.previous() : Media.next()
 
-    // Equalizzatore animato
+    // Equalizzatore: barre aggiornate 6 volte al secondo (non a ogni fotogramma),
+    // ferme quando il lettore non è visibile o in pausa: consumo trascurabile.
     Row {
+        id: eq
+        property var levels: [5, 9, 6]
         spacing: 2
+        height: 12
         Layout.alignment: Qt.AlignVCenter
         Repeater {
             model: 3
@@ -32,16 +36,15 @@ BarButton {
                 radius: 1.5
                 anchors.bottom: parent.bottom
                 color: Theme.primary
-                height: Media.playing ? 5 : 4
-                SequentialAnimation on height {
-                    running: Media.playing && Settings.animations
-                    loops: Animation.Infinite
-                    NumberAnimation { to: 12; duration: 280 + index * 90; easing.type: Easing.InOutSine }
-                    NumberAnimation { to: 4; duration: 320 + index * 70; easing.type: Easing.InOutSine }
-                }
+                height: Media.playing ? eq.levels[index] : 4
             }
         }
-        height: 12
+        Timer {
+            interval: 160
+            repeat: true
+            running: Media.playing && Settings.animations && root.visible
+            onTriggered: eq.levels = [4 + Math.random() * 8, 4 + Math.random() * 8, 4 + Math.random() * 8]
+        }
     }
 
     StyledText {

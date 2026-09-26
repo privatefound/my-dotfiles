@@ -116,6 +116,8 @@ Singleton {
         return pstate.enabled.includes(id);
     }
     function setEnabled(id, on) {
+        if (!on && id === "musicTheme")
+            G.Theme.accentOverride = "transparent";
         const list = pstate.enabled.filter(x => x !== id);
         if (on)
             list.push(id);

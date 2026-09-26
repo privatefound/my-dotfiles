@@ -27,6 +27,12 @@ Singleton {
     }
 
     readonly property var en: ({
+        "Lettore": "Player",
+        "Uscita audio": "Audio output",
+        "Nessun lettore attivo": "No active player",
+        "Il colore ora viene dalla copertina del brano (plugin Music Theme)": "The color now comes from the album art (Music Theme plugin)",
+        "Usa il mio colore": "Use my color",
+        "Spegni plugin": "Turn off plugin",
         "Plugin della community di DankMaterialShell. Si installano in ~/.config/hypr/plugins (esclusi da git). Sono supportati i widget per la barra e i plugin di sottofondo; alcuni potrebbero non funzionare del tutto.": "Community plugins from DankMaterialShell. They are installed in ~/.config/hypr/plugins (kept out of git). Bar widgets and background plugins are supported; some may not fully work.",
         "Installati": "Installed",
         "Sfoglia": "Browse",

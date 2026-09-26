@@ -34,7 +34,10 @@ BlueZ, UPower, MPRIS, StatusNotifier, Hyprland IPC — so it's instant and nothi
 **Settings → Plugin** (catalog with search and categories, install / update / remove, per‑plugin settings).
 Bar widgets and background (daemon) plugins run through a DMS compatibility layer built on
 [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common); desktop, launcher and control‑center plugins
-are not supported yet. Installed plugins live in `~/.config/hypr/plugins/` and are **not tracked by git**.
+are not supported yet. [Omarchy plugins](https://plugins.omarchy.org) (bar widgets, services, panels, overlays) can be
+installed from the same page by switching the source to **Omarchy**; the `omarchy-shell`, `omarchy-notification-send`
+and `omarchy-file-select` commands they use are provided by small shims in `scripts/omarchy-compat/`.
+Installed plugins live in `~/.config/hypr/plugins/` and are **not tracked by git**.
 
 **Hyprland** (Lua config): 7 window/workspace animation presets (Matrix, Slide, GNOME, Elastic, Glitch, Minimal, Off) with speed control, switchable live from the shell settings, gradient borders, blur behind the shell,
 fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
@@ -95,6 +98,8 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
 ├── hypridle.conf  hyprlock.conf
 ├── greetd/config.toml     login screen
 ├── conky/  wallpapers/  systemd/
+├── animations/            window/workspace animation presets
+├── scripts/               restart-shell.sh (SUPER+SHIFT+W) · omarchy-compat/ shims
 └── shell/                 Quickshell
     ├── shell.qml
     ├── config/            Theme · Settings · Icons
@@ -102,6 +107,7 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
     ├── services/          Audio · Network · Bt · Power · Notifs · Media · SysStats · Ai · Apps · Clipboard…
     ├── modules/           bar · popouts · launcher · session · wallpaper · settings · notifications · osd · polkit
     ├── DankCommon/ Common/ Services/ Widgets/ Modules/Plugins/   DMS plugin compatibility layer
+    ├── Ui/ Commons/       Omarchy plugin compatibility layer
     └── assets/            icons (Inkscape) and notification sound
 ```
 
@@ -114,6 +120,7 @@ qs -p ~/.config/hypr/shell ipc show
 qs -p ~/.config/hypr/shell ipc call shell launcher
 qs -p ~/.config/hypr/shell ipc call shell network vpn
 qs -p ~/.config/hypr/shell ipc call wallpaper set ~/Pictures/wall.jpg
+qs -p ~/.config/hypr/shell ipc call omarchy summon <plugin-id>
 ```
 
 ## 📄 License
@@ -122,4 +129,5 @@ MIT — see [LICENSE](./LICENSE).
 
 Credits: `shell/DankCommon/` is [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) and the plugin
 setting controls in `shell/Modules/Plugins/` come from [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell),
-both © Avenge Media LLC, MIT licensed.
+both © Avenge Media LLC, MIT licensed. `shell/Ui/` and `shell/Commons/` come from
+[Omarchy](https://github.com/omacom/omarchy) (MIT, see `LICENSE-omarchy` in those folders).

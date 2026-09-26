@@ -53,6 +53,7 @@ Scope {
         function control(): void { Ui.togglePopout("control", "", -1); }
         function notifications(): void { Ui.togglePopout("notifications", "", -1); }
         function ai(): void { Ui.togglePopout("ai", "", 320); }
+        function media(): void { Ui.togglePopout("media", "", -1); }
         function closeAll(): void { Ui.closeAll(); }
         function openOn(name: string, screen: string): void { Ui.openPopout(name, screen, -1); }
         function network(tab: string): void {
@@ -75,9 +76,30 @@ Scope {
             return "installazione avviata";
         }
         function remove(id: string): void { P.PluginService.uninstall(id); }
+        function setData(id: string, key: string, json: string): void { P.PluginService.savePluginData(id, key, JSON.parse(json)); }
         function popout(id: string): string { return P.PluginService.openWidgetPopout(id, Ui.focusedScreen) ? "ok" : "widget non trovato"; }
         function enable(id: string): void { P.PluginService.setEnabled(id, true); }
         function disable(id: string): void { P.PluginService.setEnabled(id, false); }
+    }
+
+    // Plugin Omarchy (usato anche dallo shim scripts/omarchy-compat/omarchy-shell)
+    IpcHandler {
+        target: "omarchy"
+        function list(): string { return JSON.stringify(P.OmarchyPluginService.installedList.map(m => ({ id: m.id, kinds: m.kinds, enabled: P.OmarchyPluginService.isEnabled(m.id) }))); }
+        function catalogSize(): string { return String(P.OmarchyPluginService.catalog.length); }
+        function fetch(): void { P.OmarchyPluginService.fetchCatalog(false); }
+        function install(id: string): string {
+            const e = P.OmarchyPluginService.catalog.find(x => x.id === id);
+            if (!e) return "non trovato nel catalogo";
+            P.OmarchyPluginService.install(e);
+            return "installazione avviata";
+        }
+        function remove(id: string): void { P.OmarchyPluginService.uninstall(id); }
+        function enable(id: string): void { P.OmarchyPluginService.setEnabled(id, true); }
+        function disable(id: string): void { P.OmarchyPluginService.setEnabled(id, false); }
+        function summon(id: string, payload: string): string { return P.OmarchyPluginService.summon(id, payload) ? "ok" : "plugin non attivo"; }
+        function hide(id: string): void { P.OmarchyPluginService.hide(id); }
+        function toggle(id: string, payload: string): void { P.OmarchyPluginService.toggle(id, payload); }
     }
 
     IpcHandler {

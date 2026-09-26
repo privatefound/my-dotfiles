@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Shim per i plugin Omarchy: omarchy-file-select → zenity.
+# Stampa un percorso per riga; esce con 1 se annullato.
+args=(--file-selection --separator=$'\n')
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --title)     args+=(--title="$2"); shift 2 ;;
+        --directory) args+=(--directory); shift ;;
+        --multiple)  args+=(--multiple); shift ;;
+        --save)      args+=(--save); shift ;;
+        --filename)  args+=(--filename="$2"); shift 2 ;;
+        *)           shift ;;
+    esac
+done
+exec zenity "${args[@]}" 2>/dev/null

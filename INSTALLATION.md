@@ -13,7 +13,7 @@ sudo pacman -S --needed \
   bluez bluez-utils blueman upower \
   wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww curl jq gnome-keyring polkit \
   greetd greetd-tuigreet \
-  ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable git papirus-icon-theme nwg-look qt5ct qt6ct \
+  ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable git zenity cava papirus-icon-theme nwg-look qt5ct qt6ct \
   terminology nemo conky mission-center
 ```
 
