@@ -6,13 +6,13 @@ import qs.config
 import qs.services
 import qs.Services as P
 
-// Scorciatoie globali (Hyprland: hl.dsp.global("greenshell:<nome>")) e comandi IPC
+// Scorciatoie globali (Hyprland: hl.dsp.global("whiterabbit:<nome>")) e comandi IPC
 // (qs -p ~/.config/hypr/shell ipc call <target> <funzione>).
 Scope {
     id: root
 
     component Shortcut: GlobalShortcut {
-        appid: "greenshell"
+        appid: "whiterabbit"
     }
 
     Shortcut { name: "launcher"; description: I18n.tr("Apri il launcher"); onPressed: Ui.toggleModal("launcher", "apps") }

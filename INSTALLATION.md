@@ -26,7 +26,7 @@ Requirements: **Hyprland ≥ 0.56 (Lua config)** and **Quickshell ≥ 0.3**.
 
 ```bash
 mv ~/.config/hypr ~/.config/hypr.backup        # if you have one
-ln -s ~/green-hyprtheme ~/.config/hypr          # or clone directly into ~/.config/hypr
+ln -s ~/WhiteRabbitShell ~/.config/hypr          # or clone directly into ~/.config/hypr
 ln -sfn ~/.config/hypr/shell ~/.config/quickshell
 ```
 

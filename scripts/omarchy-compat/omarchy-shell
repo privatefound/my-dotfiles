@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Shim per i plugin Omarchy: inoltra "omarchy-shell [-q] shell <azione> <id> [payload]"
-# all'IPC della shell green-hyprtheme.
+# all'IPC della shell WhiteRabbitShell.
 SHELL_DIR="$HOME/.config/hypr/shell"
 [ "$1" = "-q" ] && shift
 [ "$1" = "shell" ] && shift
@@ -8,5 +8,5 @@ action="$1"; id="$2"; payload="${3:-}"
 case "$action" in
     summon|toggle) exec qs -p "$SHELL_DIR" ipc call omarchy "$action" "$id" "$payload" >/dev/null ;;
     hide)          exec qs -p "$SHELL_DIR" ipc call omarchy hide "$id" >/dev/null ;;
-    *) echo "omarchy-shell (green-hyprtheme): azione non supportata: $action" >&2; exit 1 ;;
+    *) echo "omarchy-shell (WhiteRabbitShell): azione non supportata: $action" >&2; exit 1 ;;
 esac

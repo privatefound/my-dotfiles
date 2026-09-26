@@ -7,7 +7,7 @@ import Quickshell.Io
 import qs.Common
 import qs.config as G
 
-// Plugin DankMaterialShell nella shell green-hyprtheme.
+// Plugin DankMaterialShell nella shell WhiteRabbitShell.
 //  - catalogo: registro ufficiale github.com/AvengeMedia/dms-plugin-registry
 //  - installazione: git clone in ~/.config/hypr/plugins/<id>  (cartella esclusa da git)
 //  - stato: state/plugins.json (attivi), state/plugin-settings.json, state/plugin-state.json

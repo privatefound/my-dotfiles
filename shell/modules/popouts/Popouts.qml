@@ -27,7 +27,7 @@ PanelWindow {
     color: "transparent"
     visible: shown !== ""
 
-    WlrLayershell.namespace: "greenshell-popout"
+    WlrLayershell.namespace: "whiterabbit-popout"
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.keyboardFocus: active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 

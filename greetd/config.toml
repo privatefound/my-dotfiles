@@ -1,4 +1,4 @@
-# /etc/greetd/config.toml — login screen green-hyprtheme (greetd + tuigreet)
+# /etc/greetd/config.toml — login screen WhiteRabbitShell (greetd + tuigreet)
 # Installato da ./install.sh (con backup del file esistente).
 
 [terminal]

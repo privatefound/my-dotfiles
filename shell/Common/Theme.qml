@@ -424,7 +424,7 @@ Singleton {
     }
 
     // ── Estensioni usate dai plugin DMS (non presenti nel contratto base) ──
-    readonly property string currentTheme: "green-hyprtheme"
+    readonly property string currentTheme: "WhiteRabbitShell"
     readonly property var currentThemeData: ({ primary: primary, secondary: secondary, surface: surface, success: success, info: info })
     readonly property bool isDark: !isLightMode
     property color success: G.Theme.success

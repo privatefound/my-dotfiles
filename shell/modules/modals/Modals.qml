@@ -28,7 +28,7 @@ PanelWindow {
     color: "transparent"
     visible: shown !== ""
 
-    WlrLayershell.namespace: "greenshell-modal"
+    WlrLayershell.namespace: "whiterabbit-modal"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 

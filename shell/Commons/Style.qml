@@ -266,7 +266,7 @@ QtObject {
   // component follows the fontconfig alias `omarchy-font-set` writes.
   // Themes can override per-token via [font] in shell.toml, but the
   // family stays system-wide.
-  property string fontFamily: "JetBrainsMono Nerd Font"   // green-hyprtheme
+  property string fontFamily: "JetBrainsMono Nerd Font"   // WhiteRabbitShell
 
   // The concrete family `monospace` resolves to right now, e.g.
   // "JetBrainsMono Nerd Font". Bind `font.family` to `fontFamily` (so the

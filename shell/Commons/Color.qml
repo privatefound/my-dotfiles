@@ -17,11 +17,11 @@ QtObject {
   readonly property string stateHome: home + "/.local/state"
   readonly property string currentThemePath: stateHome + "/omarchy/current/theme"
 
-  property color foreground: G.Theme.text   // green-hyprtheme: colori della shell
-  property color background: G.Theme.surface   // green-hyprtheme: colori della shell
-  property color accent: G.Theme.primary   // green-hyprtheme: colori della shell
-  property color urgent: G.Theme.error   // green-hyprtheme: colori della shell
-  property color muted: G.Theme.textDim   // green-hyprtheme: colori della shell
+  property color foreground: G.Theme.text   // WhiteRabbitShell: colori della shell
+  property color background: G.Theme.surface   // WhiteRabbitShell: colori della shell
+  property color accent: G.Theme.primary   // WhiteRabbitShell: colori della shell
+  property color urgent: G.Theme.error   // WhiteRabbitShell: colori della shell
+  property color muted: G.Theme.textDim   // WhiteRabbitShell: colori della shell
 
   // Flat dictionary of "section.key" -> raw string from shell.toml.
   // Reassigning this whole property is what makes surface bindings below

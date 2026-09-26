@@ -1,6 +1,6 @@
-# 💻 green-hyprtheme v2
+# 🐇 WhiteRabbitShell
 
-A **dark, terminal‑green** Hyprland rice with a complete desktop shell written from scratch in
+*Follow the white rabbit.* A **dark, terminal‑green** Hyprland rice with a complete desktop shell written from scratch in
 [Quickshell](https://quickshell.org) (QML) — in the spirit of DankMaterialShell and Noctalia:
 native services instead of polling scripts, animated popouts anchored to the bar, one design system.
 
@@ -18,12 +18,15 @@ native services instead of polling scripts, animated popouts anchored to the bar
     connect/disconnect, wired profiles up/down) · **VPN** (NetworkManager VPN & WireGuard toggles)
   - **Bluetooth**: power, scan, pair, connect, forget, device battery
   - **Audio**: 0–150 % boost, presets, output/input selection, per‑app volume
+- **Media panel** (click the mini-player): blurred album art, live **audio spectrum** (cava, with a PipeWire
+  fallback), player / output switching and volume.
 - **Launcher** (spotlight): fuzzy app search ranked by usage, `=` calculator, `>` run command,
   `?` ask Morpheus, **clipboard history** with image previews (cliphist), **quick commands**.
 - **Notifications**: built‑in server (replaces swaync) — popups with actions and timeout bar,
   grouped notification center, Do Not Disturb, sound.
 - **Session menu** (lock, suspend, hibernate, logout, reboot, shutdown — with confirmation),
-  **wallpaper picker** (awww transitions), **settings panel** (accent colors, opacity, bar, clock…),
+  **wallpaper picker** (awww transitions), **settings panel** (accent colors, bar opacity with panels that can
+  follow it, window opacity, animations, bar, clock, language: auto / Italiano / English…),
   **OSD** for volume/brightness, **polkit agent**, **Morpheus** local AI chat (Ollama / llama.cpp),
   **system monitor** (graphs, temps, disks, network, top processes).
 
@@ -48,8 +51,8 @@ fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 ## 🚀 Install
 
 ```bash
-git clone https://github.com/privatefound/my-dotfiles.git ~/green-hyprtheme
-cd ~/green-hyprtheme
+git clone https://github.com/privatefound/my-dotfiles.git ~/WhiteRabbitShell
+cd ~/WhiteRabbitShell
 ./install.sh
 ```
 

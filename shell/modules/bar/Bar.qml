@@ -25,7 +25,7 @@ PanelWindow {
     exclusiveZone: Theme.barTotal
     color: "transparent"
 
-    WlrLayershell.namespace: "greenshell-bar"
+    WlrLayershell.namespace: "whiterabbit-bar"
     WlrLayershell.layer: WlrLayer.Top
 
     // Caffeine: blocca lo spegnimento/blocco schermo (idle-inhibit nativo)

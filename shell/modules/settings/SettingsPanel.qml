@@ -615,7 +615,7 @@ StyledRect {
                         variant: "tonal"
                         icon: Icons.bellRing
                         text: I18n.tr("Invia notifica di prova")
-                        onClicked: Quickshell.execDetached(["notify-send", "-a", "greenshell", "Wake up, Neo…", "The Matrix has you. Segui il coniglio bianco 🐇", "-A", "ok=Seguilo"])
+                        onClicked: Quickshell.execDetached(["notify-send", "-a", "WhiteRabbitShell", "Wake up, Neo…", "The Matrix has you. Segui il coniglio bianco 🐇", "-A", "ok=Seguilo"])
                     }
                 }
 
@@ -720,7 +720,7 @@ StyledRect {
                     }
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "green-hyprtheme · shell"
+                        text: "WhiteRabbitShell"
                         font.family: Theme.font.mono
                         font.pixelSize: Theme.font.large
                         font.weight: Font.Bold

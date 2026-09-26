@@ -7,7 +7,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.config as G
 
-// Plugin Omarchy (https://plugins.omarchy.org) nella shell green-hyprtheme.
+// Plugin Omarchy (https://plugins.omarchy.org) nella shell WhiteRabbitShell.
 //  - catalogo: catalog.json del marketplace, ridotto con jq e messo in cache
 //  - installazione: git clone in ~/.config/hypr/plugins/omarchy/<id>  (esclusa da git)
 //  - stato: state/omarchy-plugins.json (attivi + impostazioni dei widget)

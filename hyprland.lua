@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
--- HYPRLAND.LUA — green-hyprtheme v2 (shell Quickshell "greenshell")
+-- HYPRLAND.LUA — WhiteRabbitShell (Quickshell, id "whiterabbit")
 -- Tema: Terminal Hacker (Dark Minimal) — verde terminale (#00ff41)
 -- ═══════════════════════════════════════════════════════════════════════════════
 
@@ -47,9 +47,9 @@ local browser     = first("brave", "firefox", "chromium", "google-chrome-stable"
 local editor      = first("subl", "code", "zeditor", "gnome-text-editor", "kate", terminal .. " -e nano")
 local qs          = "qs -p " .. SHELL
 
--- Scorciatoie della shell (Quickshell GlobalShortcut, appid "greenshell")
+-- Scorciatoie della shell (Quickshell GlobalShortcut, appid "whiterabbit")
 local function shell(name)
-    return hl.dsp.global("greenshell:" .. name)
+    return hl.dsp.global("whiterabbit:" .. name)
 end
 
 ------------------
@@ -491,14 +491,14 @@ hl.window_rule({
 ---------------------
 
 -- Blur dietro la shell (le zone trasparenti non vengono sfocate)
-hl.layer_rule({ name = "shell-blur", match = { namespace = "^greenshell-(bar|popout|modal|notifications|osd|polkit)$" }, blur = true, ignore_alpha = 0.5 })
+hl.layer_rule({ name = "shell-blur", match = { namespace = "^whiterabbit-(bar|popout|modal|notifications|osd|polkit)$" }, blur = true, ignore_alpha = 0.5 })
 
 -- Popout, modali, notifiche e OSD hanno già le loro animazioni
-hl.layer_rule({ name = "shell-noanim", match = { namespace = "^greenshell-(popout|modal|notifications|osd|polkit)$" }, no_anim = true })
+hl.layer_rule({ name = "shell-noanim", match = { namespace = "^whiterabbit-(popout|modal|notifications|osd|polkit)$" }, no_anim = true })
 
 -- slurp / hyprpicker: niente animazione, altrimenti il velo della selezione che svanisce
 -- finisce dentro lo screenshot (immagini "sbiadite")
 hl.layer_rule({ name = "no-anim-selection", match = { namespace = "^(selection|hyprpicker)$" }, no_anim = true })
 
 -- Niente shell nelle condivisioni schermo
-hl.layer_rule({ name = "shell-noshare", match = { namespace = "^greenshell-(notifications|polkit)$" }, no_screen_share = true })
+hl.layer_rule({ name = "shell-noshare", match = { namespace = "^whiterabbit-(notifications|polkit)$" }, no_screen_share = true })

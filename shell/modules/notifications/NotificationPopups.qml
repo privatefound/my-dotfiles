@@ -30,7 +30,7 @@ PanelWindow {
     exclusiveZone: 0
     color: "transparent"
 
-    WlrLayershell.namespace: "greenshell-notifications"
+    WlrLayershell.namespace: "whiterabbit-notifications"
     WlrLayershell.layer: WlrLayer.Overlay
 
     ColumnLayout {

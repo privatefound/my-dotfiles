@@ -24,7 +24,7 @@ PanelWindow {
     color: "transparent"
     mask: Region {}
 
-    WlrLayershell.namespace: "greenshell-osd"
+    WlrLayershell.namespace: "whiterabbit-osd"
     WlrLayershell.layer: WlrLayer.Overlay
 
     function show(k) {
