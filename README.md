@@ -43,6 +43,21 @@ fixed Alt‑Tab / resize submap / per‑window opacity for the Lua API.
 **Lock screen**: hyprlock with blurred desktop, clock, avatar and green input.
 **Login screen**: greetd + tuigreet in the same palette.
 
+**Battery mode** (`scripts/power-mode.sh`, started by `hyprland.lua`): when you unplug the charger the internal
+panel drops to 60Hz and blur, shadows and animations are turned off; plugging back in reloads the config and restores
+everything. It also switches the power profile to `power-saver` on battery and `balanced` on AC.
+
+> [!TIP]
+> For a proper setup install **power-profiles-daemon** (it provides `powerprofilesctl`, not installed by `install.sh`):
+>
+> ```bash
+> sudo pacman -S power-profiles-daemon
+> sudo systemctl enable --now power-profiles-daemon
+> ```
+>
+> Without it battery mode only changes refresh rate and effects. It conflicts with TLP and auto-cpufreq: remove them
+> first, and don't let other tools (e.g. Framework Control) set EPP/governor, or they'll override the profile.
+
 ## 🚀 Install
 
 ```bash
@@ -97,7 +112,7 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
 ├── greetd/config.toml     login screen
 ├── conky/  wallpapers/  systemd/
 ├── animations/            window/workspace animation presets
-├── scripts/               restart-shell.sh (SUPER+SHIFT+W) · plugin helper commands
+├── scripts/               restart-shell.sh (SUPER+SHIFT+W) · power-mode.sh (battery mode) · plugin helper commands
 └── shell/                 Quickshell
     ├── shell.qml
     ├── config/            Theme · Settings · Icons
