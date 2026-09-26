@@ -149,6 +149,9 @@ hl.on("hyprland.start", function()
     -- Idle / lock
     hl.exec_cmd("hypridle -c " .. CONF .. "/hypridle.conf")
 
+    -- A batteria: pannello a 60Hz e niente blur/ombre/animazioni (scripts/power-mode.sh)
+    hl.exec_cmd(CONF .. "/scripts/power-mode.sh")
+
     -- Conky
     hl.exec_cmd("conky -c " .. CONF .. "/conky/cyberconky.conf")
 

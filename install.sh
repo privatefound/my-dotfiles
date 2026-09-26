@@ -86,7 +86,7 @@ PACKAGES=(
     bluez bluez-utils blueman upower
     # appunti, screenshot, luminosità, notifiche, sfondi, portachiavi, polkit
     wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww
-    curl jq gnome-keyring polkit
+    curl jq socat gnome-keyring polkit
     # login screen
     greetd greetd-tuigreet
     # font e temi (JetBrainsMono Nerd Font per le icone, Adwaita Sans per il testo)
@@ -129,7 +129,7 @@ fi
 
 # Controllo finale dei comandi essenziali
 MISSING=()
-for c in Hyprland qs hyprlock hypridle awww cliphist wl-paste grim slurp swappy brightnessctl nmcli pw-play notify-send curl jq git zenity cava; do
+for c in Hyprland qs hyprlock hypridle awww cliphist wl-paste grim slurp swappy brightnessctl nmcli pw-play notify-send curl jq socat git zenity cava; do
     command -v "$c" &>/dev/null || MISSING+=("$c")
 done
 if [[ ${#MISSING[@]} -gt 0 ]]; then
