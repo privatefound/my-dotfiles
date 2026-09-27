@@ -91,7 +91,21 @@ Singleton {
         const s = Object.assign({}, ostate.settings);
         s[id] = Object.assign({}, s[id] || {}, settings || {});
         ostate.settings = s;
+        _pushSettings(id);
         return true;
+    }
+    function resetSettings(id) {
+        const s = Object.assign({}, ostate.settings);
+        delete s[id];
+        ostate.settings = s;
+        _pushSettings(id);
+    }
+    // le istanze vive (widget su ogni barra, servizio, pannello) ricevono subito i nuovi valori
+    function _pushSettings(id) {
+        const v = settingsFor(id);
+        for (const obj of widgetsOf(id).concat([services[id], panels[id]]))
+            if (obj && "settings" in obj)
+                obj.settings = Object.assign({}, v);
     }
 
     // ════════════════ API "shell" passata ai plugin ════════════════

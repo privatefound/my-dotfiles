@@ -176,6 +176,8 @@ ColumnLayout {
                 readonly property string busy: root.svc.busy[modelData.id] ?? ""
                 readonly property bool supported: root.om ? P.OmarchyPluginService.isSupported(modelData) : modelData.supported
                 readonly property string kindLabel: root.om ? (modelData.kinds || []).join(", ") : modelData.surface
+                // DMS: file di impostazioni del plugin · Omarchy: campi descritti nello schema del manifest
+                readonly property bool hasSettings: root.om ? (modelData.barWidget?.schema?.length ?? 0) > 0 : modelData.settingsPath !== ""
                 readonly property bool open: root.expanded === modelData.id
 
                 Layout.fillWidth: true
@@ -253,7 +255,7 @@ ColumnLayout {
                         }
 
                         IconButton {
-                            visible: !root.om && card.modelData.settingsPath !== ""
+                            visible: card.hasSettings
                             icon: Icons.cog
                             toggled: card.open
                             onClicked: root.expanded = card.open ? "" : card.modelData.id
@@ -284,7 +286,7 @@ ColumnLayout {
                         font.pixelSize: Theme.font.small
                     }
 
-                    // Impostazioni del plugin (il suo PluginSettings)
+                    // Impostazioni del plugin (PluginSettings per DMS, modulo generato per Omarchy)
                     StyledRect {
                         visible: card.open
                         Layout.fillWidth: true
@@ -300,7 +302,11 @@ ColumnLayout {
                             anchors.margins: 12
                             active: card.open
                             onActiveChanged: {
-                                if (active)
+                                if (!active)
+                                    return;
+                                if (root.om)
+                                    setSource("OmarchyPluginSettings.qml", { manifest: card.modelData });
+                                else
                                     setSource(P.PluginService.componentUrl(card.modelData.settingsPath), { pluginId: card.modelData.id, pluginService: P.PluginService });
                             }
                         }

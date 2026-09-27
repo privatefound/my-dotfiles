@@ -45,7 +45,6 @@ RowLayout {
                 id: api
                 pluginId: slot.pluginId
                 moduleName: slot.pluginId
-                shell: P.OmarchyPluginService.shellFor(slot.pluginId)
                 foreground: Theme.text
                 barForeground: Theme.text
                 background: Theme.surface
@@ -80,6 +79,9 @@ RowLayout {
                 _run: cmd => Quickshell.execDetached(["sh", "-c", cmd])
                 _showTooltip: (target, text) => {}
                 _hideTooltip: target => {}
+
+                // assegnato una volta sola: shellFor() crea l'oggetto e dentro un binding farebbe un loop
+                Component.onCompleted: shell = P.OmarchyPluginService.shellFor(slot.pluginId)
             }
 
             Loader {

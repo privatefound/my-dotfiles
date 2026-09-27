@@ -22,8 +22,10 @@ QtObject {
   property bool transparent: false
   property bool foregroundAnimationEnabled: true
   property bool centerSectionRevealHeld: false
+  // WhiteRabbitShell: scrivibile, perché i plugin scritti per versioni più vecchie di Omarchy
+  // la assegnano direttamente (la barra qui non ha una sezione centrale a scomparsa)
   property bool _centerHoverRevealSuppressed: false
-  readonly property bool centerHoverRevealSuppressed: _centerHoverRevealSuppressed
+  property bool centerHoverRevealSuppressed: _centerHoverRevealSuppressed
   property var activePopout: null
   property var clickTargets: []
   property var layoutConfig: ({})
