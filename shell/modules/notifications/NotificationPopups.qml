@@ -15,7 +15,8 @@ PanelWindow {
     readonly property bool isTarget: modelData.name === Ui.focusedScreen
 
     screen: modelData
-    visible: isTarget && (Notifs.popups.length > 0 || column.implicitHeight > 1)
+    // solo dalla lista: legarlo anche all'altezza della colonna creava un binding loop
+    visible: isTarget && Notifs.popups.length > 0
     anchors {
         top: true
         right: true
@@ -40,7 +41,11 @@ PanelWindow {
         spacing: 8
 
         Repeater {
-            model: Notifs.popups
+            // ScriptModel aggiunge/toglie solo le card cambiate invece di ricrearle tutte
+            // a ogni notifica (ricrearle con un oggetto già distrutto faceva crashare la shell)
+            model: ScriptModel {
+                values: Notifs.popups
+            }
 
             delegate: Item {
                 id: wrap
@@ -106,6 +111,7 @@ PanelWindow {
                     onTriggered: dismiss ? Notifs.dismiss(wrap.modelData) : Notifs.hidePopup(wrap.modelData)
                 }
 
+
                 // Timeout (in pausa col mouse sopra)
                 Timer {
                     running: !wrap.critical && !card.hovered && !wrap.leaving
@@ -115,13 +121,6 @@ PanelWindow {
                         wrap.elapsed += 50;
                         if (wrap.elapsed >= wrap.timeout)
                             wrap.close(false);
-                    }
-                }
-
-                Connections {
-                    target: wrap.modelData
-                    function onClosed() {
-                        wrap.close(false);
                     }
                 }
             }

@@ -46,13 +46,17 @@ Singleton {
 
         onNotification: n => {
             n.tracked = true;
+            // Quando l'app (o la scadenza) chiude la notifica, Quickshell distrugge l'oggetto:
+            // va tolta SUBITO dai popup, altrimenti la lista ne tiene un riferimento morto e
+            // alla notifica successiva il Repeater crasha ricreando i delegate (SIGSEGV).
+            n.closed.connect(() => root._forget(n));
             const t = Object.assign({}, root.times);
             t[n.id] = Date.now();
             root.times = t;
 
             const critical = n.urgency === NotificationUrgency.Critical;
             if (!root.dnd || critical) {
-                root.popups = [n].concat(root.popups.filter(p => p !== n)).slice(0, 5);
+                root.popups = [n].concat(root.popups.filter(p => p && p !== n)).slice(0, 5);
                 if (Settings.notifSound && n.urgency !== NotificationUrgency.Low)
                     sound.running = true;
             } else if (n.transient) {
@@ -66,12 +70,22 @@ Singleton {
         command: ["pw-play", "--volume", "0.6", Quickshell.shellPath("assets/notification.ogg")]
     }
 
+    function _forget(n) {
+        popups = popups.filter(p => p && p !== n);
+        if (times[n.id] !== undefined) {
+            const t = Object.assign({}, times);
+            delete t[n.id];
+            times = t;
+        }
+    }
     function hidePopup(n) {
-        popups = popups.filter(p => p !== n);
+        popups = popups.filter(p => p && p !== n);
         if (n && n.transient)
             n.expire();
     }
     function dismiss(n) {
+        if (!n)
+            return;
         hidePopup(n);
         n.dismiss();
     }
@@ -85,6 +99,8 @@ Singleton {
             n.dismiss();
     }
     function invoke(n, action) {
+        if (!n || !action)
+            return;
         action.invoke();
         if (!n.resident)
             dismiss(n);
@@ -92,6 +108,8 @@ Singleton {
             hidePopup(n);
     }
     function invokeDefault(n) {
+        if (!n)
+            return;
         const a = n.actions.find(x => x.identifier === "default");
         if (a)
             invoke(n, a);
@@ -101,7 +119,7 @@ Singleton {
     function toggleDnd() {
         Settings.dnd = !Settings.dnd;
         if (Settings.dnd)
-            popups = popups.filter(p => p.urgency === NotificationUrgency.Critical);
+            popups = popups.filter(p => p && p.urgency === NotificationUrgency.Critical);
     }
 
     function timeAgo(n) {

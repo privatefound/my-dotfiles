@@ -47,7 +47,8 @@ StyledRect {
         }
 
         Repeater {
-            model: root.expanded ? root.items : []
+            // il modello nativo del tray: aggiunge/toglie solo le icone cambiate
+            model: root.expanded ? SystemTray.items : null
 
             delegate: StyledRect {
                 id: trayItem
