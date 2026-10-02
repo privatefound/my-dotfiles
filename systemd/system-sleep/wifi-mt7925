@@ -1,0 +1,19 @@
+#!/bin/sh
+# /usr/lib/systemd/system-sleep/wifi-mt7925 — WhiteRabbitShell
+# Il driver delle schede Wi‑Fi MediaTek MT7925 (mt7925e) si blocca spesso durante
+# l'ibernazione e al ripristino (timeout -110): lo si scarica prima e lo si ricarica dopo.
+# Non fa nulla se il modulo non è caricato.
+case "$1/$2" in
+    pre/hibernate|pre/hybrid-sleep|pre/suspend-then-hibernate)
+        if grep -q '^mt7925e ' /proc/modules; then
+            modprobe -r mt7925e && touch /run/wifi-mt7925-unloaded
+        fi
+        ;;
+    post/*)
+        if [ -e /run/wifi-mt7925-unloaded ]; then
+            rm -f /run/wifi-mt7925-unloaded
+            modprobe mt7925e
+        fi
+        ;;
+esac
+exit 0

@@ -226,6 +226,18 @@ if ask "Installo NetworkManager-fixed.service (NM senza conflitti con networkd/d
     ok "Installato. Abilitalo con: sudo systemctl enable --now NetworkManager-fixed"
 fi
 
+# Ibernazione più rapida: immagine ridotta + compressione lz4, e (solo con schede
+# Wi‑Fi MediaTek MT7925) driver scaricato prima di ibernare, perché lì si blocca
+if ask "Ottimizzo l'ibernazione (più veloce a spegnersi e a ripartire)?" y; then
+    sudo install -Dm644 "$REPO_DIR/systemd/hibernate-speed.conf" /etc/tmpfiles.d/hibernate-speed.conf
+    sudo systemd-tmpfiles --create /etc/tmpfiles.d/hibernate-speed.conf
+    if lspci -k 2>/dev/null | grep -q "mt7925e"; then
+        sudo install -Dm755 "$REPO_DIR/systemd/system-sleep/wifi-mt7925" /usr/lib/systemd/system-sleep/wifi-mt7925
+        ok "Wi‑Fi MT7925: scaricato prima dell'ibernazione e ricaricato al ritorno."
+    fi
+    ok "Ibernazione ottimizzata."
+fi
+
 # ── 6. Morpheus (IA locale) ───────────────────────────────────────────────────
 section "Morpheus — IA locale (opzionale)"
 if command -v ollama &>/dev/null; then

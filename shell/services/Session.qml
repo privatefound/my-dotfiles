@@ -16,11 +16,13 @@ Singleton {
     function hibernate() {
         Quickshell.execDetached(["systemctl", "hibernate"]);
     }
+    // conky non risponde al SIGTERM di fine sessione: systemd lo aspetta 90 s prima di
+    // ucciderlo, e lo spegnimento resta fermo. Lo si chiude prima (non ha stato da salvare).
     function reboot() {
-        Quickshell.execDetached(["systemctl", "reboot"]);
+        Quickshell.execDetached(["sh", "-c", "pkill -KILL -x conky; systemctl reboot"]);
     }
     function poweroff() {
-        Quickshell.execDetached(["systemctl", "poweroff"]);
+        Quickshell.execDetached(["sh", "-c", "pkill -KILL -x conky; systemctl poweroff"]);
     }
     function logout() {
         Quickshell.execDetached(["sh", "-c", "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"]);
