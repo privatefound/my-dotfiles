@@ -25,15 +25,27 @@ PanelWindow {
     exclusionMode: ExclusionMode.Normal
     exclusiveZone: 0
     color: "transparent"
-    visible: shown !== ""
+    // Sempre presente (trasparente e senza input quando è chiuso): crearla a ogni apertura
+    // costava ~100 ms di frame persi all'inizio dell'animazione (nuova superficie 2880×1920
+    // da allocare e sfocare), e l'apertura sembrava lenta.
+    // Sempre presente (trasparente e senza input quando è chiuso): crearla a ogni apertura
+    // costava ~100 ms di frame persi all'inizio dell'animazione (nuova superficie 2880×1920
+    // da allocare e sfocare), e l'apertura sembrava lenta.
+    visible: true
 
     WlrLayershell.namespace: "whiterabbit-popout"
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.keyboardFocus: active ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     // Solo l'area cliccabile quando è aperto; quando si chiude i click passano sotto
-    mask: Region {
-        item: win.active ? catcher : null
+    mask: win.active ? openMask : emptyMask
+    Region {
+        id: openMask
+        item: catcher
+    }
+    // regione vuota: la finestra resta mappata ma tutti i click passano alle app sotto
+    Region {
+        id: emptyMask
     }
 
     onActiveChanged: {
