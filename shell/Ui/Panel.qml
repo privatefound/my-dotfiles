@@ -6,6 +6,7 @@ import qs.Commons
 // button plus a popup from one QML entry point; this base owns the shared
 // IPC-backed open/close lifecycle while implementations own button behavior,
 // keyboard navigation, and content.
+import qs.Commons as OmarchyCommons
 Item {
   id: root
 
@@ -19,7 +20,7 @@ Item {
   property bool popoutSwitchClosing: false
 
   readonly property bool opened: panelController.open
-  readonly property color barForeground: bar ? bar.barForeground : Color.foreground
+  readonly property color barForeground: bar ? bar.barForeground : OmarchyCommons.Color.foreground
 
   function open() { panelController.show() }
   function close() { panelController.hide() }

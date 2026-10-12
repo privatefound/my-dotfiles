@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Compatibilità Qt ≥ 6.12 per il codice Omarchy (plugin e shell/Ui, shell/Commons).
+#
+# Qt 6.12 ha aggiunto un oggetto globale `Color` che ha la precedenza su qualsiasi import:
+# nei file Omarchy `Color.accent`, `Color.popups.text`… diventano undefined e i pannelli
+# restano bianchi. Qui ogni `Color.` non qualificato diventa `OmarchyCommons.Color.`, con
+# l'import corrispondente. Idempotente: rieseguirlo non cambia nulla.
+#
+# Uso: fix-qt-color <cartella> [<cartella>…]
+set -u
+for dir in "$@"; do
+    [ -d "$dir" ] || continue
+    find "$dir" -type f -name '*.qml' ! -path '*/Commons/Color.qml' -print0 |
+    while IFS= read -r -d '' f; do
+        grep -qE "(^|[^A-Za-z0-9_.\$\"'])Color(\.[A-Za-z_]|[[:space:]]*($|[;,)]))" "$f" || continue
+        perl -0pi -e '
+            # riferimenti non qualificati (non dopo un punto, una lettera o un apice)
+            s/(?<![\w.\$"\x27])Color(?=\.[A-Za-z_])/OmarchyCommons.Color/g;
+            # usato da solo come valore (es. "target: Color"), non come componente "Color { … }"
+            s/(?<![\w.\$"\x27])Color(?=[ \t]*(?:$|[;,)]))/OmarchyCommons.Color/mg;
+            # import qualificato, subito dopo l ultimo import iniziale
+            unless (/^import qs\.Commons as OmarchyCommons\s*$/m) {
+                s/\A((?:\s*(?:\/\/[^\n]*|pragma[^\n]*|import[^\n]*)\n)*)/$1import qs.Commons as OmarchyCommons\n/;
+            }
+        ' "$f"
+    done
+done

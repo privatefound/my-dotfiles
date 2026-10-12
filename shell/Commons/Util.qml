@@ -3,7 +3,8 @@ import Quickshell
 import QtQuick
 
 // Shared utility helpers used across plugins. Pure functions only — no
-// state. Anything stateful belongs on Color, Style, or a service.
+// state. Anything stateful belongs on OmarchyCommons.Color, Style, or a service.
+import qs.Commons as OmarchyCommons
 QtObject {
   id: root
 

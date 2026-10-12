@@ -123,6 +123,32 @@ PanelWindow {
                 monitor: bar.monitor
             }
 
+            // Modalità attiva (es. ridimensionamento con SUPER+R): click o Esc per uscire
+            StyledRect {
+                visible: Hypr.submap !== ""
+                implicitHeight: 26
+                implicitWidth: submapLabel.implicitWidth + 20
+                radius: Theme.radius.full
+                color: Theme.alpha(Theme.warning, 0.18)
+                border.width: 1
+                border.color: Theme.warning
+
+                StyledText {
+                    id: submapLabel
+                    anchors.centerIn: parent
+                    text: Hypr.submap.toUpperCase() + "  ·  Esc"
+                    font.family: Theme.font.mono
+                    font.pixelSize: Theme.font.small
+                    font.weight: Font.DemiBold
+                    color: Theme.warning
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: Hypr.resetSubmap()
+                }
+            }
+
             ActiveWindow {
                 visible: Settings.showWindowTitle && title !== ""
                 monitor: bar.monitor

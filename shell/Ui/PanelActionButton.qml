@@ -24,12 +24,13 @@ import qs.Commons
 // Use this when a PanelActionButton is itself the cursor target (rather
 // than living inside a CursorSurface row). Emits `hovered(bool)` on
 // pointer enter/leave so the panel can update its cursor state to match.
+import qs.Commons as OmarchyCommons
 BorderSurface {
   id: root
 
   property string iconText: ""
   property string tooltipText: ""
-  property color foreground: Color.foreground
+  property color foreground: OmarchyCommons.Color.foreground
   property color hoverColor: foreground
   property string fontFamily: Style.font.family
   property real fontSize: Style.font.icon
@@ -57,7 +58,7 @@ BorderSurface {
     ? Border.controlSpec("focus", hoverColor, hoverColor)
     : (_hot && bordered
       ? Border.controlSpec("hover-cursor", hoverColor, hoverColor)
-      : (bordered ? Border.controlSpec("normal", foreground, Color.accent) : Border.none()))
+      : (bordered ? Border.controlSpec("normal", foreground, OmarchyCommons.Color.accent) : Border.none()))
 
   color: _showFocusRing
     ? Style.focusFillFor(hoverColor, hoverColor)

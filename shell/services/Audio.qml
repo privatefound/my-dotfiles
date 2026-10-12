@@ -35,19 +35,34 @@ Singleton {
         return Math.max(0, Math.min(1.5, v));
     }
 
+    // Il volume si scrive con wpctl, non con sink.audio.volume: con alcune uscite (es. cuffie
+    // Bluetooth) parte delle scritture di Quickshell non arrivava a PipeWire e il volume visto
+    // dalla shell si scollegava da quello reale, così i tasti sembravano non fare nulla.
     function setVolume(v) {
-        if (sink?.audio) {
-            sink.audio.muted = false;
-            sink.audio.volume = clamp(v);
+        if (!sink?.audio)
+            return;
+        _pendingVolume = clamp(v);
+        volumeWrite.restart();
+    }
+    property real _pendingVolume: -1
+    Timer {
+        id: volumeWrite
+        interval: 30   // durante il trascinamento dello slider scrive solo l'ultimo valore
+        onTriggered: {
+            Quickshell.execDetached(["sh", "-c", "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ " + root._pendingVolume.toFixed(3)]);
         }
     }
     function changeVolume(delta) {
-        if (sink?.audio)
-            setVolume(Math.min(volume + delta, delta > 0 ? Math.max(volume, 1.0) : 1.5));
+        if (!sink?.audio)
+            return;
+        // passo relativo sul valore reale; oltre il 100% solo se ci si era già (boost fino a 150%)
+        const limit = delta > 0 && volume < 0.999 ? 1.0 : 1.5;
+        const step = Math.round(Math.abs(delta) * 100) + "%" + (delta > 0 ? "+" : "-");
+        Quickshell.execDetached(["sh", "-c", "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l " + limit + " @DEFAULT_AUDIO_SINK@ " + step]);
     }
     function toggleMute() {
         if (sink?.audio)
-            sink.audio.muted = !sink.audio.muted;
+            Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
     }
     function setMicVolume(v) {
         if (source?.audio) {

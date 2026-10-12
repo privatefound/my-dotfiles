@@ -15,6 +15,7 @@ import qs.Commons
 // immediately). Down arrow from the search jumps to the first match;
 // Up from the first match returns to the search. Enter selects, Esc
 // closes (and clears the filter).
+import qs.Commons as OmarchyCommons
 Item {
   id: root
 
@@ -25,11 +26,11 @@ Item {
   property string emptyText: "No matches"
   property string triggerLabel: ""
 
-  property color foreground: Color.popups.text
-  property color background: Color.popups.background
-  property color popupBorder: Color.popups.border
-  property color accent: Color.accent
-  readonly property var popupBorderSpec: Border.localOrSurfaceSpec("popups", "border", popupBorder, Color.popups.border, Style.normalBorderWidth)
+  property color foreground: OmarchyCommons.Color.popups.text
+  property color background: OmarchyCommons.Color.popups.background
+  property color popupBorder: OmarchyCommons.Color.popups.border
+  property color accent: OmarchyCommons.Color.accent
+  readonly property var popupBorderSpec: Border.localOrSurfaceSpec("popups", "border", popupBorder, OmarchyCommons.Color.popups.border, Style.normalBorderWidth)
   property string fontFamily: Style.font.family
   property int rowHeight: Style.spacing.controlHeight
   property int popupRowHeight: Style.spacing.popupRowHeight

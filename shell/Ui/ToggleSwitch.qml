@@ -24,6 +24,7 @@ import qs.Commons
 //
 // `rounded` auto-detects from Style.cornerRadius so the switch follows the
 // theme: pill shape when Hyprland corners are rounded, square on sharp.
+import qs.Commons as OmarchyCommons
 Item {
   id: root
 
@@ -40,8 +41,8 @@ Item {
   property bool cursorRing: interactive
   property int cursorPad: Style.space(6)
   property bool rounded: Style.cornerRadius > 0
-  property color foreground: Color.foreground
-  property color accent: Color.accent
+  property color foreground: OmarchyCommons.Color.foreground
+  property color accent: OmarchyCommons.Color.accent
 
   signal toggled()
   signal hovered(bool isHovered)

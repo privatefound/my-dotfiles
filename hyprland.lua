@@ -425,6 +425,8 @@ hl.define_submap("resize", function()
     end
     hl.bind("escape", hl.dsp.submap("reset"))
     hl.bind("Return", hl.dsp.submap("reset"))
+    -- qualsiasi altro tasto esce: entrarci per sbaglio non deve bloccare SUPER+1…9 e le altre scorciatoie
+    hl.bind("catchall", hl.dsp.submap("reset"))
 end)
 
 --------------------------------

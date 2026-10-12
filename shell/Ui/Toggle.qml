@@ -12,6 +12,7 @@ import qs.Commons
 // `rounded` is forwarded to the switch, which auto-detects from
 // Style.cornerRadius: pill shape when Hyprland corners are rounded, square on
 // sharp. Callers can override per-instance.
+import qs.Commons as OmarchyCommons
 BorderSurface {
   id: root
 
@@ -28,8 +29,8 @@ BorderSurface {
   // Override per-instance if a caller wants the opposite.
   property bool rounded: Style.cornerRadius > 0
 
-  property color foreground: Color.foreground
-  property color accent: Color.accent
+  property color foreground: OmarchyCommons.Color.foreground
+  property color accent: OmarchyCommons.Color.accent
   property string fontFamily: Style.font.family
   property real titleSize: Style.font.subtitle
   property real descriptionSize: Style.font.caption

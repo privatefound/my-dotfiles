@@ -11,6 +11,7 @@ import qs.Commons
 // hover-cursor border. `outline` remains as a compatibility flag for
 // callers that used to request border-only rows, but slider rows still
 // receive the same hover-cursor background as every other row.
+import qs.Commons as OmarchyCommons
 BorderSurface {
   id: root
 
@@ -19,8 +20,8 @@ BorderSurface {
   property bool outline: false
   property bool bordered: false
 
-  property color foreground: Color.foreground
-  property color accent: Color.accent
+  property color foreground: OmarchyCommons.Color.foreground
+  property color accent: OmarchyCommons.Color.accent
   property color fill: Style.hoverFillFor(foreground, accent)
   property color currentFill: Style.selectedFillFor(foreground, accent)
 

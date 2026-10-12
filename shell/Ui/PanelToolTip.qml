@@ -9,22 +9,23 @@ import qs.Commons
 //     text: "Forget network"
 //   }
 //
-// Defaults pull from [tooltip] in shell.toml via Color.tooltip.*. Override
+// Defaults pull from [tooltip] in shell.toml via OmarchyCommons.Color.tooltip.*. Override
 // the panel* properties per-instance only when you need a tooltip that
 // intentionally diverges from the theme.
 //
 // Property names are prefixed `panel*` to avoid clashing with ToolTip's
 // built-in `background`/`font` properties.
+import qs.Commons as OmarchyCommons
 ToolTip {
   id: root
 
-  property color panelForeground: Color.tooltip.text
-  property color panelBackground: Color.tooltip.background
-  property color panelBorder: Color.tooltip.border
+  property color panelForeground: OmarchyCommons.Color.tooltip.text
+  property color panelBackground: OmarchyCommons.Color.tooltip.background
+  property color panelBorder: OmarchyCommons.Color.tooltip.border
   property string fontFamily: Style.font.family
   property real fontSize: Style.font.bodySmall
 
-  readonly property var panelBorderSpec: Border.localOrSurfaceSpec("tooltip", "border", panelBorder, Color.tooltip.border, Style.normalBorderWidth)
+  readonly property var panelBorderSpec: Border.localOrSurfaceSpec("tooltip", "border", panelBorder, OmarchyCommons.Color.tooltip.border, Style.normalBorderWidth)
 
   delay: 400
   padding: 0

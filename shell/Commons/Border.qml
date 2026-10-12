@@ -6,6 +6,7 @@ import "BorderGeometry.js" as Geometry
 // color, optional gradient, and top/right/bottom/left widths so renderers can
 // choose the cheap Rectangle path or the Shape-ring path without duplicating
 // theme parsing logic.
+import qs.Commons as OmarchyCommons
 QtObject {
   id: root
 
@@ -22,7 +23,7 @@ QtObject {
   }
 
   function value(section, key) {
-    var v = Color.shellValues[section + "." + key]
+    var v = OmarchyCommons.Color.shellValues[section + "." + key]
     return (v === undefined || v === null) ? "" : v
   }
 
@@ -39,7 +40,7 @@ QtObject {
     var seen = {}
     while (s.match(/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/) && !seen[s]) {
       seen[s] = true
-      var next = Color.shellValues[s]
+      var next = OmarchyCommons.Color.shellValues[s]
       if (next === undefined || next === null || String(next).length === 0) break
       s = String(next).replace(/^\s+|\s+$/g, "")
     }
@@ -68,10 +69,10 @@ QtObject {
 
     var s = String(color || "").replace(/^\s+|\s+$/g, "")
     var role = s.toLowerCase()
-    if (role === "foreground" || role === "text") return cssColor(Color.foreground, a)
-    if (role === "accent") return cssColor(Color.accent, a)
-    if (role === "urgent") return cssColor(Color.urgent, a)
-    if (role === "background") return cssColor(Color.background, a)
+    if (role === "foreground" || role === "text") return cssColor(OmarchyCommons.Color.foreground, a)
+    if (role === "accent") return cssColor(OmarchyCommons.Color.accent, a)
+    if (role === "urgent") return cssColor(OmarchyCommons.Color.urgent, a)
+    if (role === "background") return cssColor(OmarchyCommons.Color.background, a)
     if (role === "transparent") return "transparent"
     return Geometry.canonicalColor(s, a)
   }

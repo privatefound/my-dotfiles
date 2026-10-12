@@ -15,11 +15,12 @@ import qs.Commons
 // Sizing is driven by font.pixelSize + verticalPadding. The default 30px
 // implicitHeight fits dialog forms; inline callers (wifi's row-embedded
 // passphrase prompt) drop verticalPadding to match a 22-26px row.
+import qs.Commons as OmarchyCommons
 TextField {
   id: root
 
-  property color foreground: Color.foreground
-  property color accent: Color.accent
+  property color foreground: OmarchyCommons.Color.foreground
+  property color accent: OmarchyCommons.Color.accent
   property color selectionTint: Style.selectionFillFor(foreground, accent)
   property bool password: false
   property real horizontalPadding: Style.spacing.controlPaddingX

@@ -104,6 +104,8 @@ Scope {
 
     IpcHandler {
         target: "audio"
+        // volume come lo vede la shell (per confrontarlo con `wpctl get-volume`)
+        function get(): string { return JSON.stringify({ sink: Audio.sink?.name ?? null, volume: Audio.volume, muted: Audio.muted, channels: Audio.sink?.audio?.volumes ?? [] }); }
         function up(): void { Audio.changeVolume(0.05); }
         function down(): void { Audio.changeVolume(-0.05); }
         function mute(): void { Audio.toggleMute(); }

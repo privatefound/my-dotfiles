@@ -20,14 +20,15 @@ import qs.Commons
 // `cursorIndex` are independent; either one paints the chip's hot
 // state, and the bar widget panels never give Tab focus to a
 // ButtonGroup so they only see the cursorIndex path.
+import qs.Commons as OmarchyCommons
 Row {
   id: root
 
   property var options: []
   property string value: ""
-  property color foreground: Color.foreground
-  property color background: Color.background
-  property color accent: Color.accent
+  property color foreground: OmarchyCommons.Color.foreground
+  property color background: OmarchyCommons.Color.background
+  property color accent: OmarchyCommons.Color.accent
   property string fontFamily: Style.font.family
   property real fontSize: Style.font.body
   property bool focusable: true

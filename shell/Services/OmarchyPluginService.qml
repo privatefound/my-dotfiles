@@ -19,6 +19,8 @@ Singleton {
     readonly property string catalogUrl: "https://plugins.omarchy.org/catalog.json"
     readonly property string siteUrl: "https://plugins.omarchy.org/"
     readonly property string catalogCache: Quickshell.cachePath("omarchy-catalog.json")
+    // Qt ≥ 6.12: `Color` globale nasconde quello del tema Omarchy; lo script qualifica i riferimenti
+    readonly property string colorFix: G.Settings.rootDir + "/scripts/omarchy-compat/fix-qt-color"
     readonly property var supportedKinds: ["bar-widget", "service", "panel", "overlay", "menu"]
 
     property var installed: ({})             // id → manifest (+ __sourceDir)
@@ -322,7 +324,7 @@ Singleton {
 
     Process {
         id: scanProc
-        command: ["sh", "-c", "mkdir -p \"$1\"; for d in \"$1\"/*/; do [ -f \"$d/manifest.json\" ] || continue; printf '%s\\t' \"${d%/}\"; tr -d '\\n\\r' < \"$d/manifest.json\"; echo; done", "_", root.pluginDirectory]
+        command: ["sh", "-c", "mkdir -p \"$1\"; \"$2\" \"$1\" 2>/dev/null; for d in \"$1\"/*/; do [ -f \"$d/manifest.json\" ] || continue; printf '%s\\t' \"${d%/}\"; tr -d '\\n\\r' < \"$d/manifest.json\"; echo; done", "_", root.pluginDirectory, root.colorFix]
         stdout: StdioCollector {
             onStreamFinished: {
                 const map = {};
@@ -400,7 +402,7 @@ Singleton {
         ostate.sources = sources;
         const proc = installComp.createObject(root, {
             pluginId: entry.id,
-            command: ["sh", "-c", root.installScript, "_", entry.repo, root.pluginDirectory, entry.id]
+            command: ["sh", "-c", root.installScript, "_", entry.repo, root.pluginDirectory, entry.id, root.colorFix]
         });
         proc.running = true;
     }
@@ -427,7 +429,7 @@ Singleton {
     }
 
     // clona, verifica che manifest.json abbia lo stesso id, copia senza .git
-    readonly property string installScript: "set -e\n" + "repo=\"$1\"; dir=\"$2\"; id=\"$3\"\n" + "case \"$repo\" in https://*) ;; *) echo 'repository non valido' >&2; exit 2;; esac\n" + "tmp=$(mktemp -d)\n" + "trap 'rm -rf \"$tmp\"' EXIT\n" + "git clone --depth 1 --quiet \"$repo\" \"$tmp/r\"\n" + "[ -f \"$tmp/r/manifest.json\" ] || { echo 'manifest.json non trovato' >&2; exit 2; }\n" + "mid=$(jq -r .id \"$tmp/r/manifest.json\")\n" + "[ \"$mid\" = \"$id\" ] || { echo \"id del manifest diverso: $mid\" >&2; exit 2; }\n" + "rm -rf \"$tmp/r/.git\"\n" + "mkdir -p \"$dir\"\n" + "rm -rf -- \"$dir/$id\"\n" + "mv \"$tmp/r\" \"$dir/$id\"\n"
+    readonly property string installScript: "set -e\n" + "repo=\"$1\"; dir=\"$2\"; id=\"$3\"\n" + "case \"$repo\" in https://*) ;; *) echo 'repository non valido' >&2; exit 2;; esac\n" + "tmp=$(mktemp -d)\n" + "trap 'rm -rf \"$tmp\"' EXIT\n" + "git clone --depth 1 --quiet \"$repo\" \"$tmp/r\"\n" + "[ -f \"$tmp/r/manifest.json\" ] || { echo 'manifest.json non trovato' >&2; exit 2; }\n" + "mid=$(jq -r .id \"$tmp/r/manifest.json\")\n" + "[ \"$mid\" = \"$id\" ] || { echo \"id del manifest diverso: $mid\" >&2; exit 2; }\n" + "rm -rf \"$tmp/r/.git\"\n" + "mkdir -p \"$dir\"\n" + "rm -rf -- \"$dir/$id\"\n" + "mv \"$tmp/r\" \"$dir/$id\"\n" + "[ -x \"$4\" ] && \"$4\" \"$dir/$id\" || true\n"
 
     Component {
         id: installComp

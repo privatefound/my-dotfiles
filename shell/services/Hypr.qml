@@ -2,6 +2,7 @@ pragma Singleton
 
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import QtQuick
 import qs.config
 
@@ -12,6 +13,32 @@ Singleton {
     readonly property var activeToplevel: Hyprland.activeToplevel
     readonly property string activeTitle: activeToplevel?.title ?? ""
     readonly property string activeClass: activeToplevel?.lastIpcObject?.class ?? ""
+
+    // Modalità di Hyprland attiva ("" = normale, es. "resize" con SUPER+R): mostrata nella barra,
+    // perché dentro una modalità le altre scorciatoie (SUPER+1…9 ecc.) non funzionano
+    property string submap: ""
+    // Quickshell non inoltra gli eventi "submap" in Hyprland.rawEvent: si leggono dal socket
+    // degli eventi di Hyprland (lo stesso di `socat … .socket2.sock`)
+    Socket {
+        id: eventSocket
+        path: Quickshell.env("XDG_RUNTIME_DIR") + "/hypr/" + Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") + "/.socket2.sock"
+        connected: true
+        parser: SplitParser {
+            onRead: line => {
+                if (line.startsWith("submap>>"))
+                    root.submap = line.slice(8);
+            }
+        }
+        // se il socket si chiude (Hyprland ricaricato) si riconnette
+        onConnectedChanged: if (!connected) reconnect.start()
+        property Timer reconnect: Timer {
+            interval: 2000
+            onTriggered: eventSocket.connected = true
+        }
+    }
+    function resetSubmap() {
+        dispatch('hl.dsp.submap("reset")');
+    }
 
     function dispatch(lua) {
         Hyprland.dispatch(lua);

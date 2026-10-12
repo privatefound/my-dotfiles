@@ -12,6 +12,7 @@ import qs.Ui
 // needles, and a digital readout in the middle. Esc, the scrim, or the corner
 // dismiss close it; the needles sweep to full scale and back on open, then
 // track the live readings. Callers name the dials, the unit, and the scale.
+import qs.Commons as OmarchyCommons
 PanelWindow {
   id: root
 
@@ -288,7 +289,7 @@ PanelWindow {
       // round caps would leave a stray dot at the foot of the scale.
       ShapePath {
         strokeWidth: dial.arcWidth * 3
-        strokeColor: dial.arcVisible ? Qt.rgba(Color.accent.r, Color.accent.g, Color.accent.b, 0.18) : "transparent"
+        strokeColor: dial.arcVisible ? Qt.rgba(OmarchyCommons.Color.accent.r, OmarchyCommons.Color.accent.g, OmarchyCommons.Color.accent.b, 0.18) : "transparent"
         fillColor: "transparent"
         capStyle: ShapePath.RoundCap
 
@@ -305,7 +306,7 @@ PanelWindow {
       // Value: fills behind the needle.
       ShapePath {
         strokeWidth: dial.arcWidth
-        strokeColor: dial.arcVisible ? Color.accent : "transparent"
+        strokeColor: dial.arcVisible ? OmarchyCommons.Color.accent : "transparent"
         fillColor: "transparent"
         capStyle: ShapePath.RoundCap
 
@@ -356,8 +357,8 @@ PanelWindow {
         radius: width / 2
 
         gradient: Gradient {
-          GradientStop { position: 0.0; color: Color.accent }
-          GradientStop { position: 0.55; color: Color.accent }
+          GradientStop { position: 0.0; color: OmarchyCommons.Color.accent }
+          GradientStop { position: 0.55; color: OmarchyCommons.Color.accent }
           GradientStop { position: 1.0; color: "transparent" }
         }
       }
