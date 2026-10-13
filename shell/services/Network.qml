@@ -153,6 +153,9 @@ Singleton {
 
     FileView {
         path: Settings.rootDir + "/state/ethernet-cards.json"
+        // modifiche a mano al file (scambio card1/card2…) prese subito, senza riavviare la shell
+        watchChanges: true
+        onFileChanged: reload()
         onAdapterUpdated: writeAdapter()
         onLoadFailed: err => {
             if (err === FileViewError.FileNotFound)

@@ -14,8 +14,10 @@ native services instead of polling scripts, animated popouts anchored to the bar
   caffeine · transparency · cast toggles, network/bluetooth/volume/battery cluster, notifications, power.
 - **Control center**: volume / mic / brightness sliders, quick tiles (Wi‑Fi, Bluetooth, DND, caffeine,
   window transparency, mic, cast, screenshot), media card, battery.
-  - **Network**: Wi‑Fi (scan, connect, inline password, forget) · Ethernet (interfaces with default route,
-    connect/disconnect, wired profiles up/down) · **VPN** (NetworkManager VPN & WireGuard toggles)
+  - **Network**: Wi‑Fi (scan, connect, inline password, forget) · Ethernet (fixed slots for two
+    expansion cards and the docking station, each with one‑click profiles such as DHCP or static
+    configs — see [INSTALLATION.md](./INSTALLATION.md#9-ethernet-cards-and-profiles-control-center--network--ethernet)) ·
+    **VPN** (NetworkManager VPN & WireGuard toggles)
   - **Bluetooth**: power, scan, pair, connect, forget, device battery
   - **Audio**: 0–150 % boost, presets, output/input selection, per‑app volume
 - **Media panel** (click the mini-player): blurred album art, live **audio spectrum** (cava, with a PipeWire
@@ -123,7 +125,9 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
     └── assets/            icons (Inkscape) and notification sound
 ```
 
-User state lives outside git: `settings.json` (written by the settings panel) and `state/`.
+User state lives outside git: `settings.json` (written by the settings panel) and `state/`
+(plugins, Ethernet card ↔ slot mapping…). What to copy when moving to a new PC:
+[INSTALLATION.md → Moving to a new PC](./INSTALLATION.md#10-moving-to-a-new-pc).
 
 ## 🔧 IPC
 

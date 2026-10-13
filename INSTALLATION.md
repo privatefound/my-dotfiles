@@ -84,6 +84,75 @@ A llama.cpp server on `localhost:8080` (OpenAI API) is detected too. Pick the mo
 Started by Hyprland (`wl-paste --watch cliphist store`). Open it with `SUPER + Z`;
 `Delete` removes the selected entry.
 
+## 9. Ethernet cards and profiles (Control center → Network → Ethernet)
+
+The Ethernet tab shows three fixed slots — **Expansion card 1**, **Expansion card 2** and
+**Docking station** — and, on each one, a button for every Ethernet profile that is **not bound
+to a specific interface**. Clicking a button runs `nmcli connection up <profile> ifname <card>`,
+so the profile goes on exactly that card (click it again, or ✕, to disconnect).
+The dot next to the name is solid when the card is plugged into the laptop, hollow when it is not.
+
+### How the cards are recognised: `state/ethernet-cards.json`
+
+USB/Thunderbolt NICs (e.g. Framework expansion cards) get a different interface name in every
+port, so the slots are matched by **MAC address**, remembered in
+`~/.config/hypr/state/ethernet-cards.json` (personal, not tracked by git):
+
+```json
+{
+    "map": {
+        "aa:bb:cc:00:00:01": "card1",
+        "aa:bb:cc:00:00:02": "card2",
+        "aa:bb:cc:00:00:03": "dock"
+    }
+}
+```
+
+- The file is **created automatically**: the first Ethernet card seen plugged straight into the
+  laptop becomes `card1`, the next new one `card2`. A card behind a USB hub (its USB port has a dot,
+  e.g. `7-1.2.1`) is the `dock`. Nothing to do on a fresh install — just plug the cards in.
+- Each card keeps its slot in any port. A third unknown card is listed below as `Ethernet <name>`.
+- **Swap or renumber**: edit the file (values `card1`, `card2`, `dock`), or delete it and plug the
+  cards in again in the order you want. The shell picks the change up on its own.
+- Find a card's MAC with `cat /sys/class/net/<interface>/address` (interfaces: `nmcli device`).
+
+### Profiles that appear on every card
+
+A profile shows up as a button when it has **no interface name and no MAC** set. Allow it to be
+active on several cards at once and decide whether it starts by itself:
+
+```bash
+# DHCP, connected automatically when a cable is plugged in
+nmcli connection add type ethernet con-name "Ethernet DHCP" ifname "" ipv4.method auto \
+    connection.multi-connect multiple connection.autoconnect yes connection.autoconnect-priority 10
+# static profile, applied only from the panel (several addresses allowed)
+nmcli connection add type ethernet con-name "Config XG" ifname "" ipv4.method manual \
+    ipv4.addresses "172.16.16.200/24" ipv4.gateway "172.16.16.16" \
+    connection.multi-connect multiple connection.autoconnect no
+# unbind an existing profile instead of recreating it
+nmcli connection modify "<name>" connection.interface-name "" 802-3-ethernet.mac-address "" \
+    connection.multi-connect multiple
+```
+
+Profiles bound to a card (e.g. one tied to the dock's MAC) keep working but are not shown as buttons.
+An "Ethernet " prefix is dropped from the button label (`Ethernet DHCP` → `DHCP`).
+
+## 10. Moving to a new PC
+
+`install.sh` restores everything in the repo. These live **outside git** — copy them over
+(or recreate them) if you want them on the new machine:
+
+| What | Where | Notes |
+|---|---|---|
+| NetworkManager profiles (DHCP, static ones, VPN, Wi‑Fi) | `/etc/NetworkManager/system-connections/*.nmconnection` | root-only, mode 600: `sudo cp -a` them, then `sudo nmcli connection reload`. Contain Wi‑Fi/VPN passwords — don't put them in git |
+| Ethernet slot ↔ card mapping | `~/.config/hypr/state/ethernet-cards.json` | only if you move the same cards; otherwise it is rebuilt by itself |
+| Shell settings (accent, opacity, language…) | `~/.config/hypr/settings.json` | |
+| Installed plugins and their settings | `~/.config/hypr/plugins/`, `~/.config/hypr/state/` | or reinstall them from Settings → Plugin |
+| Monitor layout | `~/.config/hypr/monitors.lua` | see `monitors.lua.example` |
+
+After copying the NetworkManager profiles, check the static ones are still unbound
+(`nmcli -f connection.interface-name,802-3-ethernet.mac-address connection show "<name>"` → both empty).
+
 ## Troubleshooting
 
 - Shell logs: `qs -p ~/.config/hypr/shell log` — restart it with `SUPER + SHIFT + W`.
