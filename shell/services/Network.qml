@@ -109,8 +109,9 @@ Singleton {
     readonly property var ethSlots: ethSlotDefs.map(s => Object.assign({}, s, {
         iface: interfaces.find(i => i.type === "ethernet" && i.mac && cards.map[i.mac] === s.id) ?? null
     }))
-    // schede ethernet senza un posto (es. una terza expansion card)
-    readonly property var otherEthernet: interfaces.filter(i => i.type === "ethernet" && !(i.mac && cards.map[i.mac]))
+    // tutte le altre schede ethernet: senza un posto (es. una terza expansion card) oppure con il
+    // posto già occupato da un'altra scheda collegata (es. due schede "dock" insieme)
+    readonly property var otherEthernet: interfaces.filter(i => i.type === "ethernet" && !ethSlots.some(s => s.iface === i))
     // profili da offrire su ogni scheda: quelli non legati a una scheda precisa, DHCP per primo
     readonly property var ethProfiles: wiredProfiles.filter(p => !p.bound).sort((a, b) => (/dhcp/i.test(b.name) - /dhcp/i.test(a.name)) || a.name.localeCompare(b.name))
 

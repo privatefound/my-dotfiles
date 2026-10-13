@@ -111,7 +111,12 @@ port, so the slots are matched by **MAC address**, remembered in
 - The file is **created automatically**: the first Ethernet card seen plugged straight into the
   laptop becomes `card1`, the next new one `card2`. A card behind a USB hub (its USB port has a dot,
   e.g. `7-1.2.1`) is the `dock`. Nothing to do on a fresh install — just plug the cards in.
-- Each card keeps its slot in any port. A third unknown card is listed below as `Ethernet <name>`.
+- Each card keeps its slot in any port.
+- **A new card**: it takes `card1`/`card2` if one is free; otherwise it is listed below the slots as
+  `Ethernet <name>`, with the same profile buttons. A new card behind a hub (another dock) becomes a
+  `dock` too. Two cards for the same slot plugged in at once: the second one is listed below.
+- **Replacing a card** (e.g. a broken expansion card): the new MAC finds both slots taken, so put it in
+  the old card's place by editing the file (or delete the old card's line and plug the new one in).
 - **Swap or renumber**: edit the file (values `card1`, `card2`, `dock`), or delete it and plug the
   cards in again in the order you want. The shell picks the change up on its own.
 - Find a card's MAC with `cat /sys/class/net/<interface>/address` (interfaces: `nmcli device`).
