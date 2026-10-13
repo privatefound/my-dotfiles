@@ -140,8 +140,10 @@ Singleton {
     }
 
     // applica un profilo proprio a quella scheda
+    // (prima abilita multi-connect sul profilo, se manca: l'editor grafico di NetworkManager non lo
+    // mostra, e senza lo stesso profilo non potrebbe restare attivo su due schede insieme)
     function applyProfile(iface, profile) {
-        nmAction.command = ["nmcli", "connection", "up", "uuid", profile.uuid, "ifname", iface.device];
+        nmAction.command = ["sh", "-c", "case \"$(nmcli -g connection.multi-connect connection show uuid \"$1\")\" in 3|multiple) ;; *) nmcli connection modify uuid \"$1\" connection.multi-connect multiple;; esac; nmcli connection up uuid \"$1\" ifname \"$2\"", "_", profile.uuid, iface.device];
         nmBusy = true;
         nmAction.running = true;
     }

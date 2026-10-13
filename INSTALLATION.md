@@ -118,8 +118,14 @@ port, so the slots are matched by **MAC address**, remembered in
 
 ### Profiles that appear on every card
 
-A profile shows up as a button when it has **no interface name and no MAC** set. Allow it to be
-active on several cards at once and decide whether it starts by itself:
+A profile shows up as a button when it has **no interface name and no MAC** set. In
+`nm-connection-editor` ("Edit profiles" in the panel): Ethernet tab → leave **Device** empty, no MAC.
+For static profiles also untick General → **Connect automatically**, so plugging a cable in
+picks DHCP and not them.
+
+Applying a profile from the panel also enables `connection.multi-connect multiple` on it the first
+time (the graphical editor has no field for it), so the same profile can be active on two cards at
+once. The same from the terminal:
 
 ```bash
 # DHCP, connected automatically when a cable is plugged in
