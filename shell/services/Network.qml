@@ -97,6 +97,73 @@ Singleton {
     readonly property bool vpnActive: vpns.some(v => v.active)
     property bool nmBusy: false
 
+    // ── Ethernet: posti fissi (expansion card 1/2, docking station) riconosciuti dal MAC ──
+    // La prima scheda vista diventa "Expansion card 1", la successiva "2"; una scheda collegata
+    // tramite un hub USB (la porta contiene un punto, es. "7-1.2.1") è la docking station.
+    // L'associazione MAC → posto è salvata in state/ethernet-cards.json (personale, non in git).
+    readonly property var ethSlotDefs: [
+        { id: "card1", label: "Expansion card 1", icon: Icons.ethernet },
+        { id: "card2", label: "Expansion card 2", icon: Icons.ethernet },
+        { id: "dock", label: "Docking station", icon: Icons.lan }
+    ]
+    readonly property var ethSlots: ethSlotDefs.map(s => Object.assign({}, s, {
+        iface: interfaces.find(i => i.type === "ethernet" && i.mac && cards.map[i.mac] === s.id) ?? null
+    }))
+    // schede ethernet senza un posto (es. una terza expansion card)
+    readonly property var otherEthernet: interfaces.filter(i => i.type === "ethernet" && !(i.mac && cards.map[i.mac]))
+    // profili da offrire su ogni scheda: quelli non legati a una scheda precisa, DHCP per primo
+    readonly property var ethProfiles: wiredProfiles.filter(p => !p.bound).sort((a, b) => (/dhcp/i.test(b.name) - /dhcp/i.test(a.name)) || a.name.localeCompare(b.name))
+
+    function _isBehindHub(port) {
+        return /^\d+-[\d.]*\.[\d.]+:/.test(port);
+    }
+    function _learnCards(eths) {
+        const map = Object.assign({}, cards.map);
+        let changed = false;
+        for (const i of eths) {
+            if (map[i.mac])
+                continue;
+            const used = Object.values(map);
+            const slot = _isBehindHub(i.port) ? "dock" : ["card1", "card2"].find(s => !used.includes(s));
+            if (slot) {
+                map[i.mac] = slot;
+                changed = true;
+            }
+        }
+        if (changed)
+            cards.map = map;
+    }
+    function forgetCard(mac) {
+        const map = Object.assign({}, cards.map);
+        delete map[mac];
+        cards.map = map;
+    }
+
+    // applica un profilo proprio a quella scheda
+    function applyProfile(iface, profile) {
+        nmAction.command = ["nmcli", "connection", "up", "uuid", profile.uuid, "ifname", iface.device];
+        nmBusy = true;
+        nmAction.running = true;
+    }
+    function disconnectInterface(iface) {
+        nmAction.command = ["nmcli", "device", "disconnect", iface.device];
+        nmBusy = true;
+        nmAction.running = true;
+    }
+
+    FileView {
+        path: Settings.rootDir + "/state/ethernet-cards.json"
+        onAdapterUpdated: writeAdapter()
+        onLoadFailed: err => {
+            if (err === FileViewError.FileNotFound)
+                writeAdapter();
+        }
+        JsonAdapter {
+            id: cards
+            property var map: ({})
+        }
+    }
+
     function refreshNm() {
         nmProc.running = true;
     }
@@ -121,14 +188,23 @@ Singleton {
 
     Process {
         id: nmProc
-        command: ["sh", "-c", "echo \"DEF:$(ip route show default 2>/dev/null | awk '{print $5; exit}')\"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | sed 's/^/DEV:/'; nmcli -t -f NAME,UUID,TYPE,DEVICE,ACTIVE connection show 2>/dev/null | sed 's/^/CON:/'; ip -o -4 addr show 2>/dev/null | awk '{print \"IP:\" $2 \":\" $4}'"]
+        command: ["sh", "-c", "echo \"DEF:$(ip route show default 2>/dev/null | awk '{print $5; exit}')\"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | sed 's/^/DEV:/'; nmcli -t -f NAME,UUID,TYPE,DEVICE,ACTIVE connection show 2>/dev/null | sed 's/^/CON:/'; ip -o -4 addr show 2>/dev/null | awk '{print \"IP:\" $2 \":\" $4}'; for d in $(nmcli -t -f DEVICE,TYPE device 2>/dev/null | awk -F: '$2==\"ethernet\"{print $1}'); do echo \"ETH:$d|$(cat /sys/class/net/$d/address 2>/dev/null)|$(basename \"$(readlink -f /sys/class/net/$d/device)\")\"; done; nmcli -t -f UUID,TYPE connection show 2>/dev/null | awk -F: '$2==\"802-3-ethernet\"{print $1}' | while read u; do echo \"PIF:$u|$(nmcli -g connection.interface-name,802-3-ethernet.mac-address connection show uuid $u 2>/dev/null | paste -sd'|')\"; done"]
         stdout: StdioCollector {
             onStreamFinished: {
                 let def = "";
-                const ifs = [], cons = [], ips = {};
+                const ifs = [], cons = [], ips = {}, eth = {}, bound = {};
                 for (const line of text.split("\n")) {
                     if (line.startsWith("DEF:"))
                         def = line.slice(4).trim();
+                    else if (line.startsWith("ETH:")) {
+                        // device|mac|porta USB (es. "6-1:1.0" diretta, "7-1.2.1:1.0" dietro un hub)
+                        const [dev, mac, port] = line.slice(4).split("|");
+                        eth[dev] = { mac: (mac || "").toLowerCase(), port: port || "" };
+                    } else if (line.startsWith("PIF:")) {
+                        // profilo ethernet legato a una scheda (per nome o MAC) oppure libero
+                        const [uuid, ifname, mac] = line.slice(4).split("|");
+                        bound[uuid] = !!(ifname || mac);
+                    }
                     else if (line.startsWith("IP:")) {
                         const i = line.indexOf(":", 3);
                         ips[line.slice(3, i)] = line.slice(i + 1);
@@ -145,7 +221,12 @@ Singleton {
                 for (const i of ifs) {
                     i.ip = ips[i.device] ?? "";
                     i.isDefault = i.device === def;
+                    i.mac = eth[i.device]?.mac ?? "";
+                    i.port = eth[i.device]?.port ?? "";
                 }
+                for (const c of cons)
+                    c.bound = bound[c.uuid] === true;
+                root._learnCards(ifs.filter(i => i.type === "ethernet" && i.mac));
                 root.defaultIface = def;
                 root.interfaces = ifs;
                 root.profiles = cons.sort((a, b) => b.active - a.active);

@@ -293,6 +293,12 @@ Singleton {
         "domanda…": "question…",
         "muto": "muted",
         "nessun IP": "no IP",
+        "non collegata": "not plugged in",
+        "cavo scollegato": "cable unplugged",
+        "non connessa": "not connected",
+        "predefinita": "default",
+        "Modifica profili": "Edit profiles",
+        "Nessun profilo ethernet libero: crea un profilo in NetworkManager senza scheda associata e apparirà su tutte le schede.": "No unbound ethernet profile: create a NetworkManager profile without a bound interface and it will appear on every card.",
         "ora": "now",
         "sta scrivendo…": "is typing…"
     })

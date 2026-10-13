@@ -220,83 +220,48 @@ ColumnLayout {
         }
     }
 
-    // ═══════════════ Ethernet: schede di rete + profili ═══════════════
+    // ═══════════════ Ethernet: expansion card 1/2, docking station, ognuna con i suoi profili ═══════════════
     ScrollColumn {
         visible: Ui.networkTab === "ethernet"
         maxHeight: 470
-        spacing: 4
-
-        SectionHeader {
-            text: I18n.tr("Schede di rete")
-            icon: Icons.ethernet
-        }
+        spacing: 8
 
         Repeater {
-            model: Network.interfaces
-
-            delegate: ListRow {
+            model: Network.ethSlots
+            delegate: EthSlot {
                 required property var modelData
-                readonly property bool up: modelData.state.startsWith("connected")
-                icon: modelData.type === "wifi" ? Icons.wifi4 : modelData.type === "ethernet" ? Icons.ethernet : modelData.type === "wireguard" || modelData.type === "tun" ? Icons.vpn : Icons.lan
-                title: modelData.device + (modelData.connection && modelData.connection !== "--" ? "  ·  " + modelData.connection : "")
-                subtitle: (modelData.ip || I18n.tr("nessun IP")) + "  ·  " + modelData.state
-                highlighted: up
-                badge: modelData.isDefault ? "predefinita" : ""
-                onClicked: Network.toggleInterface(modelData)
+                label: modelData.label
+                icon: modelData.icon
+                iface: modelData.iface
+            }
+        }
 
-                StyledButton {
-                    implicitHeight: 30
-                    padding: 12
-                    variant: up ? "outline" : "tonal"
-                    text: up ? I18n.tr("Scollega") : I18n.tr("Collega")
-                    onClicked: Network.toggleInterface(modelData)
-                }
+        // altre schede ethernet senza posto fisso (es. una terza scheda)
+        Repeater {
+            model: Network.otherEthernet
+            delegate: EthSlot {
+                required property var modelData
+                label: "Ethernet " + modelData.device
+                iface: modelData
             }
         }
 
         StyledText {
-            visible: Network.interfaces.length === 0
+            visible: Network.ethProfiles.length === 0
             Layout.fillWidth: true
-            Layout.margins: 12
-            text: I18n.tr("Nessuna scheda trovata")
+            Layout.margins: 8
+            wrapMode: Text.Wrap
+            text: I18n.tr("Nessun profilo ethernet libero: crea un profilo in NetworkManager senza scheda associata e apparirà su tutte le schede.")
             color: Theme.textFaint
-            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: Theme.font.small
         }
 
-        SectionHeader {
-            Layout.topMargin: 10
-            text: I18n.tr("Profili ethernet")
-            icon: Icons.lanConnect
-        }
-
-        Repeater {
-            model: Network.wiredProfiles
-
-            delegate: ListRow {
-                required property var modelData
-                icon: modelData.active ? Icons.lanConnect : Icons.lanDisconnect
-                title: modelData.name
-                subtitle: modelData.active ? I18n.tr("Attivo su ") + modelData.device : I18n.tr("Non attivo")
-                highlighted: modelData.active
-                onClicked: Network.toggleProfile(modelData)
-
-                StyledButton {
-                    implicitHeight: 30
-                    padding: 12
-                    variant: modelData.active ? "outline" : "tonal"
-                    text: modelData.active ? "Down" : "Up"
-                    onClicked: Network.toggleProfile(modelData)
-                }
-            }
-        }
-
-        StyledText {
-            visible: Network.wiredProfiles.length === 0
-            Layout.fillWidth: true
-            Layout.margins: 12
-            text: I18n.tr("Nessun profilo ethernet")
-            color: Theme.textFaint
-            horizontalAlignment: Text.AlignHCenter
+        StyledButton {
+            Layout.alignment: Qt.AlignRight
+            variant: "text"
+            icon: Icons.cog
+            text: I18n.tr("Modifica profili")
+            onClicked: Network.openEditor()
         }
     }
 
