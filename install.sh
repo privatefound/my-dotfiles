@@ -76,6 +76,8 @@ PACKAGES=(
     # compositor, lock, idle, portali, uscita pulita
     hyprland hyprlock hypridle hyprpicker hyprshutdown
     xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-utils
+    # app grafiche avviate come root (es. GParted) su XWayland: senza xhost non aprono la finestra
+    xorg-xhost
     # shell Quickshell + moduli Qt usati (QML, SVG, Wayland, webp/gif per gli sfondi)
     quickshell qt6-base qt6-declarative qt6-svg qt6-wayland qt6-imageformats qt6-5compat
     # audio / media (pw-play per il suono delle notifiche)

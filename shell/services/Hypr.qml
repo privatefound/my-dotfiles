@@ -81,6 +81,37 @@ Singleton {
         }
     }
 
+    // ── Bordi delle finestre: seguono il colore d'accento ──
+    // Sfumatura come quella originale (accento, 80% e 40% di luminosità) e bordo inattivo scuro.
+    // L'accento scelto viene anche salvato in settings.json (accentHex) per hyprland.lua all'avvio.
+    function _rgba(c, k, a) {
+        const h = v => Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, "0");
+        return "rgba(" + h(c.r * k) + h(c.g * k) + h(c.b * k) + a + ")";
+    }
+    function applyBorders() {
+        const c = Theme.primary;
+        const active = [_rgba(c, 1, "ee"), _rgba(c, 0.8, "cc"), _rgba(c, 0.4, "cc")].map(x => `"${x}"`).join(", ");
+        const argb = (k, a) => "0x" + a + _rgba(c, k, "").slice(5, 11);   // 0xAARRGGBB per l'ombra
+        const lua = `hl.config({ general = { col = { active_border = { colors = { ${active} }, angle = 45 }, inactive_border = "${_rgba(c, 0.24, "aa")}" } }, decoration = { shadow = { color = ${argb(1, "55")}, color_inactive = ${argb(0.2, "22")} } } })`;
+        Quickshell.execDetached(["hyprctl", "eval", lua]);
+        const base = Theme.accentBase;
+        const hex = "#" + [base.r, base.g, base.b].map(v => Math.round(v * 255).toString(16).padStart(2, "0")).join("");
+        if (Settings.accentHex !== hex)
+            Settings.accentHex = hex;
+    }
+    Connections {
+        target: Theme
+        function onPrimaryChanged() {
+            bordersTimer.restart();
+        }
+    }
+    Timer {
+        id: bordersTimer
+        interval: 120
+        onTriggered: root.applyBorders()
+    }
+    Component.onCompleted: bordersTimer.restart()
+
     // ── Trasparenza finestre (toggle della vecchia barra) ──
     function applyTransparency() {
         const on = Settings.windowTransparency;

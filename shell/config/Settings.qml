@@ -15,6 +15,7 @@ Singleton {
     // ── Aspetto ──
     property alias language: adapter.language
     property alias accent: adapter.accent
+    property alias accentHex: adapter.accentHex   // colore dell'accento, letto da hyprland.lua per i bordi
     property alias barFloating: adapter.barFloating
     property alias barOpacity: adapter.barOpacity
     property alias panelOpacity: adapter.panelOpacity
@@ -79,6 +80,7 @@ Singleton {
 
             property string language: "auto"   // "auto" | "it" | "en"
             property string accent: "matrix"
+            property string accentHex: "#00ff41"
             property bool barFloating: true
             property real barOpacity: 0.82
             property real panelOpacity: 0.92

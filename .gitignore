@@ -8,6 +8,7 @@ monitors.conf
 *.log
 .claude/
 .qmlls.ini
+midgard*
 
 # Plugin installati dalle impostazioni (personali, non versionati)
 plugins/

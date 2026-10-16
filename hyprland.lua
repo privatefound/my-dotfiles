@@ -163,6 +163,23 @@ end)
 ---- LOOK AND FEEL ----
 -----------------------
 
+-- Bordi: colore d'accento scelto nella shell (Impostazioni → Aspetto), salvato in settings.json
+-- come "accentHex". Sfumatura: accento, 80% e 40% di luminosità; bordo inattivo al 24%.
+local function accentRgba(k, alpha)
+    local hex = setting("accentHex", "#00ff41"):gsub("#", "")
+    if #hex ~= 6 then hex = "00ff41" end
+    local out = ""
+    for i = 1, 5, 2 do
+        local v = math.floor(tonumber(hex:sub(i, i + 1), 16) * k + 0.5)
+        out = out .. string.format("%02x", math.min(255, v))
+    end
+    return "rgba(" .. out .. alpha .. ")"
+end
+-- stesso colore come numero 0xAARRGGBB (per l'ombra/alone della finestra)
+local function accentArgb(k, alpha)
+    return tonumber(alpha .. accentRgba(k, ""):match("rgba%((%x+)%)"), 16)
+end
+
 hl.config({
     general = {
         gaps_in     = 4,
@@ -170,8 +187,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = { "rgba(00ff41ee)", "rgba(00cc33cc)", "rgba(006611cc)" }, angle = 45 },
-            inactive_border = "rgba(0b3d16aa)",
+            active_border   = { colors = { accentRgba(1, "ee"), accentRgba(0.8, "cc"), accentRgba(0.4, "cc") }, angle = 45 },
+            inactive_border = accentRgba(0.24, "aa"),
         },
 
         resize_on_border = true,
@@ -191,8 +208,9 @@ hl.config({
             enabled        = true,
             range          = 22,
             render_power   = 3,
-            color          = 0x5500ff41,
-            color_inactive = 0x22003300,
+            -- alone della finestra attiva nel colore d'accento (come i bordi)
+            color          = accentArgb(1, "55"),
+            color_inactive = accentArgb(0.2, "22"),
         },
 
         blur = {

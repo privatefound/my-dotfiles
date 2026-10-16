@@ -11,6 +11,7 @@ Singleton {
     // ── Accenti disponibili ──
     readonly property var accents: ({
         matrix:  { name: "Matrix",   color: "#00ff41" },
+        mint:    { name: I18n.tr("Menta"),    color: "#00eb8f" },
         emerald: { name: I18n.tr("Smeraldo"), color: "#3ddc97" },
         cyan:    { name: I18n.tr("Ciano"),    color: "#00e5ff" },
         ice:     { name: I18n.tr("Ghiaccio"), color: "#8ab4f8" },
@@ -19,7 +20,7 @@ Singleton {
         amber:   { name: I18n.tr("Ambra"),    color: "#ffb000" },
         red:     { name: I18n.tr("Rosso"),    color: "#ff4d4d" }
     })
-    readonly property var accentKeys: ["matrix", "emerald", "cyan", "ice", "violet", "rose", "amber", "red"]
+    readonly property var accentKeys: ["matrix", "mint", "emerald", "cyan", "ice", "violet", "rose", "amber", "red"]
 
     // Accento temporaneo (es. plugin "Music Theme": colore della copertina). Trasparente = nessuno.
     property color accentOverride: "transparent"

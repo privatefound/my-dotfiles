@@ -260,6 +260,7 @@ Singleton {
         "Sfondi": "Wallpapers",
         "Sfondo casuale": "Random wallpaper",
         "Sistema": "System",
+        "Menta": "Mint",
         "Smeraldo": "Emerald",
         "Solo i workspace del monitor": "Only the monitor's workspaces",
         "Solo le notifiche critiche compaiono a schermo": "Only critical notifications are shown",
