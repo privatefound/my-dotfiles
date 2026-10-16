@@ -98,7 +98,7 @@ PACKAGES=(
     git zenity cava
     papirus-icon-theme nwg-look qt5ct qt6ct
     # app usate dalla config (modificabili in hyprland.lua / impostazioni)
-    terminology nemo conky mission-center
+    terminology nemo mission-center
 )
 # Opzionali dai repo ufficiali
 OPTIONAL_REPO=(ollama)

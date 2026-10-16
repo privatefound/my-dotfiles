@@ -20,6 +20,8 @@ native services instead of polling scripts, animated popouts anchored to the bar
     **VPN** (NetworkManager VPN & WireGuard toggles)
   - **Bluetooth**: power, scan, pair, connect, forget, device battery
   - **Audio**: 0–150 % boost, presets, output/input selection, per‑app volume
+- **Desktop widget** (replaces conky): system, disk, top processes, RAM/swap/CPU and one section
+  per connected network with live graphs — on the wallpaper, under the windows, blurred and in the accent colour.
 - **Media panel** (click the mini-player): blurred album art, live **audio spectrum** (cava, with a PipeWire
   fallback), player / output switching and volume.
 - **Launcher** (spotlight): fuzzy app search ranked by usage, `=` calculator, `>` run command,
@@ -112,7 +114,7 @@ gnome-network-displays, right monique · bell: right click Do Not Disturb · sys
 ├── monitors.lua.example   copy to monitors.lua (or let Monique generate it) — not tracked
 ├── hypridle.conf  hyprlock.conf
 ├── greetd/config.toml     login screen
-├── conky/  wallpapers/  systemd/
+├── wallpapers/  systemd/
 ├── animations/            window/workspace animation presets
 ├── scripts/               restart-shell.sh (SUPER+SHIFT+W) · power-mode.sh (battery mode) · plugin helper commands
 └── shell/                 Quickshell

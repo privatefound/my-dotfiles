@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Imposta lo sfondo su tutti i monitor con awww, scegliendo per ognuno la versione adatta alle sue
+# proporzioni: se accanto a "sfondo.png" esiste "sfondo@3x2.png" (o @16x10, @21x9, @4x3…), sui
+# monitor con quelle proporzioni si usa quella; altrimenti l'immagine normale (ritagliata da awww).
+#
+# Uso: set-wallpaper <immagine> [transizione]
+img="$1"; transition="${2:-fade}"
+[ -f "$img" ] || { echo "set-wallpaper: file non trovato: $img" >&2; exit 1; }
+pgrep -x awww-daemon >/dev/null || { awww-daemon >/dev/null 2>&1 & sleep 0.6; }
+
+base="${img%.*}"; ext="${img##*.}"
+hyprctl -j monitors | jq -r '.[] | [.name, .width, .height, .transform] | @tsv' |
+while IFS=$'\t' read -r name w h t; do
+    # monitor ruotati di 90°/270°: larghezza e altezza si scambiano
+    if [ $((t % 2)) -eq 1 ]; then x=$w; w=$h; h=$x; fi
+    ratio=$(awk -v w="$w" -v h="$h" 'BEGIN { r = w / h;
+        if (r > 2.2) print "21x9"; else if (r > 1.7) print "16x9"; else if (r > 1.55) print "16x10";
+        else if (r > 1.4) print "3x2"; else if (r > 1.2) print "4x3"; else if (r >= 1) print "1x1"; else print "portrait" }')
+    file="$img"
+    [ -f "$base@$ratio.$ext" ] && file="$base@$ratio.$ext"
+    awww img -o "$name" "$file" --transition-type "$transition" --transition-pos top-right \
+        --transition-duration 1.1 --transition-fps 120 &
+done
+wait

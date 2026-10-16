@@ -21,6 +21,8 @@ Singleton {
     property alias panelOpacity: adapter.panelOpacity
     property alias panelsFollowBar: adapter.panelsFollowBar
     property alias scanlineEffect: adapter.scanlineEffect
+    property alias desktopWidget: adapter.desktopWidget              // widget di sistema sul desktop (ex conky)
+    property alias desktopWidgetScreen: adapter.desktopWidgetScreen  // "" = automatico (schermo del portatile)
     property alias fontScale: adapter.fontScale
     property alias animations: adapter.animations
     property alias windowAnimations: adapter.windowAnimations
@@ -86,6 +88,8 @@ Singleton {
             property real panelOpacity: 0.92
             property bool panelsFollowBar: true   // popup e pannelli usano l'opacità della barra
             property bool scanlineEffect: true
+            property bool desktopWidget: true
+            property string desktopWidgetScreen: ""
             property real fontScale: 1.0
             property bool animations: true
             property string windowAnimations: "matrix"   // preset in ~/.config/hypr/animations

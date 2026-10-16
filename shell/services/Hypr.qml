@@ -17,6 +17,19 @@ Singleton {
     // Modalità di Hyprland attiva ("" = normale, es. "resize" con SUPER+R): mostrata nella barra,
     // perché dentro una modalità le altre scorciatoie (SUPER+1…9 ecc.) non funzionano
     property string submap: ""
+    // monitor aggiunti/tolti o configurazione ricaricata (dock collegata/scollegata, Monique…)
+    signal monitorsChanged
+
+    // Quando cambiano i monitor (dock scollegata, risoluzione o scala cambiate) awww non sempre
+    // ridisegna lo sfondo per la nuova disposizione: lo si riapplica, senza transizione, appena la
+    // disposizione si è assestata (gli eventi arrivano a raffica). Qui e non in Wallpaper perché
+    // Wallpaper viene creato solo all'apertura del selettore sfondi, Hypr invece è sempre attivo.
+    onMonitorsChanged: wallpaperReapply.restart()
+    Timer {
+        id: wallpaperReapply
+        interval: 1500
+        onTriggered: Wallpaper.apply("none")
+    }
     // Quickshell non inoltra gli eventi "submap" in Hyprland.rawEvent: si leggono dal socket
     // degli eventi di Hyprland (lo stesso di `socat … .socket2.sock`)
     Socket {
@@ -27,6 +40,8 @@ Singleton {
             onRead: line => {
                 if (line.startsWith("submap>>"))
                     root.submap = line.slice(8);
+                else if (line.startsWith("monitoradded") || line.startsWith("monitorremoved") || line.startsWith("configreloaded"))
+                    root.monitorsChanged();
             }
         }
         // se il socket si chiude (Hyprland ricaricato) si riconnette

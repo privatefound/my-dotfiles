@@ -14,7 +14,7 @@ sudo pacman -S --needed \
   wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww curl jq gnome-keyring polkit \
   greetd greetd-tuigreet \
   ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable git zenity cava papirus-icon-theme nwg-look qt5ct qt6ct \
-  terminology nemo conky mission-center
+  terminology nemo mission-center
 ```
 
 Everything above is in the official repos. Optional: `ollama` (Morpheus AI, official repo), `gnome-network-displays` (screen cast, AUR), `monique` (monitor layout GUI, AUR).

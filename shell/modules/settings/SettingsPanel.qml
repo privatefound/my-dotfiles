@@ -340,6 +340,28 @@ StyledRect {
                         onToggled: v => Settings.scanlineEffect = v
                     }
                     ToggleRow {
+                        title: I18n.tr("Widget sul desktop")
+                        subtitle: I18n.tr("Sistema, disco, processi e reti sopra lo sfondo (al posto di conky)")
+                        checked: Settings.desktopWidget
+                        onToggled: v => Settings.desktopWidget = v
+                    }
+                    Row_ {
+                        visible: Settings.desktopWidget
+                        title: I18n.tr("Schermo del widget")
+                        subtitle: Settings.desktopWidgetScreen === "" ? I18n.tr("Automatico: lo schermo del portatile") : ""
+                        Repeater {
+                            model: [""].concat(Quickshell.screens.map(s => s.name))
+                            delegate: StyledButton {
+                                required property string modelData
+                                implicitHeight: 32
+                                padding: 12
+                                variant: Settings.desktopWidgetScreen === modelData ? "filled" : "tonal"
+                                text: modelData === "" ? I18n.tr("Automatico") : modelData
+                                onClicked: Settings.desktopWidgetScreen = modelData
+                            }
+                        }
+                    }
+                    ToggleRow {
                         title: I18n.tr("Trasparenza finestre")
                         subtitle: I18n.tr("Rende trasparenti le finestre; regola sotto quanto")
                         checked: Settings.windowTransparency

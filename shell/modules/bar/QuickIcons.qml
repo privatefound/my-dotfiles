@@ -4,7 +4,7 @@ import qs.config
 import qs.components
 import qs.services
 
-// Toggle rapidi della vecchia barra: caffeine, trasparenza, cast/monitor.
+// Toggle rapidi della vecchia barra: caffeine, widget sul desktop, trasparenza, cast/monitor.
 RowLayout {
     id: root
 
@@ -15,6 +15,14 @@ RowLayout {
         icon: Settings.caffeine ? Icons.coffee : Icons.coffeeOutline
         iconColor: Settings.caffeine ? Theme.primary : Theme.textDim
         onClicked: Settings.caffeine = !Settings.caffeine
+    }
+
+    // Widget di sistema sul desktop (accende/spegne, come in Impostazioni → Aspetto)
+    IconButton {
+        size: Theme.barHeight - 12
+        icon: Icons.gauge
+        iconColor: Settings.desktopWidget ? Theme.primary : Theme.textDim
+        onClicked: Settings.desktopWidget = !Settings.desktopWidget
     }
 
     IconButton {

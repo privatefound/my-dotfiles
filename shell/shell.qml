@@ -5,6 +5,7 @@
 import Quickshell
 import QtQuick
 import qs.modules
+import qs.modules.desktop
 import qs.modules.bar
 import qs.modules.popouts
 import qs.modules.modals
@@ -17,6 +18,12 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
         Bar {}
+    }
+
+    // Widget di sistema sul desktop (al posto di conky)
+    Variants {
+        model: Quickshell.screens
+        DesktopWidget {}
     }
 
     // Popout agganciati alla barra

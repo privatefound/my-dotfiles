@@ -152,9 +152,6 @@ hl.on("hyprland.start", function()
     -- A batteria: pannello a 60Hz e niente blur/ombre (scripts/power-mode.sh)
     hl.exec_cmd(CONF .. "/scripts/power-mode.sh")
 
-    -- Conky
-    hl.exec_cmd("conky -c " .. CONF .. "/conky/cyberconky.conf")
-
     -- Cursore
     hl.exec_cmd("hyprctl setcursor Breeze_Dark_Lime 24")
 end)
@@ -471,15 +468,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name  = "conky-desktop",
-    match = { class = "^Conky$" },
-    float    = true,
-    pin      = true,
-    no_focus = true,
-    opacity  = "1.0 1.0",
-})
-
-hl.window_rule({
     name  = "system-applets",
     match = { class = "^(pavucontrol|org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|nwg-look|qt5ct|qt6ct)$" },
     float   = true,
@@ -514,7 +502,7 @@ hl.window_rule({
 ---------------------
 
 -- Blur dietro la shell (le zone trasparenti non vengono sfocate)
-hl.layer_rule({ name = "shell-blur", match = { namespace = "^whiterabbit-(bar|popout|modal|notifications|osd|polkit)$" }, blur = true, ignore_alpha = 0.5 })
+hl.layer_rule({ name = "shell-blur", match = { namespace = "^whiterabbit-(bar|popout|modal|notifications|osd|polkit|desktop)$" }, blur = true, ignore_alpha = 0.5 })
 
 -- Popout, modali, notifiche e OSD hanno già le loro animazioni
 hl.layer_rule({ name = "shell-noanim", match = { namespace = "^whiterabbit-(popout|modal|notifications|osd|polkit)$" }, no_anim = true })

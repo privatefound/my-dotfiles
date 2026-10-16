@@ -22,7 +22,8 @@ Singleton {
     }
 
     function apply(transition) {
-        Quickshell.execDetached(["sh", "-c", "pgrep -x awww-daemon >/dev/null || { awww-daemon >/dev/null 2>&1 & sleep 0.6; }; awww img \"$1\" --transition-type \"$2\" --transition-pos top-right --transition-duration 1.1 --transition-fps 120", "_", Settings.wallpaper, transition || "fade"]);
+        // per ogni monitor sceglie la versione adatta alle sue proporzioni (es. sfondo@3x2.png sul portatile)
+        Quickshell.execDetached([Settings.rootDir + "/scripts/set-wallpaper", Settings.wallpaper, transition || "fade"]);
     }
 
     function random() {
@@ -35,7 +36,8 @@ Singleton {
         id: listProc
         command: ["find", Settings.wallpaperDir, "-maxdepth", "2", "-type", "f", "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png", "-o", "-iname", "*.webp", "-o", "-iname", "*.gif", ")"]
         stdout: StdioCollector {
-            onStreamFinished: root.files = text.split("\n").filter(l => l).sort()
+            // le versioni per altre proporzioni (nome@3x2.png…) non sono sfondi a sé: si nascondono
+            onStreamFinished: root.files = text.split("\n").filter(l => l && !/@\d+x\d+\.[^/.]+$/.test(l)).sort()
         }
     }
 
