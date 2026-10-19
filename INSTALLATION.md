@@ -39,11 +39,17 @@ settings panel (`SUPER + ,`) and saved to `~/.config/hypr/settings.json`.
 
 ## 3. Notifications
 
-The shell *is* the notification server. Stop other daemons so they don't grab `org.freedesktop.Notifications`:
+The shell *is* the notification server. **Mask** other daemons — disabling is not enough: if
+installed, they are D‑Bus activated whenever the notification name is free (e.g. while the shell
+restarts) and then keep every notification, unthemed:
 
 ```bash
-systemctl --user disable --now swaync.service dunst.service mako.service 2>/dev/null
+systemctl --user mask --now swaync.service dunst.service mako.service 2>/dev/null
 ```
+
+Check who owns notifications with `busctl --user status org.freedesktop.Notifications` (should be `qs`).
+Notification popups are hidden from screenshots and screen sharing on purpose (`no_screen_share`
+layer rule in `hyprland.lua`), so they show up black in captures.
 
 ## 4. Lock screen
 

@@ -176,9 +176,12 @@ if [[ ! -f "$HYPR_DIR/monitors.lua" ]]; then
 fi
 
 # Notifiche: la shell ha il suo server, i vecchi demoni non devono partire
+# Mascherati, non solo disabilitati: se installati si offrono come servizio notifiche su D-Bus e
+# vengono avviati da soli quando la shell si riavvia, prendendosi tutte le notifiche (senza tema).
 for svc in swaync dunst mako; do
-    if systemctl --user is-enabled "$svc.service" &>/dev/null; then
-        systemctl --user disable --now "$svc.service" && ok "Disabilitato $svc (sostituito dalla shell)."
+    if systemctl --user cat "$svc.service" &>/dev/null && [ "$(systemctl --user is-enabled "$svc.service" 2>/dev/null)" != masked ]; then
+        systemctl --user stop "$svc.service" 2>/dev/null
+        systemctl --user mask "$svc.service" &>/dev/null && ok "Mascherato $svc (le notifiche le gestisce la shell)."
     fi
 done
 
