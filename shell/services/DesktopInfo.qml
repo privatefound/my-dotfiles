@@ -26,6 +26,7 @@ Singleton {
     property real swapUsed: 0
     property real swapTotal: 0
     property real cpuGhz: 0
+    property int gpuMhz: 0           // frequenza attuale della GPU (pp_dpm_sclk, AMD)
 
     // ── processi: [{ name, value }] ──
     property var topMem: []
@@ -82,6 +83,19 @@ Singleton {
         id: cpuInfo
         path: "/proc/cpuinfo"
     }
+    // GPU AMD: la scheda che espone gpu_busy_percent (trovata una volta)
+    property string _gpuDir: ""
+    Process {
+        running: root.active && root._gpuDir === ""
+        command: ["sh", "-c", "for c in /sys/class/drm/card*/device; do [ -f \"$c/gpu_busy_percent\" ] && [ -f \"$c/pp_dpm_sclk\" ] && { echo \"$c\"; break; }; done"]
+        stdout: StdioCollector {
+            onStreamFinished: root._gpuDir = text.trim()
+        }
+    }
+    FileView {
+        id: gpuClock
+        path: root._gpuDir ? root._gpuDir + "/pp_dpm_sclk" : ""
+    }
 
     function sample() {
         // swap
@@ -99,6 +113,13 @@ Singleton {
         cpuInfo.reload();
         const f = cpuInfo.text().split("\n").filter(l => l.startsWith("cpu MHz")).map(l => parseFloat(l.split(":")[1]));
         cpuGhz = f.length ? f.reduce((a, b) => a + b, 0) / f.length / 1000 : 0;
+
+        // frequenza GPU: la riga con l'asterisco è quella attiva ("1: 1312Mhz *")
+        if (_gpuDir) {
+            gpuClock.reload();
+            const m = gpuClock.text().match(/(\d+)\s*Mhz\s*\*/i);
+            gpuMhz = m ? parseInt(m[1]) : 0;
+        }
 
         // reti
         netDev.reload();

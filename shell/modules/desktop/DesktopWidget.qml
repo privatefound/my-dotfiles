@@ -271,6 +271,14 @@ PanelWindow {
                 value: DesktopInfo.cpuGhz.toFixed(2) + " GHz" + (SysStats.cpuTemp > 0 ? "  ·  " + Math.round(SysStats.cpuTemp) + "°C" : "")
                 bar: SysStats.cpu
             }
+            Stat {
+                visible: DesktopInfo.gpuMhz > 0 || SysStats.gpuBusy > 0
+                icon: Icons.gpu
+                label: "GPU"
+                // come la riga CPU: frequenza e temperatura, il carico lo mostra la barra
+                value: (DesktopInfo.gpuMhz > 0 ? (DesktopInfo.gpuMhz / 1000).toFixed(2) + " GHz" : Math.round(SysStats.gpuBusy * 100) + "%") + (SysStats.gpuTemp > 0 ? "  ·  " + Math.round(SysStats.gpuTemp) + "°C" : "")
+                bar: SysStats.gpuBusy
+            }
 
             // una sezione per ogni rete collegata (ethernet, wi‑fi, VPN)
             Repeater {
