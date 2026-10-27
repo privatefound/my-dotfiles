@@ -197,6 +197,15 @@ PanelWindow {
 
             QuickIcons {}
 
+            // Syncthing: componente personale escluso da git, caricato solo se presente
+            Loader {
+                Layout.alignment: Qt.AlignVCenter
+                // il pulsante decide da sé se mostrarsi (Syncthing attivo); se è nascosto non occupa spazio.
+                // (Niente "visible" sul Loader: nasconderlo renderebbe invisibile anche il pulsante, per sempre)
+                Layout.preferredWidth: item && item.visible ? item.implicitWidth : 0
+                Component.onCompleted: setSource(Qt.resolvedUrl("SyncthingButton.qml"), { screenName: bar.screenName })
+            }
+
             StatusCluster {
                 screenName: bar.screenName
             }

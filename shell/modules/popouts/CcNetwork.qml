@@ -14,7 +14,10 @@ ColumnLayout {
         Network.setScanning(Ui.networkTab === "wifi");
         Network.refreshNm();
     }
-    Component.onDestruction: Network.setScanning(false)
+    Component.onDestruction: {
+        Network.setScanning(false);
+        Network.clearShare();   // la password condivisa non resta in memoria a pannello chiuso
+    }
 
     Connections {
         target: Ui
@@ -127,6 +130,21 @@ ColumnLayout {
                 text: Network.wifiEnabled ? (Network.wifiConnected ? I18n.tr("Connesso a ") + Network.activeNetwork.name : I18n.tr("Non connesso")) : I18n.tr("Wi‑Fi spento")
                 color: Theme.textDim
             }
+            // connettiti inquadrando con la webcam il QR code condiviso dal telefono
+            IconButton {
+                size: 32
+                icon: Icons.qrcodeScan
+                toggled: Network.qrScanning
+                iconColor: Network.qrScanning ? Theme.primary : Theme.textDim
+                onClicked: {
+                    if (Network.qrScanning) {
+                        Network.cancelQrScan();
+                    } else {
+                        Network.scanWifiQr();
+                        Ui.closePopout();   // libera lo schermo per l'anteprima della webcam
+                    }
+                }
+            }
             Toggle {
                 checked: Network.wifiEnabled
                 onToggled: v => Network.setWifiEnabled(v)
@@ -152,6 +170,7 @@ ColumnLayout {
                     id: netItem
                     required property var modelData
                     readonly property bool asking: Network.pendingNetwork === modelData
+                    readonly property bool sharing: Network.shareSsid !== "" && Network.shareSsid === modelData.name
                     Layout.fillWidth: true
                     spacing: 4
 
@@ -169,12 +188,113 @@ ColumnLayout {
                             size: 14
                             color: Theme.textFaint
                         }
+                        // condividi (QR code + password), come su Android
+                        IconButton {
+                            visible: netItem.modelData.known
+                            size: 30
+                            icon: Icons.qrcode
+                            toggled: netItem.sharing
+                            iconColor: netItem.sharing ? Theme.primary : Theme.textDim
+                            onClicked: netItem.sharing ? Network.clearShare() : Network.shareWifi(netItem.modelData)
+                        }
                         IconButton {
                             visible: netItem.modelData.known
                             size: 30
                             icon: Icons.trash
                             iconColor: Theme.textDim
                             onClicked: Network.forget(netItem.modelData)
+                        }
+                    }
+
+                    // Scheda di condivisione: QR da inquadrare con la fotocamera + password
+                    StyledRect {
+                        id: shareCard
+                        property bool reveal: false
+                        visible: netItem.sharing
+                        onVisibleChanged: if (!visible) reveal = false
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 4
+                        Layout.rightMargin: 4
+                        implicitHeight: shareCol.implicitHeight + 24
+                        radius: Theme.radius.large
+                        color: Theme.surfaceContainerHigh
+
+                        ColumnLayout {
+                            id: shareCol
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
+                            spacing: 8
+
+                            StyledText {
+                                Layout.alignment: Qt.AlignHCenter
+                                text: I18n.tr("Inquadra il QR code per connetterti a") + " " + netItem.modelData.name
+                                font.pixelSize: Theme.font.small
+                                color: Theme.textDim
+                            }
+                            // QR nero su bianco (il contrasto serve per la lettura)
+                            Rectangle {
+                                Layout.alignment: Qt.AlignHCenter
+                                implicitWidth: 196
+                                implicitHeight: 196
+                                radius: Theme.radius.normal
+                                color: "white"
+                                visible: Network.shareQr !== ""
+                                Image {
+                                    anchors.fill: parent
+                                    anchors.margins: 8
+                                    source: Network.shareQr ? "data:image/svg+xml;utf8," + encodeURIComponent(Network.shareQr) : ""
+                                    sourceSize: Qt.size(360, 360)
+                                    fillMode: Image.PreserveAspectFit
+                                    smooth: false
+                                }
+                            }
+                            StyledText {
+                                visible: Network.shareBusy
+                                Layout.alignment: Qt.AlignHCenter
+                                text: I18n.tr("Preparo il QR code…")
+                                color: Theme.textDim
+                            }
+                            StyledText {
+                                visible: Network.shareError !== ""
+                                Layout.fillWidth: true
+                                horizontalAlignment: Text.AlignHCenter
+                                wrapMode: Text.Wrap
+                                text: Network.shareError
+                                color: Theme.error
+                                font.pixelSize: Theme.font.small
+                            }
+                            // password, nascosta finché non si preme l'occhio
+                            RowLayout {
+                                visible: Network.sharePassword !== ""
+                                Layout.fillWidth: true
+                                spacing: 8
+                                Icon {
+                                    text: Icons.key
+                                    size: 16
+                                    color: Theme.primary
+                                }
+                                StyledText {
+                                    Layout.fillWidth: true
+                                    text: shareCard.reveal ? Network.sharePassword : "•".repeat(Math.min(16, Network.sharePassword.length))
+                                    font.family: Theme.font.mono
+                                    font.pixelSize: Theme.font.body
+                                    elide: Text.ElideRight
+                                }
+                                IconButton {
+                                    size: 30
+                                    icon: shareCard.reveal ? Icons.eyeOff : Icons.eye
+                                    iconColor: Theme.textDim
+                                    onClicked: shareCard.reveal = !shareCard.reveal
+                                }
+                                IconButton {
+                                    size: 30
+                                    icon: Icons.close
+                                    iconColor: Theme.textDim
+                                    onClicked: Network.clearShare()
+                                }
+                            }
                         }
                     }
 

@@ -467,6 +467,16 @@ hl.window_rule({
     no_focus = true,
 })
 
+-- Lettore QR della webcam (pannello rete → "Scansiona QR"): finestra mobile al centro, sempre sopra
+hl.window_rule({
+    name  = "qr-scanner",
+    match = { class = "^zbar$" },
+    float  = true,
+    center = true,
+    pin    = true,
+    size   = { 720, 560 },
+})
+
 hl.window_rule({
     name  = "system-applets",
     match = { class = "^(pavucontrol|org.pulseaudio.pavucontrol|blueman-manager|nm-connection-editor|nwg-look|qt5ct|qt6ct)$" },

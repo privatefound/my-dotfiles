@@ -12,3 +12,9 @@ midgard*
 
 # Plugin installati dalle impostazioni (personali, non versionati)
 plugins/
+
+# Syncthing nella barra (personale): la shell li carica solo se presenti
+shell/services/Syncthing.qml
+shell/modules/bar/SyncthingButton.qml
+shell/modules/popouts/SyncthingPanel.qml
+scripts/syncthing-status

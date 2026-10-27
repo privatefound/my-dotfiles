@@ -89,6 +89,8 @@ PACKAGES=(
     # appunti, screenshot, luminosità, notifiche, sfondi, portachiavi, polkit
     wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww
     curl jq socat gnome-keyring polkit
+    # QR code per condividere il Wi‑Fi (pannello rete)
+    qrencode
     # login screen
     greetd greetd-tuigreet
     # font e temi (JetBrainsMono Nerd Font per le icone, Adwaita Sans per il testo)

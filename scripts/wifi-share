@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Condivisione di una rete Wi‑Fi salvata, come su Android: password + QR code da inquadrare.
+#
+# Uso: wifi-share <SSID>
+# Uscita:  PSK:<password>  poi una riga "SVG:" e l'SVG del QR code (formato WIFI:T:…;S:…;P:…;;)
+#          oppure ERR:<messaggio>
+# La password non compare mai sulla riga di comando di un processo: esce da nmcli e arriva a
+# qrencode attraverso una pipe (printf è un builtin della shell).
+set -u
+ssid="${1:-}"
+[ -n "$ssid" ] || { echo "ERR:SSID mancante"; exit 0; }
+command -v qrencode >/dev/null || { echo "ERR:qrencode non è installato"; exit 0; }
+
+# profilo NetworkManager salvato con quell'SSID
+con=""
+while IFS= read -r uuid; do
+    if [ "$(nmcli -g 802-11-wireless.ssid connection show uuid "$uuid" 2>/dev/null)" = "$ssid" ]; then
+        con="$uuid"
+        break
+    fi
+done < <(nmcli -t -f UUID,TYPE connection show | awk -F: '$2 == "802-11-wireless" { print $1 }')
+[ -n "$con" ] || { echo "ERR:Rete non salvata su questo PC"; exit 0; }
+
+km=$(nmcli -g 802-11-wireless-security.key-mgmt connection show uuid "$con" 2>/dev/null)
+hidden=$(nmcli -g 802-11-wireless.hidden connection show uuid "$con" 2>/dev/null)
+psk=$(nmcli -s -g 802-11-wireless-security.psk connection show uuid "$con" 2>/dev/null)
+
+case "$km" in
+    sae) type=SAE ;;
+    wpa-psk | wpa-psk-sha256) type=WPA ;;
+    none) type=WEP ;;
+    "") type=nopass ;;
+    *) echo "ERR:Rete aziendale (802.1X): non si condivide con un QR"; exit 0 ;;
+esac
+if [ "$type" != nopass ] && [ -z "$psk" ]; then
+    echo "ERR:Password non disponibile (forse è salvata nel portachiavi)"
+    exit 0
+fi
+
+# nel formato WIFI questi caratteri vanno preceduti da una barra rovesciata: \ ; , : "
+esc() { printf '%s' "$1" | sed 's/[\\;,:"]/\\&/g'; }
+h=""
+[ "$hidden" = yes ] && h="H:true;"
+
+printf 'PSK:%s\n' "$psk"
+echo "SVG:"
+if [ "$type" = nopass ]; then
+    printf 'WIFI:T:nopass;S:%s;%s;' "$(esc "$ssid")" "$h"
+else
+    printf 'WIFI:T:%s;S:%s;P:%s;%s;' "$type" "$(esc "$ssid")" "$(esc "$psk")" "$h"
+fi | qrencode -t SVG -m 2 -s 8 -o -

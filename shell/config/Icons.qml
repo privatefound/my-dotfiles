@@ -169,4 +169,10 @@ Singleton {
     readonly property string code: String.fromCodePoint(0xf0174)
     readonly property string update: String.fromCodePoint(0xf06b0)
     readonly property string trayArrow: String.fromCodePoint(0xf0120)
+    readonly property string sync: String.fromCodePoint(0xf04e6)
+    readonly property string syncAlert: String.fromCodePoint(0xf04e7)
+    readonly property string syncOff: String.fromCodePoint(0xf04e8)
+    readonly property string qrcode: String.fromCodePoint(0xf0432)
+    readonly property string qrcodeScan: String.fromCodePoint(0xf0433)
+    readonly property string share: String.fromCodePoint(0xf0497)
 }

@@ -153,6 +153,7 @@ PanelWindow {
                 case "subnet": return subnetComp;
                 case "plugin": return pluginComp;
                 case "media": return mediaComp;
+                case "syncthing": return syncthingComp;   // personale, vedi sotto
                 }
                 return null;
             }
@@ -179,5 +180,12 @@ PanelWindow {
     Component { id: aiComp; AiChat {} }
     Component { id: subnetComp; SubnetCalc {} }
     Component { id: mediaComp; MediaPanel {} }
+    // Pannello Syncthing: componente personale escluso da git, caricato solo se presente
+    Component {
+        id: syncthingComp
+        Loader {
+            source: Qt.resolvedUrl("SyncthingPanel.qml")
+        }
+    }
     Component { id: pluginComp; PluginPopoutHost { owner: Ui.popoutData } }
 }

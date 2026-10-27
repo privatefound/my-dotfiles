@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Connessione a una rete Wi‑Fi letta da un QR code (pannello rete → "Scansiona QR").
+#
+# Uso: printf '%s\n' "<password>" | wifi-join <SSID> <WPA|SAE|WEP|NOPASS> <hidden:true|false>
+# La password arriva su stdin e a NetworkManager tramite "passwd-file /dev/stdin":
+# non compare mai sulla riga di comando di un processo.
+# Uscita: OK:<messaggio>  oppure  ERR:<messaggio>
+set -u
+ssid="${1:-}"
+type="${2:-WPA}"
+hidden="${3:-false}"
+[ -n "$ssid" ] || { echo "ERR:SSID mancante"; exit 0; }
+IFS= read -r psk || true
+
+# profilo già salvato con quell'SSID?
+uuid=""
+while IFS= read -r u; do
+    if [ "$(nmcli -g 802-11-wireless.ssid connection show uuid "$u" 2>/dev/null)" = "$ssid" ]; then
+        uuid="$u"
+        break
+    fi
+done < <(nmcli -t -f UUID,TYPE connection show | awk -F: '$2 == "802-11-wireless" { print $1 }')
+
+case "$type" in
+    SAE) km=sae ;;
+    WEP) km=none ;;
+    NOPASS | "") km="" ;;
+    *) km=wpa-psk ;;
+esac
+
+# rete nuova: si crea il profilo (senza password: quella arriva all'attivazione)
+created=false
+if [ -z "$uuid" ]; then
+    created=true
+    args=(connection add type wifi con-name "$ssid" ssid "$ssid")
+    [ "$hidden" = true ] && args+=(802-11-wireless.hidden yes)
+    [ -n "$km" ] && args+=(wifi-sec.key-mgmt "$km")
+    if ! out=$(nmcli "${args[@]}" 2>&1); then
+        echo "ERR:Profilo non creato: ${out##*: }"
+        exit 0
+    fi
+    uuid=$(nmcli -g connection.uuid connection show "$ssid" 2>/dev/null | head -n1)
+fi
+[ -n "$uuid" ] || { echo "ERR:Profilo non trovato"; exit 0; }
+
+# attivazione; la password (se c'è) dal passwd-file letto da stdin
+if [ -n "$km" ] && [ -n "$psk" ]; then
+    case "$km" in
+        none) key="802-11-wireless-security.wep-key0" ;;
+        *) key="802-11-wireless-security.psk" ;;
+    esac
+    out=$(printf '%s:%s\n' "$key" "$psk" | nmcli --wait 30 connection up uuid "$uuid" passwd-file /dev/stdin 2>&1)
+else
+    out=$(nmcli --wait 30 connection up uuid "$uuid" 2>&1)
+fi
+if [ $? -eq 0 ]; then
+    # la password ricevuta così potrebbe non venire salvata nel profilo: lo si dice
+    if [ -n "$km" ] && [ "$km" != none ] && [ -z "$(nmcli -s -g 802-11-wireless-security.psk connection show uuid "$uuid" 2>/dev/null)" ]; then
+        echo "OK:Connesso a $ssid (la password non è stata salvata: alla prossima connessione verrà chiesta)"
+    else
+        echo "OK:Connesso a $ssid"
+    fi
+else
+    # se il profilo l'avevamo appena creato, non lasciarlo a metà
+    [ "$created" = true ] && nmcli connection delete uuid "$uuid" >/dev/null 2>&1
+    out="${out##*Error: }"
+    echo "ERR:${out%%$'\n'*}"
+fi

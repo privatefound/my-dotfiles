@@ -268,6 +268,153 @@ Singleton {
         return d ? d.type : "";
     }
 
+    // ── Condivisione Wi‑Fi (come Android): QR code + password della rete salvata ──
+    // Lo fa scripts/wifi-share: la password non passa mai dalla riga di comando di un processo.
+    // Il QR (SVG) resta in memoria; chiudendo la scheda si cancella tutto.
+    property string shareSsid: ""
+    property string sharePassword: ""
+    property string shareQr: ""          // SVG del QR code
+    property string shareError: ""
+    readonly property bool shareBusy: shareProc.running
+
+    function shareWifi(network) {
+        clearShare();
+        shareSsid = network.name;
+        shareProc.command = [Settings.rootDir + "/scripts/wifi-share", network.name];
+        shareProc.running = true;
+    }
+    function clearShare() {
+        shareSsid = "";
+        sharePassword = "";
+        shareQr = "";
+        shareError = "";
+    }
+
+    Process {
+        id: shareProc
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (text.startsWith("ERR:")) {
+                    root.shareError = text.slice(4).trim();
+                    return;
+                }
+                const i = text.indexOf("\nSVG:\n");
+                if (i < 0 || !text.startsWith("PSK:")) {
+                    root.shareError = I18n.tr("Impossibile creare il QR code (qrencode installato?)");
+                    return;
+                }
+                root.sharePassword = text.slice(4, i);
+                root.shareQr = text.slice(i + 6);
+            }
+        }
+    }
+
+    // ── Connessione da QR code letto con la webcam (il contrario della condivisione) ──
+    // zbarcam apre l'anteprima, legge un solo codice ed esce; la password resta nella shell e va a
+    // NetworkManager via D‑Bus (connectWithPsk), come quando la si digita nel pannello.
+    readonly property bool qrScanning: qrProc.running
+    function scanWifiQr() {
+        if (!qrProc.running)
+            qrProc.running = true;
+    }
+    function cancelQrScan() {
+        if (qrProc.running)
+            qrProc.signal(15);
+    }
+    Process {
+        id: qrProc
+        command: ["zbarcam", "--oneshot", "--raw", "--prescale=640x480"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const code = text.trim();
+                if (code)
+                    root._connectFromQr(code);
+            }
+        }
+        onExited: code => {
+            if (code !== 0 && code !== 15 && code !== 143)
+                root._notify(I18n.tr("Webcam non disponibile"), I18n.tr("zbarcam non è riuscito ad aprire la fotocamera"));
+        }
+    }
+
+    // formato "WIFI:T:WPA;S:nome;P:password;H:true;;" — \ ; , : " sono preceduti da una barra
+    function parseWifiQr(text) {
+        if (!/^WIFI:/i.test(text))
+            return null;
+        const f = {};
+        let key = "", val = "", inKey = true, esc = false;
+        for (const ch of text.slice(5)) {
+            if (esc) {
+                if (inKey) key += ch; else val += ch;
+                esc = false;
+            } else if (ch === "\\") {
+                esc = true;
+            } else if (inKey && ch === ":") {
+                inKey = false;
+            } else if (ch === ";") {
+                if (key)
+                    f[key.toUpperCase()] = val;
+                key = "";
+                val = "";
+                inKey = true;
+            } else if (inKey) {
+                key += ch;
+            } else {
+                val += ch;
+            }
+        }
+        if (key)
+            f[key.toUpperCase()] = val;
+        return f.S ? { ssid: f.S, password: f.P ?? "", type: (f.T ?? "").toUpperCase(), hidden: f.H === "true" } : null;
+    }
+
+    function _notify(title, body) {
+        Quickshell.execDetached(["notify-send", "-a", "Wi‑Fi", "-i", "network-wireless", title, body]);
+    }
+
+    function _connectFromQr(code) {
+        const info = parseWifiQr(code);
+        if (!info) {
+            _notify(I18n.tr("QR code non valido"), I18n.tr("Non è il QR code di una rete Wi‑Fi"));
+            return;
+        }
+        if (!wifiEnabled)
+            setWifiEnabled(true);
+        if (activeNetwork && activeNetwork.name === info.ssid) {
+            _notify(info.ssid, I18n.tr("Sei già connesso a questa rete"));
+            return;
+        }
+        // scripts/wifi-join: crea il profilo se serve (anche per reti nascoste) e si connette;
+        // la password gli arriva su stdin, non sulla riga di comando.
+        // (connectWithPsk di Quickshell scollegava il Wi‑Fi senza poi connettersi alla rete nuova)
+        _joinPsk = info.password;
+        joinProc.command = [Settings.rootDir + "/scripts/wifi-join", info.ssid, info.type || "WPA", info.hidden ? "true" : "false"];
+        joinProc.running = true;
+        _notify(I18n.tr("Connessione a") + " " + info.ssid, I18n.tr("Dati letti dal QR code"));
+    }
+    property string _joinPsk: ""
+    readonly property bool qrJoining: joinProc.running
+    Process {
+        id: joinProc
+        stdinEnabled: true
+        onStarted: {
+            write(root._joinPsk + "\n");
+            root._joinPsk = "";
+            stdinEnabled = false;   // chiude lo stdin: lo script ha letto la password
+        }
+        onExited: stdinEnabled = true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const out = text.trim();
+                if (out.startsWith("OK:"))
+                    root._notify(I18n.tr("Wi‑Fi connesso"), out.slice(3));
+                else
+                    root._notify(I18n.tr("Connessione non riuscita"), out.startsWith("ERR:") ? out.slice(4) : out);
+                nmRefresh.restart();
+            }
+        }
+    }
+
     function openEditor() {
         Quickshell.execDetached(["nm-connection-editor"]);
     }
