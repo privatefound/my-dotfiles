@@ -11,7 +11,7 @@ sudo pacman -S --needed \
   pipewire pipewire-alsa pipewire-pulse wireplumber pavucontrol playerctl \
   networkmanager network-manager-applet nm-connection-editor networkmanager-openvpn wireguard-tools \
   bluez bluez-utils blueman upower \
-  wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww curl jq gnome-keyring polkit \
+  wl-clipboard cliphist grim slurp swappy brightnessctl libnotify awww curl jq gnome-keyring polkit qrencode xorg-xhost \
   greetd greetd-tuigreet \
   ttf-jetbrains-mono-nerd adwaita-fonts noto-fonts-emoji ttf-material-symbols-variable git zenity cava papirus-icon-theme nwg-look qt5ct qt6ct \
   terminology nemo mission-center

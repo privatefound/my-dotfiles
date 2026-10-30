@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Dispositivi USB inseriti/tolti, per la shell (suono + notifica).
+# Uscita, una riga per evento:  add|<nome>   oppure   remove|<nome>
+# (stdbuf: senza, udevadm tiene l'output in un buffer quando non scrive su un terminale
+#  e gli eventi arriverebbero alla shell solo dopo kilobyte di testo)
+declare -A names
+action="" path="" vendor="" model="" vdb="" mdb=""
+stdbuf -oL udevadm monitor --udev --property --subsystem-match=usb/usb_device | while IFS= read -r line; do
+    case "$line" in
+        ACTION=*) action=${line#ACTION=} ;;
+        DEVPATH=*) path=${line#DEVPATH=} ;;
+        ID_VENDOR_FROM_DATABASE=*) vdb=${line#*=} ;;
+        ID_MODEL_FROM_DATABASE=*) mdb=${line#*=} ;;
+        ID_VENDOR=*) vendor=${line#*=} ;;
+        ID_MODEL=*) model=${line#*=} ;;
+        "")
+            if [ "$action" = add ] || [ "$action" = remove ]; then
+                name="${vdb:-$vendor} ${mdb:-$model}"
+                name=$(printf '%s' "$name" | tr '_' ' ' | sed 's/^ *//; s/ *$//')
+                if [ "$action" = add ]; then
+                    names[$path]=$name
+                else
+                    [ -n "$name" ] || name=${names[$path]:-}
+                    unset "names[$path]"
+                fi
+                echo "$action|${name:-USB device}"
+            fi
+            action="" path="" vendor="" model="" vdb="" mdb=""
+            ;;
+    esac
+done

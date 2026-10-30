@@ -620,6 +620,18 @@ StyledRect {
                         checked: Settings.notifSound
                         onToggled: v => Settings.notifSound = v
                     }
+                    ToggleRow {
+                        title: I18n.tr("Suoni di sistema")
+                        subtitle: I18n.tr("Notifiche, tasti volume, USB e alimentatore con suoni brevi e discreti")
+                        checked: Settings.systemSounds
+                        onToggled: v => Settings.systemSounds = v
+                    }
+                    ToggleRow {
+                        title: I18n.tr("Notifica dispositivi USB")
+                        subtitle: I18n.tr("Avvisa quando colleghi o scolleghi una chiavetta o un dispositivo USB")
+                        checked: Settings.usbNotifications
+                        onToggled: v => Settings.usbNotifications = v
+                    }
                     Row_ {
                         title: I18n.tr("Durata popup")
                         subtitle: (Settings.notifTimeout / 1000).toFixed(0) + I18n.tr(" secondi")

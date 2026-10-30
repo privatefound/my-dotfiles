@@ -45,6 +45,8 @@ Singleton {
     // ── Notifiche ──
     property alias dnd: adapter.dnd
     property alias notifSound: adapter.notifSound
+    property alias systemSounds: adapter.systemSounds
+    property alias usbNotifications: adapter.usbNotifications
     property alias notifTimeout: adapter.notifTimeout
 
     // ── Sistema ──
@@ -109,6 +111,8 @@ Singleton {
 
             property bool dnd: false
             property bool notifSound: true
+            property bool systemSounds: true
+            property bool usbNotifications: true
             property int notifTimeout: 6000
 
             property bool caffeine: false

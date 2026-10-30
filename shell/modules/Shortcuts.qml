@@ -11,6 +11,9 @@ import qs.Services as P
 Scope {
     id: root
 
+    // i suoni di sistema (USB, alimentatore) devono partire con la shell: i singleton sono pigri
+    Component.onCompleted: Sounds.play !== undefined
+
     component Shortcut: GlobalShortcut {
         appid: "whiterabbit"
     }
@@ -31,8 +34,8 @@ Scope {
     Shortcut { name: "dnd"; description: I18n.tr("Non disturbare"); onPressed: Notifs.toggleDnd() }
     Shortcut { name: "caffeine"; description: "Caffeine"; onPressed: Settings.caffeine = !Settings.caffeine }
     Shortcut { name: "transparency"; description: I18n.tr("Trasparenza finestre"); onPressed: Settings.windowTransparency = !Settings.windowTransparency }
-    Shortcut { name: "volumeUp"; description: "Volume +"; onPressed: Audio.changeVolume(0.05) }
-    Shortcut { name: "volumeDown"; description: "Volume -"; onPressed: Audio.changeVolume(-0.05) }
+    Shortcut { name: "volumeUp"; description: "Volume +"; onPressed: { Audio.changeVolume(0.05); Sounds.tick(); } }
+    Shortcut { name: "volumeDown"; description: "Volume -"; onPressed: { Audio.changeVolume(-0.05); Sounds.tick(); } }
     Shortcut { name: "volumeMute"; description: I18n.tr("Muto"); onPressed: Audio.toggleMute() }
     Shortcut { name: "micMute"; description: I18n.tr("Muto microfono"); onPressed: Audio.toggleMicMute() }
     Shortcut { name: "brightnessUp"; description: I18n.tr("Luminosità +"); onPressed: Brightness.change(0.05) }

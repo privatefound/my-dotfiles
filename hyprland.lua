@@ -231,7 +231,6 @@ hl.config({
 
     master = {
         allow_small_split    = true,
-        special_scale_factor = 0.95,
         mfact                = 0.55,
         new_status           = "slave",
         new_on_top           = false,

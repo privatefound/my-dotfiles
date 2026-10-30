@@ -58,16 +58,11 @@ Singleton {
             if (!root.dnd || critical) {
                 root.popups = [n].concat(root.popups.filter(p => p && p !== n)).slice(0, 5);
                 if (Settings.notifSound && n.urgency !== NotificationUrgency.Low)
-                    sound.running = true;
+                    Sounds.play(critical ? "critical" : "notify");
             } else if (n.transient) {
                 n.expire();
             }
         }
-    }
-
-    Process {
-        id: sound
-        command: ["pw-play", "--volume", "0.6", Quickshell.shellPath("assets/notification.ogg")]
     }
 
     function _forget(n) {
