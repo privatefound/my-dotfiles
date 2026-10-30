@@ -111,7 +111,7 @@ Singleton {
     }))
     // tutte le altre schede ethernet: senza un posto (es. una terza expansion card) oppure con il
     // posto già occupato da un'altra scheda collegata (es. due schede "dock" insieme)
-    readonly property var otherEthernet: interfaces.filter(i => i.type === "ethernet" && !ethSlots.some(s => s.iface === i))
+    readonly property var otherEthernet: interfaces.filter(i => i.type === "ethernet" && i.physical && !i.state.startsWith("unmanaged") && !ethSlots.some(s => s.iface === i))
     // profili da offrire su ogni scheda: quelli non legati a una scheda precisa, DHCP per primo
     readonly property var ethProfiles: wiredProfiles.filter(p => !p.bound).sort((a, b) => (/dhcp/i.test(b.name) - /dhcp/i.test(a.name)) || a.name.localeCompare(b.name))
 
@@ -194,7 +194,7 @@ Singleton {
 
     Process {
         id: nmProc
-        command: ["sh", "-c", "echo \"DEF:$(ip route show default 2>/dev/null | awk '{print $5; exit}')\"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | sed 's/^/DEV:/'; nmcli -t -f NAME,UUID,TYPE,DEVICE,ACTIVE connection show 2>/dev/null | sed 's/^/CON:/'; ip -o -4 addr show 2>/dev/null | awk '{print \"IP:\" $2 \":\" $4}'; for d in $(nmcli -t -f DEVICE,TYPE device 2>/dev/null | awk -F: '$2==\"ethernet\"{print $1}'); do echo \"ETH:$d|$(cat /sys/class/net/$d/address 2>/dev/null)|$(basename \"$(readlink -f /sys/class/net/$d/device)\")\"; done; nmcli -t -f UUID,TYPE connection show 2>/dev/null | awk -F: '$2==\"802-3-ethernet\"{print $1}' | while read u; do echo \"PIF:$u|$(nmcli -g connection.interface-name,802-3-ethernet.mac-address connection show uuid $u 2>/dev/null | paste -sd'|')\"; done"]
+        command: ["sh", "-c", "echo \"DEF:$(ip route show default 2>/dev/null | awk '{print $5; exit}')\"; nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device 2>/dev/null | sed 's/^/DEV:/'; nmcli -t -f NAME,UUID,TYPE,DEVICE,ACTIVE connection show 2>/dev/null | sed 's/^/CON:/'; ip -o -4 addr show 2>/dev/null | awk '{print \"IP:\" $2 \":\" $4}'; for d in $(nmcli -t -f DEVICE,TYPE device 2>/dev/null | awk -F: '$2==\"ethernet\"{print $1}'); do [ -e /sys/class/net/$d/device ] && echo \"ETH:$d|$(cat /sys/class/net/$d/address 2>/dev/null)|$(basename \"$(readlink -f /sys/class/net/$d/device)\")\"; done; nmcli -t -f UUID,TYPE connection show 2>/dev/null | awk -F: '$2==\"802-3-ethernet\"{print $1}' | while read u; do echo \"PIF:$u|$(nmcli -g connection.interface-name,802-3-ethernet.mac-address connection show uuid $u 2>/dev/null | paste -sd'|')\"; done"]
         stdout: StdioCollector {
             onStreamFinished: {
                 let def = "";
@@ -225,6 +225,8 @@ Singleton {
                     }
                 }
                 for (const i of ifs) {
+                    // schede vere (USB/PCI): le interfacce virtuali (veth di Docker, ecc.) non hanno un device
+                    i.physical = eth[i.device] !== undefined;
                     i.ip = ips[i.device] ?? "";
                     i.isDefault = i.device === def;
                     i.mac = eth[i.device]?.mac ?? "";
@@ -232,7 +234,7 @@ Singleton {
                 }
                 for (const c of cons)
                     c.bound = bound[c.uuid] === true;
-                root._learnCards(ifs.filter(i => i.type === "ethernet" && i.mac));
+                root._learnCards(ifs.filter(i => i.type === "ethernet" && i.physical && i.mac));
                 root.defaultIface = def;
                 root.interfaces = ifs;
                 root.profiles = cons.sort((a, b) => b.active - a.active);
