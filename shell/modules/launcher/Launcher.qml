@@ -7,6 +7,7 @@ import Quickshell.Widgets
 import qs.config
 import qs.components
 import qs.services
+import qs.DankCommon.Common as DankCommon
 
 // Launcher stile spotlight con 3 modalità: App · Appunti · Comandi.
 // Prefissi nella ricerca app:  "=" calcolatrice · ">" esegui comando · "?" chiedi a Morpheus
@@ -23,9 +24,57 @@ StyledRect {
     readonly property bool calcMode: mode === "apps" && query.startsWith("=")
     readonly property bool runMode: mode === "apps" && query.startsWith(">")
     readonly property bool askMode: mode === "apps" && query.startsWith("?")
+    // Ricerca file: "/" = nome file (fd), "//" = full-text nei documenti (recoll)
+    readonly property bool ftMode: mode === "apps" && query.startsWith("//")
+    readonly property bool fileMode: mode === "apps" && query.startsWith("/") && !ftMode
+    property var fileResults: []
 
-    implicitWidth: 680
-    implicitHeight: 560
+    onQueryChanged: {
+        if (fileMode || ftMode)
+            root.runFileSearch();
+        else if (fileResults.length)
+            fileResults = [];
+    }
+
+    function runFileSearch() {
+        const raw = (ftMode ? query.slice(2) : query.slice(1)).trim();
+        if (raw.length < 2) {
+            fileResults = [];
+            return;
+        }
+        const home = Quickshell.env("HOME") || "/home";
+        var cmd;
+        if (ftMode) {
+            cmd = ["sh", "-c", "recollq -b -o -n 0-40 \"$1\" 2>/dev/null | sed 's|^file://||'", "_", raw];
+        } else {
+            // fd: prima le CARTELLE poi i FILE. Blacklist opzionale da ~/.config/launcher-fdignore
+            // (sintassi .gitignore: cartelle/estensioni da escludere); usata solo se il file esiste.
+            const ign = home + "/.config/launcher-fdignore";
+            const q = raw.replace(/'/g, "'\\''");
+            const base = "I='" + ign + "'; FD='fd --hidden --max-results 25'; [ -f \"$I\" ] && FD=\"$FD --ignore-file $I\"; ";
+            cmd = ["sh", "-c",
+                base + "$FD --type d '" + q + "' '" + home + "' | sed 's|$|/|'; " +
+                "$FD --type f '" + q + "' '" + home + "'"];
+        }
+        DankCommon.Proc.runCommand("launcher-filesearch", cmd, function (output, exitCode) {
+            if (!(root.fileMode || root.ftMode))
+                return;
+            const lines = (output || "").split("\n").map(l => l.trim()).filter(l => l.length);
+            root.fileResults = lines.map(function (p) {
+                const isDir = p.endsWith("/");
+                const clean = isDir ? p.slice(0, -1) : p;
+                const name = clean.split("/").pop();
+                return { name: name, path: clean, isFile: true, isDir: isDir };
+            });
+            list.currentIndex = 0;
+        }, 120, 8000, root);
+    }
+
+    // In modalità ricerca file il launcher si ingrandisce (path lunghi, più risultati)
+    implicitWidth: (fileMode || ftMode) ? 1000 : 680
+    implicitHeight: (fileMode || ftMode) ? 760 : 560
+    Behavior on implicitWidth { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
+    Behavior on implicitHeight { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
     radius: Theme.radius.xl
     color: Theme.alpha(Theme.surface, Theme.panelOpacity)
     border.width: 1
@@ -115,6 +164,8 @@ StyledRect {
         }
         if (calcMode || runMode || askMode)
             return [];
+        if (fileMode || ftMode)
+            return fileResults;
         return Apps.search(query).slice(0, 60);
     }
 
@@ -143,6 +194,11 @@ StyledRect {
         const it = items[index];
         if (!it)
             return;
+        if ((fileMode || ftMode) && it.isFile) {
+            Quickshell.execDetached(["xdg-open", it.path]);
+            Ui.closeModal();
+            return;
+        }
         if (mode === "clipboard") {
             Clipboard.copy(it);
             Ui.closeModal();
@@ -182,7 +238,7 @@ StyledRect {
             Layout.fillWidth: true
             implicitHeight: 52
             icon: root.mode === "clipboard" ? Icons.clipboard : root.mode === "commands" ? Icons.cli : Icons.magnify
-            placeholder: root.mode === "clipboard" ? I18n.tr("Cerca negli appunti…") : root.mode === "commands" ? I18n.tr("Cerca un comando…") : I18n.tr("Cerca app…   ( = calcola · > esegui · ? chiedi a Morpheus )")
+            placeholder: root.mode === "clipboard" ? I18n.tr("Cerca negli appunti…") : root.mode === "commands" ? I18n.tr("Cerca un comando…") : I18n.tr("Cerca app…   ( = calcola · > esegui · ? Morpheus · / file · // nei documenti )")
             input.font.pixelSize: Theme.font.title
             onTextChanged: list.currentIndex = 0
             onAccepted: root.activate(list.currentIndex)
@@ -347,14 +403,14 @@ StyledRect {
                         visible: !(root.mode === "clipboard" && row.modelData.isImage)
                         IconImage {
                             anchors.fill: parent
-                            visible: root.mode === "apps"
-                            source: root.mode === "apps" ? Apps.iconFor(row.modelData) : ""
+                            visible: root.mode === "apps" && !row.modelData.isFile
+                            source: (root.mode === "apps" && !row.modelData.isFile) ? Apps.iconFor(row.modelData) : ""
                             asynchronous: true
                         }
                         Icon {
                             anchors.centerIn: parent
-                            visible: root.mode !== "apps"
-                            text: root.mode === "commands" ? row.modelData.icon : Icons.textBox
+                            visible: root.mode !== "apps" || !!row.modelData.isFile
+                            text: row.modelData.isFile ? (row.modelData.isDir ? Icons.folder : root.ftMode ? Icons.formatText : Icons.textBox) : root.mode === "commands" ? row.modelData.icon : Icons.textBox
                             size: 22
                             color: row.ListView.isCurrentItem ? Theme.primary : Theme.textDim
                         }
@@ -381,7 +437,7 @@ StyledRect {
                         spacing: 1
                         StyledText {
                             Layout.fillWidth: true
-                            text: root.mode === "apps" ? row.modelData.name : root.mode === "commands" ? row.modelData.name : (row.modelData.isImage ? I18n.tr("Immagine") : row.modelData.text.replace(/\s+/g, " "))
+                            text: row.modelData.isFile ? row.modelData.name : root.mode === "apps" ? row.modelData.name : root.mode === "commands" ? row.modelData.name : (row.modelData.isImage ? I18n.tr("Immagine") : row.modelData.text.replace(/\s+/g, " "))
                             font.weight: root.mode === "clipboard" ? Font.Normal : Font.DemiBold
                             font.family: root.mode === "clipboard" && !row.modelData.isImage ? Theme.font.mono : Theme.font.sans
                             font.pixelSize: root.mode === "clipboard" ? Theme.font.small : Theme.font.body
@@ -390,8 +446,10 @@ StyledRect {
                         StyledText {
                             Layout.fillWidth: true
                             visible: text !== ""
-                            text: root.mode === "apps" ? (row.modelData.genericName || row.modelData.comment || "") : root.mode === "clipboard" && row.modelData.isImage ? row.modelData.text : ""
+                            text: row.modelData.isFile ? row.modelData.path.replace(Quickshell.env("HOME") || "", "~") : root.mode === "apps" ? (row.modelData.genericName || row.modelData.comment || "") : root.mode === "clipboard" && row.modelData.isImage ? row.modelData.text : ""
                             font.pixelSize: Theme.font.small
+                            font.family: row.modelData.isFile ? Theme.font.mono : Theme.font.sans
+                            elide: Text.ElideMiddle
                             color: Theme.textDim
                         }
                     }
