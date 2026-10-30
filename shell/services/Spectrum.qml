@@ -6,14 +6,14 @@ import Quickshell.Io
 import Quickshell.Services.Pipewire
 
 // Spettro audio per il pannello musica.
-// Con `cava` installato: spettro vero (48 bande). Senza: livelli simulati dal picco Pipewire.
+// Con `cava` installato: spettro vero (96 bande, mono). Senza: livelli simulati dal picco Pipewire.
 // Gira solo mentre qualcuno lo usa (users > 0), per non consumare batteria.
 Singleton {
     id: root
 
     property int users: 0
     readonly property bool active: users > 0
-    readonly property int bands: 48
+    readonly property int bands: 96
     property var values: []           // 0..1 per banda
     property bool cavaAvailable: false
 
@@ -48,6 +48,8 @@ method = pipewire
 source = auto
 [output]
 method = raw
+channels = mono
+mono_option = average
 raw_target = /dev/stdout
 data_format = ascii
 ascii_max_range = 1000

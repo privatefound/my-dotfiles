@@ -8,7 +8,7 @@ import qs.config
 import qs.components
 import qs.services
 
-// Pannello musica: copertina rotonda con spettro circolare, sfondo sfocato,
+// Pannello musica: vinile (copertina come etichetta) con spettro "liquido" che segue i bassi, sfondo sfocato,
 // avanzamento, controlli, lettore / uscita audio / volume.
 Item {
     id: root
@@ -95,6 +95,8 @@ Item {
         id: spectrum
         anchors.fill: parent
         renderStrategy: Canvas.Cooperative
+        property real bass: 0
+        property real phase: 0
 
         Connections {
             target: Spectrum
@@ -110,35 +112,44 @@ Item {
             const n = vals.length;
             if (n === 0)
                 return;
+            // forma "liquida": segue i bassi (primo 10% delle bande) e ondeggia da sola mentre suona
+            const nb = Math.max(1, Math.round(n * 0.1));
+            let sum = 0;
+            for (let i = 0; i < nb; i++)
+                sum += Math.max(0, Math.min(1, vals[i]));
+            spectrum.bass += (Math.sqrt(sum / nb) - spectrum.bass) * 0.35;
+            if (Media.playing)
+                spectrum.phase += 0.02;
             const c = artHolder.mapToItem(spectrum, artHolder.width / 2, artHolder.height / 2);
-            const inner = root.artSize / 2 + 9;
-            const total = n * 2;
+            const inner = root.artSize / 2;
+            const bass = spectrum.bass, phase = spectrum.phase;
             const r = Theme.primary.r, g = Theme.primary.g, b = Theme.primary.b;
-            ctx.lineCap = "round";
-            for (let i = 0; i < total; i++) {
-                // specchiato: bassi in alto, acuti in basso, simmetrico
-                const raw = vals[i < n ? i : total - 1 - i];
-                const v = Math.sqrt(Math.max(0, Math.min(1, raw)));
-                const a = -Math.PI / 2 + ((i + 0.5) / total) * Math.PI * 2;
-                const len = 3 + v * 40;
-                const cos = Math.cos(a), sin = Math.sin(a);
-                const x1 = c.x + cos * inner, y1 = c.y + sin * inner;
-                const x2 = c.x + cos * (inner + len), y2 = c.y + sin * (inner + len);
-                // alone
-                ctx.lineWidth = 7;
-                ctx.strokeStyle = Qt.rgba(r, g, b, 0.08 + v * 0.18);
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-                // barra
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = Qt.rgba(r, g, b, 0.45 + v * 0.55);
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
+            const N = 96, pts = [];
+            for (let i = 0; i < N; i++) {
+                const a = -Math.PI / 2 + i / N * Math.PI * 2;
+                const w = Math.sin(a * 3 + phase * 1.3) * 0.5 + Math.sin(a * 5 - phase * 0.9) * 0.3 + Math.sin(a * 2 + phase * 0.5) * 0.4;
+                const d = inner + 16 + bass * 34 + w * (6 + bass * 24);
+                pts.push([c.x + Math.cos(a) * d, c.y + Math.sin(a) * d]);
             }
+            // curva chiusa morbida: quadratiche tra i punti medi
+            ctx.beginPath();
+            for (let i = 0; i <= N; i++) {
+                const p0 = pts[i % N], p1 = pts[(i + 1) % N];
+                const mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
+                if (i === 0)
+                    ctx.moveTo(mx, my);
+                else
+                    ctx.quadraticCurveTo(p0[0], p0[1], mx, my);
+            }
+            ctx.closePath();
+            const grad = ctx.createRadialGradient(c.x, c.y, inner, c.x, c.y, inner + 90);
+            grad.addColorStop(0, Qt.rgba(r, g, b, 0.55));
+            grad.addColorStop(1, Qt.rgba(r, g, b, 0.04));
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = Qt.rgba(r, g, b, 0.9);
+            ctx.stroke();
         }
     }
 
@@ -148,51 +159,207 @@ Item {
         anchors.topMargin: 84
         spacing: 6
 
-        // ── Copertina ──
+        // ── Vinile: solchi neri, copertina come etichetta centrale, braccio del giradischi ──
         Item {
             id: artHolder
             Layout.alignment: Qt.AlignHCenter
             implicitWidth: root.artSize
             implicitHeight: root.artSize
 
-            ClippingRectangle {
-                id: artClip
+            readonly property real labelSize: root.artSize * 0.44
+            // avanzamento del brano (0..1): il braccio scorre dal bordo verso l'etichetta
+            readonly property real trackFrac: (root.player?.lengthSupported ?? false) && (root.player?.length ?? 0) > 0 ? Math.max(0, Math.min(1, root.player.position / root.player.length)) : 0
+
+            // disco che gira (33⅓ giri) solo mentre suona
+            Item {
+                id: disc
                 anchors.fill: parent
-                radius: width / 2
-                color: Theme.surfaceContainerHighest
 
-                Image {
-                    anchors.fill: parent
-                    source: Media.art
-                    fillMode: Image.PreserveAspectCrop
-                    asynchronous: true
-                    sourceSize: Qt.size(420, 420)
-                }
-                Icon {
-                    anchors.centerIn: parent
-                    visible: Media.art === ""
-                    text: Icons.musicNote
-                    size: 64
-                    color: Theme.primary
-                }
-
-                // effetto vinile: rotazione lenta mentre suona
                 RotationAnimation on rotation {
                     running: Settings.animations
                     paused: !Media.playing
                     from: 0
                     to: 360
-                    duration: 30000
+                    duration: 1800
                     loops: Animation.Infinite
                 }
+
+                // solchi (cerchi concentrici: disegnati una volta sola)
+                Canvas {
+                    anchors.fill: parent
+                    onPaint: {
+                        const ctx = getContext("2d");
+                        ctx.reset();
+                        const c = width / 2, R = width / 2;
+                        const base = ctx.createRadialGradient(c, c, 0, c, c, R);
+                        base.addColorStop(0, "#1c1c1e");
+                        base.addColorStop(1, "#0a0a0b");
+                        ctx.fillStyle = base;
+                        ctx.beginPath();
+                        ctx.arc(c, c, R, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.lineWidth = 0.8;
+                        for (let r = artHolder.labelSize / 2 + 5; r < R - 3; r += 1.6) {
+                            // intensità "casuale" ma fissa, per l'effetto solco
+                            const n = Math.abs(Math.sin(r * 12.9898) * 43758.5453) % 1;
+                            ctx.strokeStyle = Qt.rgba(1, 1, 1, 0.025 + n * 0.05);
+                            ctx.beginPath();
+                            ctx.arc(c, c, r, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                        // pause tra un brano e l'altro
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = "rgba(0,0,0,0.85)";
+                        for (const f of [0.62, 0.74, 0.86]) {
+                            ctx.beginPath();
+                            ctx.arc(c, c, R * f, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                        // bordo esterno liscio
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = "#202022";
+                        ctx.beginPath();
+                        ctx.arc(c, c, R - 1.5, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+
+                // etichetta: la copertina
+                ClippingRectangle {
+                    anchors.centerIn: parent
+                    width: artHolder.labelSize
+                    height: width
+                    radius: width / 2
+                    color: Theme.primaryContainer
+
+                    Image {
+                        anchors.fill: parent
+                        source: Media.art
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                        sourceSize: Qt.size(240, 240)
+                    }
+                    Icon {
+                        anchors.centerIn: parent
+                        anchors.verticalCenterOffset: -parent.height * 0.22
+                        visible: Media.art === ""
+                        text: Icons.musicNote
+                        size: 22
+                        color: Theme.primary
+                    }
+                }
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: artHolder.labelSize + 2
+                    height: width
+                    radius: width / 2
+                    color: "transparent"
+                    border.width: 2
+                    border.color: Theme.alpha(Theme.primary, 0.7)
+                }
+                // foro centrale
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 10
+                    height: 10
+                    radius: 5
+                    color: "#0a0a0b"
+                    border.width: 2
+                    border.color: Theme.alpha("#ffffff", 0.35)
+                }
             }
+
+            // riflesso della luce: fermo mentre il disco gira, come su un giradischi vero
+            Canvas {
+                anchors.fill: parent
+                onPaint: {
+                    const ctx = getContext("2d");
+                    ctx.reset();
+                    const c = width / 2, R = width / 2 - 2;
+                    const g = ctx.createConicalGradient(c, c, -Math.PI / 4);
+                    g.addColorStop(0.00, "rgba(255,255,255,0)");
+                    g.addColorStop(0.10, "rgba(255,255,255,0.13)");
+                    g.addColorStop(0.20, "rgba(255,255,255,0)");
+                    g.addColorStop(0.50, "rgba(255,255,255,0)");
+                    g.addColorStop(0.60, "rgba(255,255,255,0.10)");
+                    g.addColorStop(0.70, "rgba(255,255,255,0)");
+                    g.addColorStop(1.00, "rgba(255,255,255,0)");
+                    ctx.fillStyle = g;
+                    ctx.beginPath();
+                    ctx.arc(c, c, R, 0, Math.PI * 2, false);
+                    ctx.arc(c, c, artHolder.labelSize / 2 + 2, 0, Math.PI * 2, true);
+                    ctx.fill();
+                }
+            }
+
+            // bordo colorato
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: -3
                 radius: width / 2
                 color: "transparent"
-                border.width: 3
-                border.color: Theme.primary
+                border.width: 2
+                border.color: Theme.alpha(Theme.primary, 0.75)
+            }
+
+            // braccio: a riposo fuori dal disco, in pausa/stop si solleva e torna indietro
+            Item {
+                id: tonearm
+                readonly property real armLength: root.artSize * 0.62
+                x: root.artSize + 18 - width / 2
+                y: 2
+                width: 16
+                height: armLength + 14
+                transformOrigin: Item.Top
+                rotation: Media.playing ? 18 + 10 * artHolder.trackFrac : 0
+                Behavior on rotation {
+                    Anim {
+                        duration: 700
+                    }
+                }
+
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    y: 4
+                    width: 4
+                    height: tonearm.armLength
+                    radius: 2
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop { position: 0.0; color: "#9a9aa0" }
+                        GradientStop { position: 0.5; color: "#e6e6ea" }
+                        GradientStop { position: 1.0; color: "#7a7a80" }
+                    }
+                }
+                // testina
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    width: 11
+                    height: 20
+                    radius: 3
+                    color: Theme.primary
+                    border.width: 1
+                    border.color: Theme.alpha("#000000", 0.4)
+                }
+            }
+            // perno del braccio
+            Rectangle {
+                x: root.artSize + 18 - width / 2
+                y: 2 - height / 2 + 4
+                width: 24
+                height: 24
+                radius: 12
+                color: Theme.surfaceContainerHighest
+                border.width: 2
+                border.color: Theme.alpha(Theme.primary, 0.6)
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 8
+                    height: 8
+                    radius: 4
+                    color: "#d0d0d4"
+                }
             }
         }
 
