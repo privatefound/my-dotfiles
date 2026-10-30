@@ -8,6 +8,7 @@ import qs.modules.launcher
 import qs.modules.session
 import qs.modules.wallpaper
 import qs.modules.settings
+import qs.modules.overview
 
 // Livello dei modali a schermo intero (sfondo scurito + contenuto centrato animato).
 PanelWindow {
@@ -89,6 +90,7 @@ PanelWindow {
             case "session": return sessionComp;
             case "wallpaper": return wallpaperComp;
             case "settings": return settingsComp;
+            case "overview": return overviewComp;
             }
             return null;
         }
@@ -99,4 +101,5 @@ PanelWindow {
     Component { id: sessionComp; SessionMenu {} }
     Component { id: wallpaperComp; WallpaperPicker {} }
     Component { id: settingsComp; SettingsPanel {} }
+    Component { id: overviewComp; Overview {} }
 }

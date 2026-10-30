@@ -20,6 +20,7 @@ Scope {
     Shortcut { name: "commands"; description: "Comandi rapidi"; onPressed: Ui.toggleModal("launcher", "commands") }
     Shortcut { name: "session"; description: I18n.tr("Menu sessione"); onPressed: Ui.toggleModal("session") }
     Shortcut { name: "wallpaper"; description: I18n.tr("Selettore sfondi"); onPressed: Ui.toggleModal("wallpaper") }
+    Shortcut { name: "overview"; description: I18n.tr("Panoramica finestre"); onPressed: Ui.toggleModal("overview") }
     Shortcut { name: "settings"; description: I18n.tr("Impostazioni"); onPressed: Ui.toggleModal("settings") }
     Shortcut { name: "control"; description: "Control center"; onPressed: Ui.togglePopout("control", "", -1) }
     Shortcut { name: "notifications"; description: I18n.tr("Centro notifiche"); onPressed: Ui.togglePopout("notifications", "", -1) }
@@ -46,6 +47,7 @@ Scope {
         function session(): void { Ui.toggleModal("session"); }
         function wallpaper(): void { Ui.toggleModal("wallpaper"); }
         function settings(): void { Ui.toggleModal("settings"); }
+        function overview(): void { Ui.toggleModal("overview"); }
         function settingsAt(section: string): void {
             Ui.settingsSection = section;
             Ui.openModal("settings");

@@ -323,6 +323,7 @@ hl.bind(mainMod .. " + SHIFT + N",      shell("dnd"))
 hl.bind(mainMod .. " + A",              shell("control"))
 hl.bind(mainMod .. " + escape",         shell("session"))
 hl.bind(mainMod .. " + W",              shell("wallpaper"))
+hl.bind(mainMod .. " + Tab",            shell("overview"))
 hl.bind(mainMod .. " + I",              shell("ai"))
 hl.bind(mainMod .. " + comma",          shell("settings"))
 -- Riavvia la shell (come nella vecchia config): chiude l'istanza e la rilancia
