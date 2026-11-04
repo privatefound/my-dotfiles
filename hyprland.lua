@@ -244,6 +244,12 @@ hl.config({
         preserve_split = true,
     },
 
+    -- niente passaggio automatico all'HDR con i video a schermo intero: sul pannello del
+    -- portatile (SDR) i colori diventavano slavati, come con un velo bianco
+    render = {
+        cm_auto_hdr = 0,
+    },
+
     misc = {
         mouse_move_enables_dpms = true,
         key_press_enables_dpms  = true,
