@@ -38,4 +38,14 @@ Singleton {
         return (h > 0 ? `${h}h ${m}m` : `${m}m`) + (charging ? I18n.tr(" alla carica completa") : I18n.tr(" rimanenti"));
     }
 
+    readonly property int profile: PowerProfiles.profile
+    readonly property string profileLabel: profile === PowerProfile.PowerSaver ? I18n.tr("Risparmio") : profile === PowerProfile.Performance ? I18n.tr("Prestazioni") : I18n.tr("Bilanciato")
+    readonly property string profileIcon: profile === PowerProfile.PowerSaver ? Icons.leaf : profile === PowerProfile.Performance ? Icons.flash : Icons.gauge
+
+    function cycleProfile() {
+        const order = [PowerProfile.PowerSaver, PowerProfile.Balanced];
+        if (PowerProfiles.hasPerformanceProfile)
+            order.push(PowerProfile.Performance);
+        PowerProfiles.profile = order[(order.indexOf(profile) + 1) % order.length];
+    }
 }

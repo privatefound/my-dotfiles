@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
+import Quickshell.Services.UPower
 import qs.config
 import qs.components
 import qs.services
@@ -171,14 +171,11 @@ ColumnLayout {
         }
 
         Tile {
-            icon: Icons.screenshot
-            title: "Screenshot"
-            subtitle: I18n.tr("Area · click destro: schermo")
-            onClicked: mouse => {
-                Ui.closePopout();
-                const cmd = mouse.button === Qt.RightButton ? "sleep 0.4; grim - | swappy -f -" : "sleep 0.4; g=$(slurp) && sleep 0.05 && grim -g \"$g\" - | swappy -f -";
-                Quickshell.execDetached(["sh", "-c", cmd]);
-            }
+            icon: Power.profileIcon
+            title: I18n.tr("Energia")
+            subtitle: Power.profileLabel
+            toggled: Power.profile !== PowerProfile.Balanced
+            onClicked: Power.cycleProfile()
         }
     }
 
