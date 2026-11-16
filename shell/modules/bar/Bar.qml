@@ -195,7 +195,9 @@ PanelWindow {
                 screenName: bar.screenName
             }
 
-            QuickIcons {}
+            QuickIcons {
+                screenName: bar.screenName
+            }
 
             // Syncthing: componente personale escluso da git, caricato solo se presente
             Loader {

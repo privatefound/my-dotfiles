@@ -164,7 +164,7 @@ An "Ethernet " prefix is dropped from the button label (`Ethernet DHCP` → `DHC
 | NetworkManager profiles (DHCP, static ones, VPN, Wi‑Fi) | `/etc/NetworkManager/system-connections/*.nmconnection` | root-only, mode 600: `sudo cp -a` them, then `sudo nmcli connection reload`. Contain Wi‑Fi/VPN passwords — don't put them in git |
 | Ethernet slot ↔ card mapping | `~/.config/hypr/state/ethernet-cards.json` | only if you move the same cards; otherwise it is rebuilt by itself |
 | Shell settings (accent, opacity, language…) | `~/.config/hypr/settings.json` | |
-| Installed plugins and their settings | `~/.config/hypr/plugins/`, `~/.config/hypr/state/` | or reinstall them from Settings → Plugin |
+| Installed plugins and their settings | `~/.config/hypr/plugins/`, `~/.config/hypr/state/` | copy the folder back; they can no longer be installed from the shell |
 | Monitor layout | `~/.config/hypr/monitors.lua` | see `monitors.lua.example` |
 
 After copying the NetworkManager profiles, check the static ones are still unbound

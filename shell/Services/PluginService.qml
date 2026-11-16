@@ -8,15 +8,13 @@ import qs.Common
 import qs.config as G
 
 // Plugin DankMaterialShell nella shell WhiteRabbitShell.
-//  - catalogo: registro ufficiale github.com/AvengeMedia/dms-plugin-registry
-//  - installazione: git clone in ~/.config/hypr/plugins/<id>  (cartella esclusa da git)
+//  - plugin in ~/.config/hypr/plugins/<id>  (cartella esclusa da git); niente più catalogo/installazione
 //  - stato: state/plugins.json (attivi), state/plugin-settings.json, state/plugin-state.json
 // Espone anche l'API che i plugin DMS si aspettano (loadPluginData, savePluginData, globalVars…).
 Singleton {
     id: root
 
     readonly property string pluginDirectory: G.Settings.rootDir + "/plugins"
-    readonly property string registryUrl: "https://codeload.github.com/AvengeMedia/dms-plugin-registry/tar.gz/refs/heads/master"
 
     // Superfici supportate dalla shell
     readonly property var supportedSurfaces: ["widget", "daemon"]
@@ -28,10 +26,7 @@ Singleton {
     property var globalVars: ({})
     property var pluginLoadErrors: ({})
 
-    property var catalog: []                 // voci del registro
-    property bool catalogLoading: false
-    property string catalogError: ""
-    property var busy: ({})                  // id → "install" | "remove" | "update"
+    property var busy: ({})                  // id → "remove"
 
     readonly property var enabledIds: pstate.enabled
     readonly property var barPlugins: availablePluginsList.filter(p => p.surface === "widget" && p.supported && pstate.enabled.includes(p.id))
@@ -43,7 +38,6 @@ Singleton {
     signal pluginStateChanged(string pluginId)
     signal pluginListUpdated
     signal globalVarChanged(string pluginId, string varName)
-    signal registryInstallFinished(string pluginId, bool success)
     signal requestLauncherUpdate(string pluginId)
 
     // ════════════════ Plugin installati ════════════════
@@ -154,38 +148,7 @@ Singleton {
         return !!it;
     }
 
-    // ════════════════ Catalogo e installazione ════════════════
-
-    function fetchCatalog() {
-        if (catalogLoading)
-            return;
-        catalogLoading = true;
-        catalogError = "";
-        catalogProc.running = true;
-    }
-
-    Process {
-        id: catalogProc
-        command: ["sh", "-c", "curl -fsSL --max-time 30 \"$1\" | tar -xzO --wildcards '*/plugins/*.json' | jq -cs '.'", "_", root.registryUrl]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    const list = JSON.parse(text);
-                    root.catalog = list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-                } catch (e) {
-                    root.catalogError = "Impossibile scaricare il catalogo (connessione?)";
-                }
-                root.catalogLoading = false;
-            }
-        }
-    }
-
-    function catalogSupported(entry) {
-        const caps = entry.capabilities || [];
-        if (caps.includes("desktop-widget") || caps.includes("launcher") || caps.includes("wallpaper"))
-            return caps.includes("dankbar-widget");
-        return caps.includes("dankbar-widget") || caps.includes("daemon") || caps.includes("ipc") || caps.includes("control-center");
-    }
+    // ════════════════ Rimozione ════════════════
 
     function _setBusy(id, what) {
         const b = Object.assign({}, busy);
@@ -196,27 +159,6 @@ Singleton {
         busy = b;
     }
 
-    function install(entry) {
-        if (busy[entry.id])
-            return;
-        _setBusy(entry.id, "install");
-        const sources = Object.assign({}, pstate.sources);
-        sources[entry.id] = { repo: entry.repo, path: entry.path || "" };
-        pstate.sources = sources;
-        const proc = installComp.createObject(root, {
-            pluginId: entry.id,
-            command: ["sh", "-c", root.installScript, "_", entry.repo, entry.path || "", root.pluginDirectory, entry.id]
-        });
-        proc.running = true;
-    }
-
-    function update(id) {
-        const src = pstate.sources[id];
-        if (!src)
-            return;
-        install({ id: id, repo: src.repo, path: src.path });
-    }
-
     function uninstall(id) {
         _setBusy(id, "remove");
         setEnabled(id, false);
@@ -224,37 +166,26 @@ Singleton {
         const dir = getPluginPath(id) || (pluginDirectory + "/" + id);
         const proc = installComp.createObject(root, {
             pluginId: id,
-            removing: true,
             command: ["sh", "-c", "case \"$1\" in \"$2\"/*) rm -rf -- \"$1\";; esac", "_", dir, root.pluginDirectory]
         });
         proc.running = true;
     }
-
-    // clona in una cartella temporanea, prende la sottocartella indicata (o quella con plugin.json)
-    readonly property string installScript: "set -e\n" + "repo=\"$1\"; sub=\"$2\"; dir=\"$3\"; id=\"$4\"\n" + "tmp=$(mktemp -d)\n" + "trap 'rm -rf \"$tmp\"' EXIT\n" + "git clone --depth 1 --quiet \"$repo\" \"$tmp/r\"\n" + "src=\"$tmp/r/$sub\"\n" + "if [ ! -f \"$src/plugin.json\" ]; then\n" + "  f=$(find \"$tmp/r\" -maxdepth 3 -name plugin.json | head -n1)\n" + "  [ -n \"$f\" ] || { echo 'plugin.json non trovato' >&2; exit 2; }\n" + "  src=$(dirname \"$f\")\n" + "fi\n" + "mkdir -p \"$dir\"\n" + "rm -rf -- \"$dir/$id\"\n" + "cp -r \"$src\" \"$dir/$id\"\n" + "rm -rf \"$dir/$id/.git\"\n"
 
     Component {
         id: installComp
         Process {
             id: p
             property string pluginId
-            property bool removing: false
             property string err: ""
             stderr: StdioCollector {
                 onStreamFinished: p.err = text.trim()
             }
             onExited: code => {
                 root._setBusy(pluginId, "");
-                if (removing) {
+                if (code === 0)
                     ToastService.showInfo("Plugin rimosso: " + pluginId);
-                } else if (code === 0) {
-                    root.setEnabled(pluginId, true);
-                    ToastService.showInfo("Plugin installato: " + pluginId);
-                    root.registryInstallFinished(pluginId, true);
-                } else {
-                    ToastService.showError("Installazione non riuscita: " + pluginId, p.err);
-                    root.registryInstallFinished(pluginId, false);
-                }
+                else
+                    ToastService.showError("Rimozione non riuscita: " + pluginId, p.err);
                 root.rescan();
                 p.destroy();
             }

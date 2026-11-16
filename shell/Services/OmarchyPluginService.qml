@@ -8,17 +8,13 @@ import Quickshell.Hyprland
 import qs.config as G
 
 // Plugin Omarchy (https://plugins.omarchy.org) nella shell WhiteRabbitShell.
-//  - catalogo: catalog.json del marketplace, ridotto con jq e messo in cache
-//  - installazione: git clone in ~/.config/hypr/plugins/omarchy/<id>  (esclusa da git)
+//  - plugin in ~/.config/hypr/plugins/omarchy/<id>  (esclusa da git); niente più catalogo/installazione
 //  - stato: state/omarchy-plugins.json (attivi + impostazioni dei widget)
 // Tipi supportati: bar-widget, service, panel, overlay, menu (la barra completa "bar" no).
 Singleton {
     id: root
 
     readonly property string pluginDirectory: G.Settings.rootDir + "/plugins/omarchy"
-    readonly property string catalogUrl: "https://plugins.omarchy.org/catalog.json"
-    readonly property string siteUrl: "https://plugins.omarchy.org/"
-    readonly property string catalogCache: Quickshell.cachePath("omarchy-catalog.json")
     // Qt ≥ 6.12: `Color` globale nasconde quello del tema Omarchy; lo script qualifica i riferimenti
     readonly property string colorFix: G.Settings.rootDir + "/scripts/omarchy-compat/fix-qt-color"
     readonly property var supportedKinds: ["bar-widget", "service", "panel", "overlay", "menu"]
@@ -28,9 +24,6 @@ Singleton {
     readonly property var enabledIds: ostate.enabled
     readonly property var barWidgets: installedList.filter(m => isEnabled(m.id) && hasKind(m, "bar-widget") && m.entryPoints?.barWidget)
 
-    property var catalog: []
-    property bool catalogLoading: false
-    property string catalogError: ""
     property var busy: ({})
 
     // istanze vive
@@ -350,39 +343,7 @@ Singleton {
         }
     }
 
-    // ════════════════ Catalogo ════════════════
-
-    // campi utili per la ricerca, ordinati per stelle
-    readonly property string slimFilter: "[.plugins[] | select(.installAvailable == true and .repositoryLayout == \"root-plugin\") | {id, name, description, author, version, repo, kind, category, stars: (.stars // 0), verified: (.verificationStatus == \"verified\"), tags: (.tags // []), thumb: (.previewThumbnail // \"\")}] | sort_by(-.stars)"
-
-    function fetchCatalog(force) {
-        if (catalogLoading)
-            return;
-        catalogLoading = true;
-        catalogError = "";
-        catalogProc.command = ["sh", "-c", "c=\"$1\"; if [ \"$3\" = 1 ] || [ ! -s \"$c\" ] || [ -n \"$(find \"$c\" -mmin +360)\" ]; then curl -fsSL --max-time 60 \"$2\" | jq -c \"$4\" > \"$c.tmp\" && mv \"$c.tmp\" \"$c\"; fi; cat \"$c\"", "_", catalogCache, catalogUrl, force ? "1" : "0", slimFilter];
-        catalogProc.running = true;
-    }
-
-    Process {
-        id: catalogProc
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    root.catalog = JSON.parse(text);
-                } catch (e) {
-                    root.catalogError = "Impossibile scaricare il catalogo (connessione?)";
-                }
-                root.catalogLoading = false;
-            }
-        }
-    }
-
-    function catalogSupported(entry) {
-        return entry.kind !== "Bar";
-    }
-
-    // ════════════════ Installazione ════════════════
+    // ════════════════ Rimozione ════════════════
 
     function _setBusy(id, what) {
         const b = Object.assign({}, busy);
@@ -391,26 +352,6 @@ Singleton {
         else
             delete b[id];
         busy = b;
-    }
-
-    function install(entry) {
-        if (busy[entry.id] || !/^[A-Za-z0-9._-]+$/.test(entry.id))
-            return;
-        _setBusy(entry.id, "install");
-        const sources = Object.assign({}, ostate.sources);
-        sources[entry.id] = { repo: entry.repo };
-        ostate.sources = sources;
-        const proc = installComp.createObject(root, {
-            pluginId: entry.id,
-            command: ["sh", "-c", root.installScript, "_", entry.repo, root.pluginDirectory, entry.id, root.colorFix]
-        });
-        proc.running = true;
-    }
-
-    function update(id) {
-        const src = ostate.sources[id];
-        if (src)
-            install({ id: id, repo: src.repo });
     }
 
     function uninstall(id) {
@@ -422,59 +363,29 @@ Singleton {
         const dir = installed[id]?.__sourceDir || (pluginDirectory + "/" + id);
         const proc = installComp.createObject(root, {
             pluginId: id,
-            removing: true,
             command: ["sh", "-c", "case \"$1\" in \"$2\"/*) rm -rf -- \"$1\";; esac", "_", dir, root.pluginDirectory]
         });
         proc.running = true;
     }
-
-    // clona, verifica che manifest.json abbia lo stesso id, copia senza .git
-    readonly property string installScript: "set -e\n" + "repo=\"$1\"; dir=\"$2\"; id=\"$3\"\n" + "case \"$repo\" in https://*) ;; *) echo 'repository non valido' >&2; exit 2;; esac\n" + "tmp=$(mktemp -d)\n" + "trap 'rm -rf \"$tmp\"' EXIT\n" + "git clone --depth 1 --quiet \"$repo\" \"$tmp/r\"\n" + "[ -f \"$tmp/r/manifest.json\" ] || { echo 'manifest.json non trovato' >&2; exit 2; }\n" + "mid=$(jq -r .id \"$tmp/r/manifest.json\")\n" + "[ \"$mid\" = \"$id\" ] || { echo \"id del manifest diverso: $mid\" >&2; exit 2; }\n" + "rm -rf \"$tmp/r/.git\"\n" + "mkdir -p \"$dir\"\n" + "rm -rf -- \"$dir/$id\"\n" + "mv \"$tmp/r\" \"$dir/$id\"\n" + "[ -x \"$4\" ] && \"$4\" \"$dir/$id\" || true\n"
 
     Component {
         id: installComp
         Process {
             id: p
             property string pluginId
-            property bool removing: false
             property string err: ""
             stderr: StdioCollector {
                 onStreamFinished: p.err = text.trim()
             }
             onExited: code => {
                 root._setBusy(pluginId, "");
-                if (removing) {
+                if (code === 0)
                     Quickshell.execDetached(["notify-send", "-a", "Plugin", "Plugin rimosso", pluginId]);
-                } else if (code === 0) {
-                    const list = ostate.enabled.filter(x => x !== pluginId);
-                    list.push(pluginId);
-                    ostate.enabled = list;
-                    Quickshell.execDetached(["notify-send", "-a", "Plugin", "Plugin Omarchy installato", pluginId]);
-                } else {
-                    Quickshell.execDetached(["notify-send", "-a", "Plugin", "-u", "critical", "Installazione non riuscita: " + pluginId, p.err]);
-                }
-                // ricarica: un plugin aggiornato deve ricrearsi da zero
-                if (!removing && code === 0) {
-                    root._drop(pluginId);
-                }
+                else
+                    Quickshell.execDetached(["notify-send", "-a", "Plugin", "-u", "critical", "Rimozione non riuscita: " + pluginId, p.err]);
                 root.rescan();
                 p.destroy();
             }
-        }
-    }
-
-    function _drop(id) {
-        if (services[id]) {
-            const s = Object.assign({}, services);
-            s[id].destroy();
-            delete s[id];
-            services = s;
-        }
-        if (panels[id]) {
-            const p = Object.assign({}, panels);
-            p[id].destroy();
-            delete p[id];
-            panels = p;
         }
     }
 

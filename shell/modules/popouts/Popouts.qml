@@ -153,6 +153,7 @@ PanelWindow {
                 case "subnet": return subnetComp;
                 case "plugin": return pluginComp;
                 case "media": return mediaComp;
+                case "tasks": return tasksComp;
                 case "syncthing": return syncthingComp;   // personale, vedi sotto
                 }
                 return null;
@@ -180,6 +181,7 @@ PanelWindow {
     Component { id: aiComp; AiChat {} }
     Component { id: subnetComp; SubnetCalc {} }
     Component { id: mediaComp; MediaPanel {} }
+    Component { id: tasksComp; TasksPanel {} }
     // Pannello Syncthing: componente personale escluso da git, caricato solo se presente
     Component {
         id: syncthingComp

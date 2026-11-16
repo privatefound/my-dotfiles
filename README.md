@@ -37,8 +37,9 @@ native services instead of polling scripts, animated popouts anchored to the bar
 Everything talks to the system through Quickshell's native services — PipeWire, NetworkManager,
 BlueZ, UPower, MPRIS, StatusNotifier, Hyprland IPC — so it's instant and nothing polls `pamixer`/`nmcli` in a loop.
 
-**Plugins**: the shell natively supports **DankMaterialShell** and **Omarchy** plugins. Browse, install, update,
-enable and remove them from **Settings → Plugin** (catalog with search and categories, per‑plugin settings).
+**Plugins**: the shell natively supports **DankMaterialShell** and **Omarchy** plugins. Plugins already
+present in `~/.config/hypr/plugins/` can be enabled, configured and removed from **Settings → Plugin**; installing new ones
+from the catalogs has been removed.
 Installed plugins live in `~/.config/hypr/plugins/` and are **not tracked by git**.
 
 **Hyprland** (Lua config): 7 window/workspace animation presets (Matrix, Slide, GNOME, Elastic, Glitch, Minimal, Off) with speed control, switchable live from the shell settings, gradient borders, blur behind the shell,

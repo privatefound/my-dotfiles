@@ -16,7 +16,7 @@ Flickable {
     contentWidth: width
     clip: true
     boundsBehavior: Flickable.StopAtBounds
-    interactive: col.implicitHeight > maxHeight
+    interactive: col.implicitHeight > height + 1   // anche quando un layout lo rimpicciolisce sotto maxHeight
 
     ScrollBar.vertical: StyledScrollBar {}
 

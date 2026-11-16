@@ -72,14 +72,6 @@ Scope {
     IpcHandler {
         target: "plugins"
         function list(): string { return JSON.stringify(P.PluginService.availablePluginsList.map(p => ({ id: p.id, surface: p.surface, supported: p.supported, enabled: P.PluginService.isEnabled(p.id) }))); }
-        function catalogSize(): string { return String(P.PluginService.catalog.length); }
-        function fetch(): void { P.PluginService.fetchCatalog(); }
-        function install(id: string): string {
-            const e = P.PluginService.catalog.find(x => x.id === id);
-            if (!e) return "non trovato nel catalogo";
-            P.PluginService.install(e);
-            return "installazione avviata";
-        }
         function remove(id: string): void { P.PluginService.uninstall(id); }
         function setData(id: string, key: string, json: string): void { P.PluginService.savePluginData(id, key, JSON.parse(json)); }
         function popout(id: string): string { return P.PluginService.openWidgetPopout(id, Ui.focusedScreen) ? "ok" : "widget non trovato"; }
@@ -91,14 +83,6 @@ Scope {
     IpcHandler {
         target: "omarchy"
         function list(): string { return JSON.stringify(P.OmarchyPluginService.installedList.map(m => ({ id: m.id, kinds: m.kinds, enabled: P.OmarchyPluginService.isEnabled(m.id) }))); }
-        function catalogSize(): string { return String(P.OmarchyPluginService.catalog.length); }
-        function fetch(): void { P.OmarchyPluginService.fetchCatalog(false); }
-        function install(id: string): string {
-            const e = P.OmarchyPluginService.catalog.find(x => x.id === id);
-            if (!e) return "non trovato nel catalogo";
-            P.OmarchyPluginService.install(e);
-            return "installazione avviata";
-        }
         function remove(id: string): void { P.OmarchyPluginService.uninstall(id); }
         function enable(id: string): void { P.OmarchyPluginService.setEnabled(id, true); }
         function disable(id: string): void { P.OmarchyPluginService.setEnabled(id, false); }
