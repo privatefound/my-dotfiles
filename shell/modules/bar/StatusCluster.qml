@@ -4,7 +4,7 @@ import qs.config
 import qs.components
 import qs.services
 
-// Rete · Bluetooth · Volume · Batteria. Ogni segmento apre la sua pagina del Control Center.
+// Rete · Bluetooth · Volume · Batteria. Ogni segmento apre la sua pagina del Control Center; la batteria il suo pannello.
 StyledRect {
     id: root
 
@@ -134,8 +134,10 @@ StyledRect {
 
         // ── Batteria ──
         Segment {
+            id: battery
             visible: Power.hasBattery
-            onClicked: root.open("")
+            color: Ui.popout === "battery" && Ui.popoutScreen === root.screenName ? Theme.primaryContainer : "transparent"
+            onClicked: Ui.togglePopout("battery", root.screenName, battery.mapToItem(null, battery.width / 2, 0).x)
 
             Icon {
                 text: Power.icon

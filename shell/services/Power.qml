@@ -16,6 +16,8 @@ Singleton {
     readonly property bool charging: device?.state === UPowerDeviceState.Charging || device?.state === UPowerDeviceState.PendingCharge
     readonly property bool full: device?.state === UPowerDeviceState.FullyCharged
     readonly property bool acPlugged: !UPower.onBattery
+    // salute della batteria vera (displayDevice è un aggregato e non la riporta)
+    readonly property real health: UPower.devices.values.find(d => d.isLaptopBattery && d.healthSupported)?.healthPercentage ?? 0
     readonly property bool low: !charging && percent <= 15
 
     readonly property string icon: {
@@ -39,13 +41,19 @@ Singleton {
     }
 
     readonly property int profile: PowerProfiles.profile
-    readonly property string profileLabel: profile === PowerProfile.PowerSaver ? I18n.tr("Risparmio") : profile === PowerProfile.Performance ? I18n.tr("Prestazioni") : I18n.tr("Bilanciato")
-    readonly property string profileIcon: profile === PowerProfile.PowerSaver ? Icons.leaf : profile === PowerProfile.Performance ? Icons.flash : Icons.gauge
+    readonly property var profiles: [
+        { id: PowerProfile.PowerSaver, label: I18n.tr("Risparmio"), icon: Icons.leaf },
+        { id: PowerProfile.Balanced, label: I18n.tr("Bilanciato"), icon: Icons.gauge },
+        { id: PowerProfile.Performance, label: I18n.tr("Prestazioni"), icon: Icons.flash }
+    ].filter(p => p.id !== PowerProfile.Performance || PowerProfiles.hasPerformanceProfile)
+    readonly property int profileIndex: profiles.findIndex(p => p.id === profile)
+    readonly property string profileLabel: profiles[profileIndex]?.label ?? ""
+    readonly property string profileIcon: profiles[profileIndex]?.icon ?? Icons.gauge
 
+    function setProfile(id) {
+        PowerProfiles.profile = id;
+    }
     function cycleProfile() {
-        const order = [PowerProfile.PowerSaver, PowerProfile.Balanced];
-        if (PowerProfiles.hasPerformanceProfile)
-            order.push(PowerProfile.Performance);
-        PowerProfiles.profile = order[(order.indexOf(profile) + 1) % order.length];
+        setProfile(profiles[(profileIndex + 1) % profiles.length].id);
     }
 }
