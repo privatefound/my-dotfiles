@@ -9,6 +9,7 @@ BarButton {
     id: root
 
     required property string screenName
+    property real maxWidth: Infinity
 
     visible: Settings.showMedia && Media.hasPlayer && Media.active?.trackTitle
     active: Ui.popout === "media" && Ui.popoutScreen === screenName
@@ -48,7 +49,10 @@ BarButton {
     }
 
     StyledText {
-        Layout.maximumWidth: 220
+        // spazio rimasto tolti margini ed equalizzatore; sotto i 40px resta solo l'equalizzatore
+        readonly property real room: Math.min(220, root.maxWidth - root.padding * 2 - eq.width - root.spacing)
+        visible: room > 40
+        Layout.maximumWidth: room
         text: Media.title + (Media.artist ? "  ·  " + Media.artist : "")
         color: Media.playing ? Theme.text : Theme.textDim
         font.pixelSize: Theme.font.small

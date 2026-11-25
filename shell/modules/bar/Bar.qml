@@ -123,6 +123,15 @@ PanelWindow {
                 monitor: bar.monitor
             }
 
+            ClockWidget {
+                screenName: bar.screenName
+            }
+            // si accorcia se la parte destra (tray aperta) si allarga
+            MediaWidget {
+                screenName: bar.screenName
+                maxWidth: right.x - left.x - x - 12
+            }
+
             // Modalità attiva (es. ridimensionamento con SUPER+R): click o Esc per uscire
             StyledRect {
                 visible: Hypr.submap !== ""
@@ -153,21 +162,7 @@ PanelWindow {
                 visible: Settings.showWindowTitle && title !== ""
                 monitor: bar.monitor
                 Layout.leftMargin: 6
-                Layout.maximumWidth: Math.max(0, center.x - left.x - x - 40)
-            }
-        }
-
-        // ── Centro ──
-        RowLayout {
-            id: center
-            anchors.centerIn: parent
-            spacing: 4
-
-            ClockWidget {
-                screenName: bar.screenName
-            }
-            MediaWidget {
-                screenName: bar.screenName
+                Layout.maximumWidth: Math.max(0, right.x - left.x - x - 20)
             }
         }
 
